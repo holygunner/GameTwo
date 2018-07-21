@@ -31,19 +31,6 @@ public class Desk {
             }
     }
 
-    private void iterFreeCells(){
-        Log.i("ITER", "________________");
-        Log.i("ITER", "________________");
-        for (Iterator<Cell> iterator = freeCells.iterator(); iterator.hasNext();) {
-            Cell cell =  iterator.next();
-                Log.i("ITER", cell.getX() + ", " + cell.getY() + "");
-            }
-        Log.i("ITER", "________________");
-        }
-
-
-
-
     private void deleteFromFreeCells(int x, int y){ // remove from set free cell
         for (Iterator<Cell> iterator = freeCells.iterator(); iterator.hasNext();) {
             Cell cell =  iterator.next();
@@ -51,7 +38,6 @@ public class Desk {
                 iterator.remove();
             }
         }
-        iterFreeCells();
     }
 
     private void updateFreeCells(int x1, int y1, int x2, int y2){
@@ -66,7 +52,6 @@ public class Desk {
 
     private void addFreeCell(int x , int y){
         freeCells.add(new Cell(x, y));
-        iterFreeCells();
     }
 
 
