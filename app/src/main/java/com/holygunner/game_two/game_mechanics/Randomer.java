@@ -10,14 +10,19 @@ import java.util.Random;
  * Created by Holygunner on 01.07.2018.
  */
 
-public class Randomer { // будет возвращать случайную свободную клетку и случайное положение половинки фигуры
+public class Randomer {
 
     private final Position[] POSITIONS = new Position[]{Position.POSITION_ONE, Position.POSITION_TWO,
             Position.POSITION_THREE, Position.POSITION_FOUR};;
 
-    final Random mRandom = new Random();
+    Random mRandom;
 
     public Randomer(){
+        mRandom = getRandom();
+    }
+
+    private static Random getRandom(){
+        return new Random();
     }
 
     public Position getRandomPosition(){
@@ -27,12 +32,10 @@ public class Randomer { // будет возвращать случайную с
 
     public Cell getRandomCell(List<Cell> cells){
         int length = cells.size();
-        Cell randomCell = cells.get(mRandom.nextInt(length));
-
-        return randomCell; // TEST
+        return cells.get(mRandom.nextInt(length));
     }
 
-    public int getRandomColor(){// случайный цвет фигуры из набора доступных цветов
+    public int getRandomColor(){
         int[] colors = FigureColors.getColors();
         return colors[mRandom.nextInt(colors.length)];
     }

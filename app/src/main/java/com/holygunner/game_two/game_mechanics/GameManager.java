@@ -41,39 +41,19 @@ public class GameManager {
 
     public void startOrResumeGame(boolean isOpenSave){
         mSaver = new Saver(mContext);
-        mGamePlay = new GamePlay(mDesk, mContext);
-
-//        if (isOpenSave){
-//            mSaver.clearSQLiteDatabase();
-//        }
-
 
         if (isOpenSave){
             // open SQLite DB
+            mGamePlay = new GamePlay(mDesk, mContext);
             mDesk = mGamePlay.loadDesk(mSaver.loadFigures());
             Log.i(TAG, "GAME LOAD");
         }   else {
             // create new game
+            mSaver.resetGamerCount(mContext);
+            mGamePlay = new GamePlay(mDesk, mContext);
             mDesk = mGamePlay.createNewDesk();
             Log.i(TAG, "NEW GAME");
         }
-
-        //
-
-
-//        Figure[] loadFile = mSaver.loadFile();
-//
-//        if (loadFile != null){ // если сейв есть, то загружаем
-//            mGamePlay = new GamePlay(mDesk, mContext);
-//            mDesk = mGamePlay.loadDesk(loadFile);
-//            Log.i(TAG, "GAME LOAD");
-//        } else // иначе создаем новую игру
-//        {
-//            mGamePlay = new GamePlay(mDesk, mContext);
-//            mDesk = mGamePlay.createNewDesk();
-//            Log.i(TAG, "NEW GAME");
-//        }
-        //
     }
 
     public boolean save(){
@@ -91,6 +71,8 @@ public class GameManager {
 //        boolean isSaveSuccessful = mSaver.saveToFile(mDesk, mGamePlay);
         mSaver.saveToSQLiteDatabase(mDesk);
 
+        mSaver.writeGamerCount(mContext, mGamePlay.getGamerCount());
+
         Log.i(TAG, "Save is succesful");
         return true;
     }
@@ -105,12 +87,5 @@ public class GameManager {
 
     public Saver getSaver(){
         return mSaver;
-    }
-
-    public int getCharacterRes(int position){
-        Figure figure = mDesk.getFigure(positionToCell(position));
-        int res = Figure.getFigureRes(figure);
-
-        return res;
     }
 }

@@ -49,6 +49,7 @@ public class GamePlay {
         this.mContext = context.getApplicationContext();
         this.mDesk = desk;
         isGameStarted = Saver.isSaveExists(mContext);
+        gamerCount = Saver.readGamerCount(context);
     }
 
     public void setRecyclerGridDesk(RecyclerView recyclerGridDesk){
@@ -286,12 +287,21 @@ public class GamePlay {
 
                 if (areSemiFiguresAreWhole(ourFigure, figure2)){
                     unitedFigureRes = figure2.fullPositionRes;
+                    increaseGamerCount();
                     mDesk.uniteSemiFigures(fromWhere, toWhere);
                     return 1;
                 }
             }
         }
         return -1;
+    }
+
+    private void increaseGamerCount(){
+        ++gamerCount;
+    }
+
+    public int getGamerCount(){
+        return gamerCount;
     }
 
     public boolean areSemiFiguresAreWhole(Figure figure1, Figure figure2){ // являются ли обе половины части одной целой фигуры
@@ -302,6 +312,7 @@ public class GamePlay {
         int color2 = figure2.color;
 
         // добавить проверку на цвет и тип фигуры
+
 
         return Position.areHalfesOfWhole(position1, position2) && (color1 == color2); // добавить проверку одного ли типа фигуры
     }
@@ -328,10 +339,6 @@ public class GamePlay {
             }
         return isStepAvailable;
     }
-
-//    public Figure getFigure(int position){
-//        return mDesk.getFigure(GameManager.positionToCell(position));
-//    }
 
     public int getLastUnitedFigureRes(){
         return unitedFigureRes;

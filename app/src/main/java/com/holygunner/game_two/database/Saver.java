@@ -21,7 +21,8 @@ public class Saver {
 
     public static final String XML_SAVE_FILE_NAME = "game_process_save.xml";
 
-    public static final String IS_GAME_STARTED_KEY = "is game started key";
+    public static final String IS_GAME_STARTED_KEY = "is_game_started_key";
+    public static final String GAMER_COUNT_KEY = "gamer_count_key";
 
     public Saver (Context context){
         mContext = context.getApplicationContext();
@@ -78,11 +79,28 @@ public class Saver {
                     if (arr[x][y] != null){
                         Figure figure = arr[x][y];
                         addFigure(figure);
-//                        updateFigure(figure);
                     }
                 }
             }
         }
+    }
+
+    public void writeGamerCount(Context context, int gamerCount){
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putInt(GAMER_COUNT_KEY, gamerCount)
+                .apply();
+    }
+
+    public void resetGamerCount(Context context){
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putInt(GAMER_COUNT_KEY, 0)
+                .apply();
+    }
+
+    public static int readGamerCount(Context context){
+        return PreferenceManager.getDefaultSharedPreferences(context).getInt(GAMER_COUNT_KEY, 0);
     }
 
     private FigureCursorWrapper queryFigures(String whereClause, String[] whereArgs){

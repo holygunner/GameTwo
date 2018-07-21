@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -31,12 +32,9 @@ public class GameDeskFragment extends Fragment {
     private GameManager mGameManager;
 
     private Button turnFigureButton;
+    private TextView gamerCountView;
 
     private boolean isTurnButtonClickable = true;
-
-    private int prevPosition;
-
-//    private boolean isOpenSave;
 
     public GameDeskFragment(){}
 
@@ -48,9 +46,11 @@ public class GameDeskFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.activity_game_upd, container, false);
         mRecyclerGridDesk = (RecyclerView) view.findViewById(R.id.recycler_grid_game_desk);
-
         mRecyclerGridDesk.setLayoutManager(new GridLayoutManager(getActivity(), DeskValues.DESK_WIDTH));
         turnFigureButton = (Button) view.findViewById(R.id.turnFigureButton);
+        gamerCountView = (TextView) view.findViewById(R.id.gamerCountTextView);
+        gamerCountView.setText(readGamerCount());
+
 
         boolean isOpenSave = getActivity().getIntent().getBooleanExtra(StartGameActivity.IS_OPEN_SAVE_KEY, false);
         Saver.writeIsSaveExists(getActivity(), isOpenSave);
@@ -62,9 +62,6 @@ public class GameDeskFragment extends Fragment {
     public void onResume(){
         super.onResume();
         mGameManager = new GameManager(getActivity());
-
-//        Saver.writeIsSaveExists(getActivity(), isOpenSave);
-
         mGameManager.startOrResumeGame(Saver.isSaveExists(getContext()));
         updateGameProcess();
     }
@@ -77,8 +74,19 @@ public class GameDeskFragment extends Fragment {
 
     private void updateGameProcess(){
         List<String> data = new DeskToCellsListConverter(mGameManager.getDesk()).getCellList();
+        updateGamerCount();
         mAdapter = new RecyclerGridAdapter(getActivity(), data);
         mRecyclerGridDesk.setAdapter(mAdapter);
+    }
+
+    private void updateGamerCount(){
+        int gamerCount = mGameManager.getGamePlay().getGamerCount();
+        gamerCountView.setText(gamerCount + "/" + "100"); // 100 - демо, с раундами будет показывать счет которорый нужно набрать, чтобы перейти к след раунду
+    }
+
+    private String readGamerCount(){
+        int gamerCount = Saver.readGamerCount(getContext());
+        return gamerCount + "/" + "100";
     }
 
     private class RecyclerGridAdapter extends RecyclerView.Adapter<GridViewHolder> {
@@ -161,7 +169,6 @@ public class GameDeskFragment extends Fragment {
                         }
                     }   else {
                         if (gamePlay.fillCells(position)){
-                            prevPosition = position;
                             if (isTurnButtonClickable) {
                                 setTurnButtonClickable(true);
                             }
@@ -177,7 +184,6 @@ public class GameDeskFragment extends Fragment {
                                     }
                                 }
                             });
-
                         }
                         }
 
@@ -191,8 +197,6 @@ public class GameDeskFragment extends Fragment {
     }
 
     private void setTurnButtonClickable(boolean isClickable){
-//        isTurnButtonClickable = isClickable;
-
         if (isClickable){
             turnFigureButton.setVisibility(View.VISIBLE);
         }   else {
@@ -224,10 +228,7 @@ public class GameDeskFragment extends Fragment {
         ImageView imageViewCellPrev = (ImageView) holder.mImageViewCell.findViewById(R.id.demo_cell_image_view);
 
         imageViewCellPrev.setImageResource(R.drawable.empty_cell_test);
-
         imageViewCell.setImageResource(gamePlay.getLastUnitedFigureRes());
-
-//        imageViewCell.setImageResource(R.drawable.cell_full_square_color_bordo);
 
         handler.postDelayed(new Runnable() {
             @Override
