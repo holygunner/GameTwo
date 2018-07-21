@@ -12,4 +12,9 @@ public class SemiCircle extends Figure { // половина круга
         super.position = position;
         super.mCell = cell;
     }
+
+    @Override
+    public void setFullPositionRes() {
+        
+    }
 }

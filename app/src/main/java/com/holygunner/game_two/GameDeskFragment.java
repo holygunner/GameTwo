@@ -3,6 +3,7 @@ package com.holygunner.game_two;
 import com.holygunner.game_two.database.Saver;
 import com.holygunner.game_two.figures.Figure;
 import com.holygunner.game_two.game_mechanics.*;
+import com.holygunner.game_two.values.DeskValues;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -48,7 +49,7 @@ public class GameDeskFragment extends Fragment {
         View view = inflater.inflate(R.layout.activity_game_upd, container, false);
         mRecyclerGridDesk = (RecyclerView) view.findViewById(R.id.recycler_grid_game_desk);
 
-        mRecyclerGridDesk.setLayoutManager(new GridLayoutManager(getActivity(), Values.DESK_WIDTH));
+        mRecyclerGridDesk.setLayoutManager(new GridLayoutManager(getActivity(), DeskValues.DESK_WIDTH));
         turnFigureButton = (Button) view.findViewById(R.id.turnFigureButton);
 
         boolean isOpenSave = getActivity().getIntent().getBooleanExtra(StartGameActivity.IS_OPEN_SAVE_KEY, false);
@@ -153,7 +154,7 @@ public class GameDeskFragment extends Fragment {
                         isTurnButtonClickable = true;
 
                         if (stepResult == 1){
-                            showUnitedFigure(mImageViewCell, gamePlay);
+                            showUnitedFigure(mImageViewCell, gamePlay, position);
 
                         }   else {
                             updateGameProcess();
@@ -215,7 +216,7 @@ public class GameDeskFragment extends Fragment {
         }, 150);
     }
 
-    private void showUnitedFigure(ImageView imageViewCell, GamePlay gamePlay){
+    private void showUnitedFigure(ImageView imageViewCell, GamePlay gamePlay, int position){
 
         final Handler handler = new Handler();
 
@@ -224,7 +225,9 @@ public class GameDeskFragment extends Fragment {
 
         imageViewCellPrev.setImageResource(R.drawable.empty_cell_test);
 
-        imageViewCell.setImageResource(R.drawable.cell_full_square_color_bordo);
+        imageViewCell.setImageResource(gamePlay.getLastUnitedFigureRes());
+
+//        imageViewCell.setImageResource(R.drawable.cell_full_square_color_bordo);
 
         handler.postDelayed(new Runnable() {
             @Override

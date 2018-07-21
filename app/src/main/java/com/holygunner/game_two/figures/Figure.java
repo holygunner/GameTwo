@@ -14,6 +14,7 @@ public class Figure {
     public int color;
     public int stepLimit = 1; // количество клеток за раз которые может преоделеть персонаж, по умолчанию 1
     public Cell mCell;
+    public int fullPositionRes;
 
     public Figure(){
         mUUID = UUID.randomUUID();
@@ -21,6 +22,9 @@ public class Figure {
 
     public Figure(UUID uuid) {
         mUUID = uuid;
+    }
+
+    public void setFullPositionRes(){
     }
 
     public void setCell(Cell cell){
@@ -49,6 +53,10 @@ public class Figure {
 //        return  (figure.name.equals(this.name) && figure.attack == this.attack
 //                && figure.stamina == this.stamina && figure.magicAbility == this.magicAbility);
         return false;
+    }
+
+    public int getFullPositionRes(){
+        return fullPositionRes;
     }
 
     public String getFigureType(Figure figure){

@@ -5,12 +5,12 @@ import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-import com.holygunner.game_two.StartGameActivity;
 import com.holygunner.game_two.database.Saver;
 import com.holygunner.game_two.figures.Figure;
 import com.holygunner.game_two.figures.FigureFactory;
 import com.holygunner.game_two.figures.Position;
 import com.holygunner.game_two.figures.SemiSquare;
+import com.holygunner.game_two.values.DeskValues;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +18,7 @@ import java.util.UUID;
 
 import static com.holygunner.game_two.game_mechanics.GameManager.cellToPosition;
 import static com.holygunner.game_two.game_mechanics.GameManager.positionToCell;
+import com.holygunner.game_two.values.FigureValues.FigureColors;
 
 public class GamePlay {
     private Desk mDesk;
@@ -27,6 +28,8 @@ public class GamePlay {
 
     private boolean isGameStarted;
 
+    private int unitedFigureRes;
+
     private int gamerCount; // счет игрока
 
     private List<Cell> availableCells;
@@ -34,12 +37,19 @@ public class GamePlay {
 
     private boolean isFilled;
 
-    private int deskWidth = Values.DESK_WIDTH;
-    private int deskHeight = Values.DESK_HEIGHT;
+    private int deskWidth = DeskValues.DESK_WIDTH;
+    private int deskHeight = DeskValues.DESK_HEIGHT;
 
     private Randomer mRandomer;
 
     private RecyclerView mRecyclerGridDesk;
+
+    public GamePlay(Desk desk, Context context){ // если игрока загружаем с файла
+        mRandomer = new Randomer();
+        this.mContext = context.getApplicationContext();
+        this.mDesk = desk;
+        isGameStarted = Saver.isSaveExists(mContext);
+    }
 
     public void setRecyclerGridDesk(RecyclerView recyclerGridDesk){
         mRecyclerGridDesk = recyclerGridDesk;
@@ -77,8 +87,10 @@ public class GamePlay {
         FigureFactory factory = FigureFactory.getInstance();
         Position position = mRandomer.getRandomPosition();
         Cell cell = mRandomer.getRandomCell(freeCells);
+        int color = mRandomer.getRandomColor();
+//        int color = FigureColors.PURPLE;
 
-        return factory.createFigure(uuid, SemiSquare.class, Color.RED,
+        return factory.createFigure(uuid, SemiSquare.class, color,
                 position, cell);
     }
 
@@ -233,13 +245,6 @@ public class GamePlay {
         mRecyclerGridDesk.getLayoutManager().findViewByPosition(position).setBackgroundColor(color);
     }
 
-    public GamePlay(Desk desk, Context context){ // если игрока загружаем с файла
-        mRandomer = new Randomer();
-        this.mContext = context.getApplicationContext();
-        this.mDesk = desk;
-        isGameStarted = Saver.isSaveExists(mContext);
-    }
-
     public List<Cell> getAvailableCells(int position){
         Cell cell = positionToCell(position);
 
@@ -280,6 +285,7 @@ public class GamePlay {
                 Figure figure2 = mDesk.getFigure(toWhere);
 
                 if (areSemiFiguresAreWhole(ourFigure, figure2)){
+                    unitedFigureRes = figure2.fullPositionRes;
                     mDesk.uniteSemiFigures(fromWhere, toWhere);
                     return 1;
                 }
@@ -292,9 +298,12 @@ public class GamePlay {
         Position position1 = figure1.position;
         Position position2 = figure2.position;
 
+        int color1 = figure1.color;
+        int color2 = figure2.color;
+
         // добавить проверку на цвет и тип фигуры
 
-        return Position.areHalfesOfWhole(position1, position2);
+        return Position.areHalfesOfWhole(position1, position2) && (color1 == color2); // добавить проверку одного ли типа фигуры
     }
 
     public boolean isStepAvailable(Figure figure, Cell toWhere){
@@ -318,5 +327,13 @@ public class GamePlay {
                 isStepAvailable = true;
             }
         return isStepAvailable;
+    }
+
+//    public Figure getFigure(int position){
+//        return mDesk.getFigure(GameManager.positionToCell(position));
+//    }
+
+    public int getLastUnitedFigureRes(){
+        return unitedFigureRes;
     }
 }

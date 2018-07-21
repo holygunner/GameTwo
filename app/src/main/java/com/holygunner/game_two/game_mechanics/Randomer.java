@@ -1,6 +1,7 @@
 package com.holygunner.game_two.game_mechanics;
 
 import com.holygunner.game_two.figures.Position;
+import com.holygunner.game_two.values.FigureValues.FigureColors;
 
 import java.util.List;
 import java.util.Random;
@@ -21,9 +22,7 @@ public class Randomer { // будет возвращать случайную с
 
     public Position getRandomPosition(){
         int length = POSITIONS.length;
-        Position randomPosition = POSITIONS[mRandom.nextInt(length)];
-
-        return randomPosition;
+        return POSITIONS[mRandom.nextInt(length)];
     }
 
     public Cell getRandomCell(List<Cell> cells){
@@ -33,10 +32,9 @@ public class Randomer { // будет возвращать случайную с
         return randomCell; // TEST
     }
 
-
-
-    private int getRandomColor(){// случайный цвет фигуры из набора доступных цветов
-        return 0;
+    public int getRandomColor(){// случайный цвет фигуры из набора доступных цветов
+        int[] colors = FigureColors.getColors();
+        return colors[mRandom.nextInt(colors.length)];
     }
 
 }

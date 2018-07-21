@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.holygunner.game_two.figures.Figure;
 import com.holygunner.game_two.database.*;
+import com.holygunner.game_two.values.DeskValues;
 
 public class GameManager {
     private static final String TAG = "Log";
@@ -18,8 +19,8 @@ public class GameManager {
     }
 
     public static int cellToPosition(Cell cell){
-        int desk_width = Values.DESK_WIDTH;
-        int desk_height = Values.DESK_HEIGHT;
+        int desk_width = DeskValues.DESK_WIDTH;
+        int desk_height = DeskValues.DESK_HEIGHT;
         int x = cell.getX();
         int y = cell.getY();
 
@@ -29,8 +30,8 @@ public class GameManager {
     }
 
     public static Cell positionToCell(int position){
-        int desk_width = Values.DESK_WIDTH;
-        int deskHeight = Values.DESK_HEIGHT;
+        int desk_width = DeskValues.DESK_WIDTH;
+        int deskHeight = DeskValues.DESK_HEIGHT;
 
         int y = position/desk_width;
         int x = position%desk_width;
