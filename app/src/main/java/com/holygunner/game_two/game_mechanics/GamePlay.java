@@ -18,7 +18,6 @@ import java.util.UUID;
 
 import static com.holygunner.game_two.game_mechanics.GameManager.cellToPosition;
 import static com.holygunner.game_two.game_mechanics.GameManager.positionToCell;
-import com.holygunner.game_two.values.FigureValues.FigureColors;
 
 public class GamePlay {
     private Desk mDesk;
@@ -31,6 +30,8 @@ public class GamePlay {
     private int unitedFigureRes;
 
     private int gamerCount; // счет игрока
+
+    private boolean isTurnAvailable;
 
     private List<Cell> availableCells;
     public Integer currentFigurePosition;
@@ -71,14 +72,16 @@ public class GamePlay {
     public Desk createNewDesk() {
         mDesk = new Desk(deskWidth, deskHeight);
 
-        Figure figure1 = getRandomFigure(mDesk.getFreeCells());
-        mDesk.addFigure(figure1);
+//        Figure figure1 = getRandomFigure(mDesk.getFreeCells());
+//        mDesk.addFigure(figure1);
+//
+//        Figure figure2 = getRandomFigure(mDesk.getFreeCells());
+//        mDesk.addFigure(figure2);
+//
+//        Figure figure3 = getRandomFigure(mDesk.getFreeCells());
+//        mDesk.addFigure(figure3);
 
-        Figure figure2 = getRandomFigure(mDesk.getFreeCells());
-        mDesk.addFigure(figure2);
-
-        Figure figure3 = getRandomFigure(mDesk.getFreeCells());
-        mDesk.addFigure(figure3);
+        addRandomFigure(3);
 
         return mDesk;
     }
@@ -86,10 +89,10 @@ public class GamePlay {
     public Figure getRandomFigure(List<Cell> freeCells){
         UUID uuid = UUID.randomUUID();
         FigureFactory factory = FigureFactory.getInstance();
-        Position position = mRandomer.getRandomPosition();
+//        Position position = mRandomer.getRandomPosition();
+        Position position = mRandomer.getRandomPositionMethod2();
         Cell cell = mRandomer.getRandomCell(freeCells);
         int color = mRandomer.getRandomColor();
-//        int color = FigureColors.PURPLE;
 
         return factory.createFigure(uuid, SemiSquare.class, color,
                 position, cell);
@@ -112,17 +115,24 @@ public class GamePlay {
             Log.i("FW", "currentFigurePosition: " + currentFigurePosition
                     + " position: " + position);
 
-            int stepResult;
+            int stepResult = makeStep(fromWhere, toWhere);
 
-            if ((stepResult = makeStep(fromWhere, toWhere)) != -1) {
+            switch (stepResult){
+                case 1:
+                    addRandomFigure();
+                    break;
+                case 0:
+                    addRandomFigure(3);
+                    break;
+            }
+
+            if (stepResult != -1) {
                 if (isGameStarted == false){ //если первый шаг не сделан, при выходе игра не сохр
                     isGameStarted = true;
                     Saver.writeIsSaveExists(mContext, isGameStarted);
                 }
             }
             isFilled = false;
-
-            addRandomFigure();
 
             return stepResult;
         }   else
@@ -132,6 +142,12 @@ public class GamePlay {
     private void addRandomFigure(){
         if (!mDesk.getFreeCells().isEmpty()) {
             mDesk.addFigure(getRandomFigure(mDesk.getFreeCells()));
+        }
+    }
+
+    private void addRandomFigure(int howMuchFigures){
+        for (int i=0; i<howMuchFigures; i++){
+            addRandomFigure();
         }
     }
 
@@ -170,21 +186,27 @@ public class GamePlay {
         return false;
     }
 
-    public void fillOrClearCells(int position){
-        currentFigurePosition = position;
-        int color;
-
-        if (availableCells != null) {
-            color = getCellsColor(false); // очистить клетки от предыдущего выделения
-            setBackgroundColor(availableCells, color);
-        }
-        availableCells = getAvailableCells(position);
-        color = getCellsColor(true); // выделить доступные ходы
-
-        setBackgroundColor(availableCells, color);
+    private void setCellsColor(boolean isFillColor){
+        setBackgroundColor(availableCells, getCellsColor(isFillColor));
     }
 
-    private int getCellsColor(boolean isFillColor){ // выделить или очистить от выделения
+    public void fillOrClearCells(int position){
+        if (availableCells != null && currentFigurePosition == position){ // снять выделение
+            setCellsColor(false);
+            availableCells = null;
+            return;
+        }
+
+        currentFigurePosition = position;
+
+        if (availableCells != null) {
+            setCellsColor(false);
+        }
+        availableCells = getAvailableCells(position);
+        setCellsColor(true);
+    }
+
+    private int getCellsColor(boolean isFillColor){
         int color;
 
         if (isFillColor) {
@@ -278,8 +300,6 @@ public class GamePlay {
         if (isStepAvailable(ourFigure,toWhere)){
             if (isCellEmpty(toWhere)){
                 mDesk.replaceFigure(ourFigure, toWhere);
-                addRandomFigure();
-                addRandomFigure();
                 return 0;
 
             }   else {
@@ -342,5 +362,13 @@ public class GamePlay {
 
     public int getLastUnitedFigureRes(){
         return unitedFigureRes;
+    }
+
+    public boolean isTurnAvailable() {
+        return isTurnAvailable;
+    }
+
+    public void setTurnAvailable(boolean turnAvailable) {
+        isTurnAvailable = turnAvailable;
     }
 }

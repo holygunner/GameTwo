@@ -23,6 +23,7 @@ public class Saver {
 
     public static final String IS_GAME_STARTED_KEY = "is_game_started_key";
     public static final String GAMER_COUNT_KEY = "gamer_count_key";
+    public static final String IS_TURN_BUTTON_CLICKABLE_KEY = "is_turn_button_clickable_key";
 
     public Saver (Context context){
         mContext = context.getApplicationContext();
@@ -85,6 +86,30 @@ public class Saver {
         }
     }
 
+    public void writeIsTurnButtonClickable(Context context, boolean isClickable){
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putBoolean(IS_TURN_BUTTON_CLICKABLE_KEY, isClickable)
+                .apply();
+    }
+
+    private void resetIsTurnButtonClickable(Context context){
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putBoolean(IS_TURN_BUTTON_CLICKABLE_KEY, true)
+                .apply();
+    }
+
+    public void reset(Context context){
+        resetIsTurnButtonClickable(context);
+        resetGamerCount(context);
+    }
+
+    public static boolean readIsTurnButtonClickable(Context context){
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(IS_TURN_BUTTON_CLICKABLE_KEY, true);
+    }
+
     public void writeGamerCount(Context context, int gamerCount){
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
@@ -92,7 +117,7 @@ public class Saver {
                 .apply();
     }
 
-    public void resetGamerCount(Context context){
+    private void resetGamerCount(Context context){
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
                 .putInt(GAMER_COUNT_KEY, 0)

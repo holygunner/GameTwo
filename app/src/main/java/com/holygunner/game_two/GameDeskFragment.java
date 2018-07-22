@@ -34,7 +34,7 @@ public class GameDeskFragment extends Fragment {
     private Button turnFigureButton;
     private TextView gamerCountView;
 
-    private boolean isTurnButtonClickable = true;
+    private boolean isTurnButtonClickable;
 
     public GameDeskFragment(){}
 
@@ -55,6 +55,8 @@ public class GameDeskFragment extends Fragment {
         boolean isOpenSave = getActivity().getIntent().getBooleanExtra(StartGameActivity.IS_OPEN_SAVE_KEY, false);
         Saver.writeIsSaveExists(getActivity(), isOpenSave);
 
+        isTurnButtonClickable = Saver.readIsTurnButtonClickable(getContext());
+
         return view;
     }
 
@@ -63,6 +65,7 @@ public class GameDeskFragment extends Fragment {
         super.onResume();
         mGameManager = new GameManager(getActivity());
         mGameManager.startOrResumeGame(Saver.isSaveExists(getContext()));
+        isTurnButtonClickable = Saver.readIsTurnButtonClickable(getContext());
         updateGameProcess();
     }
 
@@ -202,6 +205,8 @@ public class GameDeskFragment extends Fragment {
         }   else {
             turnFigureButton.setVisibility(View.INVISIBLE);
         }
+
+        mGameManager.getGamePlay().setTurnAvailable(isClickable);
     }
 
     private void turnFigure(ImageView imageView){

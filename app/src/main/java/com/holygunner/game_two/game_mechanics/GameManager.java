@@ -49,7 +49,7 @@ public class GameManager {
             Log.i(TAG, "GAME LOAD");
         }   else {
             // create new game
-            mSaver.resetGamerCount(mContext);
+            mSaver.reset(mContext);
             mGamePlay = new GamePlay(mDesk, mContext);
             mDesk = mGamePlay.createNewDesk();
             Log.i(TAG, "NEW GAME");
@@ -72,6 +72,7 @@ public class GameManager {
         mSaver.saveToSQLiteDatabase(mDesk);
 
         mSaver.writeGamerCount(mContext, mGamePlay.getGamerCount());
+        mSaver.writeIsTurnButtonClickable(mContext, mGamePlay.isTurnAvailable());
 
         Log.i(TAG, "Save is succesful");
         return true;
