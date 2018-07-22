@@ -43,7 +43,7 @@ public class Randomer {
     public Position getRandomPositionMethod2(){ // returned positions are not same by every time
         int size;
         int index;
-        Position position = null;
+        Position position;
 
         if (positions.isEmpty()){
             initPositions();

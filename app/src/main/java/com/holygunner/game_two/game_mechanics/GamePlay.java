@@ -166,7 +166,7 @@ public class GamePlay {
         if (isCellEmpty(positionToCell(position)) == true){
             return false;
         }
-        fillOrClearCells(position);
+        boolean isFilled = fillOrClearCells(position);
 
         return isFilled;
     }
@@ -188,22 +188,30 @@ public class GamePlay {
 
     private void setCellsColor(boolean isFillColor){
         setBackgroundColor(availableCells, getCellsColor(isFillColor));
+        isFilled = isFillColor;
     }
 
-    public void fillOrClearCells(int position){
+    public boolean fillOrClearCells(int position){
+        boolean isFillColor;
+
         if (availableCells != null && currentFigurePosition == position){ // снять выделение
-            setCellsColor(false);
+            isFillColor = false;
+            setCellsColor(isFillColor);
             availableCells = null;
-            return;
+            return isFillColor;
         }
 
         currentFigurePosition = position;
 
         if (availableCells != null) {
-            setCellsColor(false);
+            isFillColor = false;
+            setCellsColor(isFillColor);
         }
         availableCells = getAvailableCells(position);
-        setCellsColor(true);
+        isFillColor = true;
+        setCellsColor(isFillColor);
+
+        return isFillColor;
     }
 
     private int getCellsColor(boolean isFillColor){
@@ -217,6 +225,10 @@ public class GamePlay {
             isFilled = false;
         }
         return color;
+    }
+
+    public boolean getIsFilled(){
+        return isFilled;
     }
 
     public boolean turnFigureIfExists(int position){
