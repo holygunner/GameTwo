@@ -3,5 +3,5 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="start_activity_button_width">120dp</dimen>
-    <dimen name="buttonTextSize">16dp</dimen>
+    <dimen name="textSize">16dp</dimen>
 </resources>

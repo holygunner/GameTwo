@@ -5,24 +5,32 @@ import com.holygunner.game_two.figures.Figure;
 import com.holygunner.game_two.game_mechanics.*;
 import com.holygunner.game_two.values.DeskValues;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
-
-/**
- * Created by Holygunner on 04.04.2018.
- */
 
 public class GameDeskFragment extends Fragment {
 
@@ -33,6 +41,9 @@ public class GameDeskFragment extends Fragment {
 
     private Button turnFigureButton;
     private TextView gamerCountView;
+
+    private RelativeLayout parentLayout;
+    private TextView gameOverTextView;
 
     private boolean isTurnButtonClickable;
 
@@ -45,8 +56,12 @@ public class GameDeskFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.activity_game_upd, container, false);
+        parentLayout = (RelativeLayout) view.findViewById(R.id.parentLayout);
+        gameOverTextView = (TextView) view.findViewById(R.id.gameOverTextView);
+
         mRecyclerGridDesk = (RecyclerView) view.findViewById(R.id.recycler_grid_game_desk);
         mRecyclerGridDesk.setLayoutManager(new GridLayoutManager(getActivity(), DeskValues.DESK_WIDTH));
+
         turnFigureButton = (Button) view.findViewById(R.id.turnFigureButton);
         gamerCountView = (TextView) view.findViewById(R.id.gamerCountTextView);
         gamerCountView.setText(readGamerCount());
@@ -90,6 +105,52 @@ public class GameDeskFragment extends Fragment {
     private String readGamerCount(){
         int gamerCount = Saver.readGamerCount(getContext());
         return gamerCount + "/" + "100";
+    }
+
+    private void gameOver(){
+        parentLayout.setAlpha(0.4f);
+
+        for (int i = 0; i < parentLayout.getChildCount(); i++) {
+            View child = parentLayout.getChildAt(i);
+            child.setEnabled(false);
+        }
+
+//        final Handler handler = new Handler();
+//
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                gameOverTextView.setVisibility(View.VISIBLE);
+//                animateGameOver(gameOverTextView);
+//            }
+//        }, 150);
+
+        gameOverTextView.setVisibility(View.VISIBLE);
+        animateGameOver(gameOverTextView);
+
+        final Intent intent = new Intent(getContext(), StartGameActivity.class);
+
+        gameOverTextView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN){
+                    startActivity(intent);
+                }
+                return false;
+            }
+        });
+    }
+
+    private void animateGameOver(final TextView view){
+        view.animate()
+                .alpha(0.0f)
+                .setDuration(150)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                    }
+                });
     }
 
     private class RecyclerGridAdapter extends RecyclerView.Adapter<GridViewHolder> {
@@ -148,17 +209,33 @@ public class GameDeskFragment extends Fragment {
 
             setTurnButtonClickable(false);
 
-
-            mImageViewCell.setOnClickListener(new View.OnClickListener() {
+            mImageViewCell.setOnTouchListener(new View.OnTouchListener() {
                 @Override
-                public void onClick(View v) {
+                public boolean onTouch(View v, MotionEvent event) {
                     final GamePlay gamePlay = mGameManager.getGamePlay();
 
                     if (!gamePlay.isGameContinue()){
-                        return;
+                        gameOver();
+                        return false;
                     }
                     gamePlay.setRecyclerGridDesk(mRecyclerGridDesk);
 
+                    switch (event.getAction()){
+                        case MotionEvent.ACTION_DOWN:
+                            actionDown(gamePlay);
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            break;
+                        case MotionEvent.ACTION_CANCEL:
+                            break;
+                    }
+
+                    return true;
+                }
+
+                private void actionDown(GamePlay gamePlay){
                     int stepResult;
 
                     if ((stepResult = gamePlay.tryToStep(position)) != -1){
@@ -166,7 +243,7 @@ public class GameDeskFragment extends Fragment {
                         isTurnButtonClickable = true;
 
                         if (stepResult == 1){
-                            showUnitedFigure(mImageViewCell, gamePlay, position);
+                            showUnitedFigure(mImageViewCell, gamePlay);
 
                         }   else {
                             updateGameProcess();
@@ -182,7 +259,7 @@ public class GameDeskFragment extends Fragment {
                                 public void onClick(View v) {
 
                                     if (isTurnButtonClickable) {
-                                        if (gamePlay.turnFigureIfExists(position)) {
+                                        if (mGameManager.getGamePlay().turnFigureIfExists(position)) {
                                             turnFigure(mImageViewCell);
                                         }
                                     }
@@ -191,10 +268,58 @@ public class GameDeskFragment extends Fragment {
                         }   else {
                             setTurnButtonClickable(false);
                         }
-                        }
+                    }
 
                 }
             });
+
+
+//            mImageViewCell.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    final GamePlay gamePlay = mGameManager.getGamePlay();
+//
+//                    if (!gamePlay.isGameContinue()){
+//                        return;
+//                    }
+//                    gamePlay.setRecyclerGridDesk(mRecyclerGridDesk);
+//
+//                    int stepResult;
+//
+//                    if ((stepResult = gamePlay.tryToStep(position)) != -1){
+//                        setTurnButtonClickable(false);
+//                        isTurnButtonClickable = true;
+//
+//                        if (stepResult == 1){
+//                            showUnitedFigure(mImageViewCell, gamePlay);
+//
+//                        }   else {
+//                            updateGameProcess();
+//                        }
+//                    }   else {
+//                        if (gamePlay.fillCells(position)){
+//                            if (isTurnButtonClickable) {
+//                                setTurnButtonClickable(true);
+//                            }
+//
+//                            turnFigureButton.setOnClickListener(new View.OnClickListener() {
+//                                @Override
+//                                public void onClick(View v) {
+//
+//                                    if (isTurnButtonClickable) {
+//                                        if (gamePlay.turnFigureIfExists(position)) {
+//                                            turnFigure(mImageViewCell);
+//                                        }
+//                                    }
+//                                }
+//                            });
+//                        }   else {
+//                            setTurnButtonClickable(false);
+//                        }
+//                        }
+//
+//                }
+//            });
         }
 
         public void setPosition(int position) {
@@ -228,7 +353,7 @@ public class GameDeskFragment extends Fragment {
         }, 150);
     }
 
-    private void showUnitedFigure(ImageView imageViewCell, GamePlay gamePlay, int position){
+    private void showUnitedFigure(ImageView imageViewCell, GamePlay gamePlay){
 
         final Handler handler = new Handler();
 

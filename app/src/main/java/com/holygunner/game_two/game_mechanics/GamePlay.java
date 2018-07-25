@@ -194,12 +194,12 @@ public class GamePlay {
     public boolean fillOrClearCells(int position){
         boolean isFillColor;
 
-        if (availableCells != null && currentFigurePosition == position){ // снять выделение
-            isFillColor = false;
-            setCellsColor(isFillColor);
-            availableCells = null;
-            return isFillColor;
-        }
+//        if (availableCells != null && currentFigurePosition == position){ // снять выделение
+//            isFillColor = false;
+//            setCellsColor(isFillColor);
+//            availableCells = null;
+//            return isFillColor;
+//        }
 
         currentFigurePosition = position;
 

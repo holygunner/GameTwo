@@ -38,7 +38,6 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
         }   else {
             resumeButton.setVisibility(View.INVISIBLE);
         }
-
     }
 
     @Override
@@ -57,7 +56,6 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
                 startActivity(intent);
                 break;
             case R.id.new_game_button:
-//                Saver.deleteSaveFile(this);
                 intent.putExtra(IS_OPEN_SAVE_KEY, false);
                 startActivity(intent);
                 break;

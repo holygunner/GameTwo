@@ -5,6 +5,11 @@
              android:layout_width="fill_parent"
              android:layout_height="fill_parent">
 
+    <RelativeLayout
+        android:id="@+id/parentLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,7 +19,7 @@
 
         <TextView
             android:id="@+id/gamerCountTextView"
-            android:hint="10/100"
+            android:hint="0/100"
             android:textSize="32dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -24,6 +29,7 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_grid_game_desk"
+        android:overScrollMode="never"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -45,5 +51,25 @@
             android:layout_height="50dp"
             android:layout_gravity="center"/>
     </FrameLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
+
+        <TextView
+            android:textColor="#000000"
+            android:visibility="invisible"
+            android:text="GAME OVER!"
+            android:textStyle="bold"
+            android:textSize="48dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/gameOverTextView"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"/>
+    </RelativeLayout>
 
 </RelativeLayout>
