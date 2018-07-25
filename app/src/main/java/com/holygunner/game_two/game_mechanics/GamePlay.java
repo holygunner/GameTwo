@@ -42,11 +42,13 @@ public class GamePlay {
     private int deskHeight = DeskValues.DESK_HEIGHT;
 
     private Randomer mRandomer;
+    private Saver mSaver;
 
     private RecyclerView mRecyclerGridDesk;
 
-    public GamePlay(Desk desk, Context context){ // если игрока загружаем с файла
+    public GamePlay(Desk desk, Saver saver, Context context){ // если игрока загружаем с файла
         mRandomer = new Randomer();
+        this.mSaver = saver;
         this.mContext = context.getApplicationContext();
         this.mDesk = desk;
         isGameStarted = Saver.isSaveExists(mContext);
@@ -153,6 +155,7 @@ public class GamePlay {
 
     public boolean isGameContinue(){
         if (mDesk.getFreeCells().isEmpty()){
+            mSaver.writeGamerCount(mContext, gamerCount);
             return false;
         }   else
             return true;

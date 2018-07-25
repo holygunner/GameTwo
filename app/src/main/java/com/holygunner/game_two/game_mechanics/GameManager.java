@@ -44,13 +44,13 @@ public class GameManager {
 
         if (isOpenSave){
             // open SQLite DB
-            mGamePlay = new GamePlay(mDesk, mContext);
+            mGamePlay = new GamePlay(mDesk, mSaver, mContext);
             mDesk = mGamePlay.loadDesk(mSaver.loadFigures());
             Log.i(TAG, "GAME LOAD");
         }   else {
             // create new game
             mSaver.reset(mContext);
-            mGamePlay = new GamePlay(mDesk, mContext);
+            mGamePlay = new GamePlay(mDesk, mSaver, mContext);
             mDesk = mGamePlay.createNewDesk();
             Log.i(TAG, "NEW GAME");
         }

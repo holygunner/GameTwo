@@ -23,6 +23,7 @@ public class Saver {
 
     public static final String IS_GAME_STARTED_KEY = "is_game_started_key";
     public static final String GAMER_COUNT_KEY = "gamer_count_key";
+    public static final String MAX_SCORE_KEY = "max_score_key";
     public static final String IS_TURN_BUTTON_CLICKABLE_KEY = "is_turn_button_clickable_key";
 
     public Saver (Context context){
@@ -115,6 +116,24 @@ public class Saver {
                 .edit()
                 .putInt(GAMER_COUNT_KEY, gamerCount)
                 .apply();
+
+        writeMaxScore(context, gamerCount);
+    }
+
+    private void writeMaxScore(Context context, int gamerCount){
+        int maxScore = readMaxScore(context);
+
+        if (maxScore<gamerCount){
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .edit()
+                    .putInt(MAX_SCORE_KEY, gamerCount)
+                    .apply();
+        }
+
+    }
+
+    public static int readMaxScore(Context context){
+        return PreferenceManager.getDefaultSharedPreferences(context).getInt(MAX_SCORE_KEY, 0);
     }
 
     private void resetGamerCount(Context context){

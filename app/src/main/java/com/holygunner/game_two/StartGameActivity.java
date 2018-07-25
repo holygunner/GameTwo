@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.holygunner.game_two.database.*;
 
@@ -12,6 +13,8 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
     private Button resumeButton;
     private Button newGameButton;
     private Button exitButton;
+
+    private TextView maxScoreTextView;
 
     public static final String IS_OPEN_SAVE_KEY = "is open save";
 
@@ -27,7 +30,19 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
         exitButton = (Button) findViewById(R.id.exit_button);
         exitButton.setOnClickListener(this);
 
+        maxScoreTextView = (TextView) findViewById(R.id.maxScoreTextView);
+        updateMaxScore();
+
         setResumeButtonVisibility();
+    }
+
+    private void updateMaxScore(){
+        int maxScore = Saver.readMaxScore(this);
+
+        if (maxScore>0){
+            maxScoreTextView.setText("Your max score: " + maxScore);
+            maxScoreTextView.setVisibility(View.VISIBLE);
+        }
     }
 
     private void setResumeButtonVisibility(){
@@ -43,6 +58,7 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onResume(){
         super.onResume();
+        updateMaxScore();
         setResumeButtonVisibility();
     }
 

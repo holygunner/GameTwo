@@ -4,4 +4,5 @@
     <string name="resume_game">Resume Game</string>
     <string name="exit">Exit</string>
     <string name="turn">TURN</string>
+    <string name="your_max_score">your max score:</string>
 </resources>
