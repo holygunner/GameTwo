@@ -74,8 +74,7 @@ public class GamePlay {
     public Desk createNewDesk() {
         mDesk = new Desk(deskWidth, deskHeight);
 
-//        addRandomFigure(3);
-        addRandomFigure(1);
+        addRandomFigure(3);
 
         return mDesk;
     }
@@ -94,6 +93,11 @@ public class GamePlay {
 
     public boolean isGameStarted() {
         return isGameStarted;
+    }
+
+    public void setGameStarted(){
+        isGameStarted = true;
+        Saver.writeIsSaveExists(mContext, isGameStarted);
     }
 
     public int tryToStep(int position){
@@ -121,9 +125,10 @@ public class GamePlay {
             }
 
             if (stepResult != -1) {
-                if (isGameStarted == false){ //если первый шаг не сделан, при выходе игра не сохр
-                    isGameStarted = true;
-                    Saver.writeIsSaveExists(mContext, isGameStarted);
+                if (isGameStarted() == false){ //если первый шаг не сделан, при выходе игра не сохр
+//                    isGameStarted = true;
+//                    Saver.writeIsSaveExists(mContext, isGameStarted);
+                    setGameStarted();
                 }
             }
             isFilled = false;
@@ -235,6 +240,10 @@ public class GamePlay {
             if (figure == null || !isFilled) {
                 return false;
             } else {
+                if (isGameStarted() == false){
+                    setGameStarted();
+                }
+
                 Position turnedPosition = Position.getTurnedPosition(figure.position);
                 figure.position = turnedPosition;
 

@@ -217,10 +217,6 @@ public class GameDeskFragment extends Fragment {
                 public boolean onTouch(View v, MotionEvent event) {
                     final GamePlay gamePlay = mGameManager.getGamePlay();
 
-//                    if (!gamePlay.isGameContinue()){
-//                        gameOver();
-//                        return false;
-//                    }
                     gamePlay.setRecyclerGridDesk(mRecyclerGridDesk);
 
                     switch (event.getAction()){
@@ -269,7 +265,7 @@ public class GameDeskFragment extends Fragment {
                                 }
                             });
                         }   else {
-                            setIsTurnButtonClickable(false);
+//                            setIsTurnButtonClickable(false);
                         }
                     }
 
