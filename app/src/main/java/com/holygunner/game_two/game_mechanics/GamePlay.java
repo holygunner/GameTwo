@@ -74,16 +74,8 @@ public class GamePlay {
     public Desk createNewDesk() {
         mDesk = new Desk(deskWidth, deskHeight);
 
-//        Figure figure1 = getRandomFigure(mDesk.getFreeCells());
-//        mDesk.addFigure(figure1);
-//
-//        Figure figure2 = getRandomFigure(mDesk.getFreeCells());
-//        mDesk.addFigure(figure2);
-//
-//        Figure figure3 = getRandomFigure(mDesk.getFreeCells());
-//        mDesk.addFigure(figure3);
-
-        addRandomFigure(3);
+//        addRandomFigure(3);
+        addRandomFigure(1);
 
         return mDesk;
     }

@@ -1,5 +1,6 @@
 package com.holygunner.game_two;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -76,9 +77,15 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
                 startActivity(intent);
                 break;
             case R.id.exit_button:
-                finish();
-                System.exit(0);
+                exit();
                 break;
         }
+    }
+
+    private void exit(){
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory( Intent.CATEGORY_HOME );
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 }
