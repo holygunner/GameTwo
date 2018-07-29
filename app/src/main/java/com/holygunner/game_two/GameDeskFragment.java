@@ -8,7 +8,6 @@ import com.holygunner.game_two.values.DeskValues;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -82,8 +81,8 @@ public class GameDeskFragment extends Fragment {
         super.onPause();
         mGameManager.save();
 
-        if (!mGameManager.getGamePlay().isGameContinue()){
-            backToStartActivity();
+        if (!mGameManager.getGamePlay().isGameContinue() || !mGameManager.getGamePlay().isGameStarted()){
+            finishActivity();
         }
     }
 
@@ -134,14 +133,13 @@ public class GameDeskFragment extends Fragment {
         gameOverLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    backToStartActivity();
+                    finishActivity();
                 }
         });
     }
 
-    private void backToStartActivity(){
-        final Intent intent = new Intent(getContext(), StartGameActivity.class);
-        startActivity(intent);
+    private void finishActivity(){
+        getActivity().finish();
     }
 
     private void animateGameOver(final TextView view){
