@@ -34,6 +34,8 @@ public class FigureFactory {
                                            Position position, Cell cell){
         if (figureClass == SemiSquare.class)
             return new SemiSquare(uuid, color, position, cell);
+        if (figureClass == SemiCircle.class)
+            return new SemiCircle(uuid, color, position, cell);
         else
             return new Figure(uuid);
     }

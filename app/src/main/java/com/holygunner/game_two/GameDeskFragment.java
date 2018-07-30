@@ -2,12 +2,16 @@ package com.holygunner.game_two;
 
 import com.holygunner.game_two.database.Saver;
 import com.holygunner.game_two.figures.Figure;
+import com.holygunner.game_two.figures.Position;
 import com.holygunner.game_two.game_mechanics.*;
 import com.holygunner.game_two.values.DeskValues;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -192,11 +196,48 @@ public class GameDeskFragment extends Fragment {
         if (figure != null){
             res = Figure.getFigureRes(figure);
             holder.mImageViewCell.setImageResource(res);
+//            res = Figure.getFigureResMeth2(figure);
+//            holder.mImageViewCell.setImageResource(res);
+//            routeImageView(holder, figure, res);
             return;
         }   else {
-            res = R.drawable.empty_cell_test;
+            res = R.drawable.empty_cell;
             holder.mImageViewCell.setImageResource(res);
         }
+    }
+
+
+    private void routeImageView(GridViewHolder holder, Figure figure, int res){
+        Position position = figure.position;
+        float rotation = 0f;
+
+        switch (position){
+            case POSITION_ONE:
+                break;
+            case POSITION_TWO:
+                rotation = 180f;
+                break;
+            case POSITION_THREE:
+                rotation = 90f;
+                break;
+            case POSITION_FOUR:
+                rotation = 270f;
+                break;
+        }
+//        holder.mImageViewCell.setRotation(rotation);
+
+
+        ImageView imageView = holder.mImageViewCell;
+
+        Bitmap myImg = BitmapFactory.decodeResource(getResources(), res);
+
+        Matrix matrix = new Matrix();
+        matrix.postRotate(rotation);
+
+        Bitmap rotated = Bitmap.createBitmap(myImg, 0, 0, myImg.getWidth(), myImg.getHeight(),
+                matrix, true);
+
+        imageView.setImageBitmap(rotated);
     }
 
     private class GridViewHolder extends RecyclerView.ViewHolder{
@@ -354,6 +395,11 @@ public class GameDeskFragment extends Fragment {
                 updateGameProcess();
             }
         }, 150);
+
+//        RotateAnimation rotate = new RotateAnimation(180, 360, Animation.RELATIVE_TO_SELF,
+//                0.5f,  Animation.RELATIVE_TO_SELF, 0.5f);
+//        rotate.setDuration(500);
+//        imageView.startAnimation(rotate);
     }
 
     private void showUnitedFigure(ImageView imageViewCell, GamePlay gamePlay){
@@ -363,7 +409,7 @@ public class GameDeskFragment extends Fragment {
         GridViewHolder holder = (GridViewHolder) mRecyclerGridDesk.findViewHolderForAdapterPosition(gamePlay.currentFigurePosition);
         ImageView imageViewCellPrev = (ImageView) holder.mImageViewCell.findViewById(R.id.demo_cell_image_view);
 
-        imageViewCellPrev.setImageResource(R.drawable.empty_cell_test);
+        imageViewCellPrev.setImageResource(R.drawable.empty_cell);
         imageViewCell.setImageResource(gamePlay.getLastUnitedFigureRes());
 
         handler.postDelayed(new Runnable() {

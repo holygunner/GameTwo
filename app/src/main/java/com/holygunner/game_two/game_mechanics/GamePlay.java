@@ -18,6 +18,7 @@ import java.util.UUID;
 
 import static com.holygunner.game_two.game_mechanics.GameManager.cellToPosition;
 import static com.holygunner.game_two.game_mechanics.GameManager.positionToCell;
+import com.holygunner.game_two.values.ColorValues.FigureColors;
 
 public class GamePlay {
     private Desk mDesk;
@@ -81,13 +82,16 @@ public class GamePlay {
 
     public Figure getRandomFigure(List<Cell> freeCells){
         UUID uuid = UUID.randomUUID();
+        Class<?> FigureType = mRandomer.getRandomFigureType();
         FigureFactory factory = FigureFactory.getInstance();
 //        Position position = mRandomer.getRandomPosition();
         Position position = mRandomer.getRandomPositionMethod2();
         Cell cell = mRandomer.getRandomCell(freeCells);
         int color = mRandomer.getRandomColor();
 
-        return factory.createFigure(uuid, SemiSquare.class, color,
+//        return factory.createFigure(uuid, SemiSquare.class, color,
+//                position, cell);
+        return factory.createFigure(uuid, FigureType, color,
                 position, cell);
     }
 
@@ -347,10 +351,8 @@ public class GamePlay {
         int color1 = figure1.color;
         int color2 = figure2.color;
 
-        // добавить проверку на цвет и тип фигуры
-
-
-        return Position.areHalfesOfWhole(position1, position2) && (color1 == color2); // добавить проверку одного ли типа фигуры
+        return Position.areHalfesOfWhole(position1, position2) && (color1 == color2)
+                && figure1.getClass() == figure2.getClass();
     }
 
     public boolean isStepAvailable(Figure figure, Cell toWhere){

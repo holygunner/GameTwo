@@ -1,9 +1,10 @@
 package com.holygunner.game_two.game_mechanics;
 
 import com.holygunner.game_two.figures.Position;
-import com.holygunner.game_two.values.FigureValues.FigureColors;
+import com.holygunner.game_two.figures.SemiCircle;
+import com.holygunner.game_two.figures.SemiSquare;
+import com.holygunner.game_two.values.ColorValues.FigureColors;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -65,5 +66,10 @@ public class Randomer {
     public int getRandomColor(){
         int[] colors = FigureColors.getColors();
         return colors[mRandom.nextInt(colors.length)];
+    }
+
+    public Class<?> getRandomFigureType() {
+        Class<?>[] classArray = new Class<?>[]{SemiSquare.class, SemiCircle.class};
+        return classArray[mRandom.nextInt(classArray.length)];
     }
 }

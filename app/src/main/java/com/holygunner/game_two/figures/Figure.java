@@ -37,6 +37,18 @@ public class Figure {
 
         if (figure instanceof SemiSquare)
             return SemiSquare.getRes(color, position);
+        if (figure instanceof SemiCircle)
+            return SemiCircle.getRes(color, position);
+        else
+            return 0;
+    }
+
+    public static int getFigureResMeth2(Figure figure){
+        int color = figure.color;
+        Position position = Position.POSITION_ONE;
+
+        if (figure instanceof SemiSquare)
+            return SemiSquare.getRes(color, position);
         else
             return 0;
     }
