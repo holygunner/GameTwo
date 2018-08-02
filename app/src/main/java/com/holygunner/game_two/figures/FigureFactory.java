@@ -50,11 +50,27 @@ public class FigureFactory {
             return new Figure(uuid);
     }
 
-    public static String getNameOfChildClass(Figure figure) {
+    public static final String SEMISQUARE = "SemiSquare";
+    public static final String SEMICIRCLE = "SemiCircle";
+
+    public static Class<?> getClassOfFigure(String figureType) {
+        if (figureType.equals(SEMISQUARE))
+            return SemiSquare.class;
+        if (figureType.equals(SEMICIRCLE))
+            return SemiCircle.class;
+//        if (figure instanceof Figure)
+//            return Figure.class;
+        else
+            return null;
+    }
+
+    public static String figureTypeToString(Figure figure) {
         if (figure instanceof SemiSquare)
-            return "SemiSquare";
-        if (figure instanceof Figure)
-            return "Figure";
+            return SEMISQUARE;
+        if (figure instanceof SemiCircle)
+            return SEMICIRCLE;
+//        if (figure instanceof Figure)
+//            return Figure.class;
         else
             return null;
     }

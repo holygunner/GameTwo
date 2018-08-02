@@ -45,7 +45,9 @@ public class FigureCursorWrapper extends CursorWrapper {
         int color = Integer.parseInt(colorString);
         int stepLimit = Integer.parseInt(stepLimitString);
 
-        Figure figure = FigureFactory.getInstance().createFigure(uuid, SemiSquare.class,
+        Class<?> figureType = FigureFactory.getClassOfFigure(figureTypeString);
+
+        Figure figure = FigureFactory.getInstance().createFigure(uuid, figureType,
                 color, position, mCell);
 
         figure.color = color;

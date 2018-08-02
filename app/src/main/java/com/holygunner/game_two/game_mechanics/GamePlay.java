@@ -2,14 +2,17 @@ package com.holygunner.game_two.game_mechanics;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.widget.ImageView;
 
+import com.holygunner.game_two.GameDeskFragment;
+import com.holygunner.game_two.R;
 import com.holygunner.game_two.database.Saver;
 import com.holygunner.game_two.figures.Figure;
 import com.holygunner.game_two.figures.FigureFactory;
 import com.holygunner.game_two.figures.Position;
-import com.holygunner.game_two.figures.SemiSquare;
+import com.holygunner.game_two.values.ColorValues;
 import com.holygunner.game_two.values.DeskValues;
 
 import java.util.ArrayList;
@@ -18,13 +21,10 @@ import java.util.UUID;
 
 import static com.holygunner.game_two.game_mechanics.GameManager.cellToPosition;
 import static com.holygunner.game_two.game_mechanics.GameManager.positionToCell;
-import com.holygunner.game_two.values.ColorValues.FigureColors;
 
 public class GamePlay {
     private Desk mDesk;
     private Context mContext;
-
-    private static final String TAG = "Log";
 
     private boolean isGameStarted;
 
@@ -34,7 +34,8 @@ public class GamePlay {
 
     private boolean isTurnAvailable;
 
-    private List<Cell> availableCells;
+    private AvailableSteps mAvailableSteps;
+
     public Integer currentFigurePosition;
 
     private boolean isFilled;
@@ -45,7 +46,7 @@ public class GamePlay {
     private Randomer mRandomer;
     private Saver mSaver;
 
-    private RecyclerView mRecyclerGridDesk;
+    private List<Figure> recentRandomFigures;
 
     public GamePlay(Desk desk, Saver saver, Context context){ // если игрока загружаем с файла
         mRandomer = new Randomer();
@@ -54,10 +55,19 @@ public class GamePlay {
         this.mDesk = desk;
         isGameStarted = Saver.isSaveExists(mContext);
         gamerCount = Saver.readGamerCount(context);
+        recentRandomFigures = new ArrayList<>();
     }
 
-    public void setRecyclerGridDesk(RecyclerView recyclerGridDesk){
-        mRecyclerGridDesk = recyclerGridDesk;
+    public void setIsFilled(boolean isFilled){
+        this.isFilled = isFilled;
+    }
+
+    public AvailableSteps getAvailableSteps(){
+        return mAvailableSteps;
+    }
+
+    public List<Figure> getRecentRandomFigures(){
+        return recentRandomFigures;
     }
 
     public Desk loadDesk(Figure[] figures){
@@ -76,6 +86,7 @@ public class GamePlay {
         mDesk = new Desk(deskWidth, deskHeight);
 
         addRandomFigure(3);
+//        addRandomFigure(8);
 
         return mDesk;
     }
@@ -89,8 +100,6 @@ public class GamePlay {
         Cell cell = mRandomer.getRandomCell(freeCells);
         int color = mRandomer.getRandomColor();
 
-//        return factory.createFigure(uuid, SemiSquare.class, color,
-//                position, cell);
         return factory.createFigure(uuid, FigureType, color,
                 position, cell);
     }
@@ -110,18 +119,20 @@ public class GamePlay {
         }
 
         // try to make step or attack
-        if (isPositionOnStep(position) && isFilled==true) {
+
+        if (mAvailableSteps == null){
+            return -1;
+        }
+
+        if (mAvailableSteps.isPositionOnStep(position) != -1 && isFilled==true) {
             Cell fromWhere = positionToCell(currentFigurePosition);
             Cell toWhere = positionToCell(position);
-
-            Log.i("FW", "currentFigurePosition: " + currentFigurePosition
-                    + " position: " + position);
 
             int stepResult = makeStep(fromWhere, toWhere);
 
             switch (stepResult){
                 case 1:
-                    addRandomFigure();
+                    addRandomFigure(1);
                     break;
                 case 0:
                     addRandomFigure(3);
@@ -130,8 +141,6 @@ public class GamePlay {
 
             if (stepResult != -1) {
                 if (isGameStarted() == false){ //если первый шаг не сделан, при выходе игра не сохр
-//                    isGameStarted = true;
-//                    Saver.writeIsSaveExists(mContext, isGameStarted);
                     setGameStarted();
                 }
             }
@@ -142,15 +151,24 @@ public class GamePlay {
             return -1;
     }
 
-    private void addRandomFigure(){
+    private Figure addRandomFigure(){
         if (!mDesk.getFreeCells().isEmpty()) {
-            mDesk.addFigure(getRandomFigure(mDesk.getFreeCells()));
+            Figure figure = getRandomFigure(mDesk.getFreeCells());
+            mDesk.addFigure(figure);
+            return figure;
         }
+        return null;
     }
 
     private void addRandomFigure(int howMuchFigures){
+        recentRandomFigures.clear();
+
         for (int i=0; i<howMuchFigures; i++){
-            addRandomFigure();
+            Figure figure = addRandomFigure();
+
+            if (figure != null){
+                recentRandomFigures.add(figure);
+            }
         }
     }
 
@@ -162,77 +180,18 @@ public class GamePlay {
             return true;
     }
 
-    public boolean fillCells(int position){
+    public boolean setAvailableCells(int position){
         if (!isGameContinue()){
             return false;
         }
 
-        if (isCellEmpty(positionToCell(position)) == true){
+        if (mDesk.isCellEmpty(positionToCell(position))){
             return false;
         }
-        boolean isFilled = fillOrClearCells(position);
-
-        return isFilled;
-    }
-
-    public boolean isPositionOnStep(int position){ // можно ли переставить фигуру на заданую позицию
-        if (availableCells == null){
-            return false;
-        }
-
-        Cell chosenCell = positionToCell(position);
-
-        for (Cell cell: availableCells){
-            if (chosenCell.equals(cell)){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void setCellsColor(boolean isFillColor){
-        setBackgroundColor(availableCells, getCellsColor(isFillColor));
-        isFilled = isFillColor;
-    }
-
-    public boolean fillOrClearCells(int position){
-        boolean isFillColor;
-
-//        if (availableCells != null && currentFigurePosition == position){ // снять выделение
-//            isFillColor = false;
-//            setCellsColor(isFillColor);
-//            availableCells = null;
-//            return isFillColor;
-//        }
-
         currentFigurePosition = position;
+        mAvailableSteps = new AvailableSteps(position);
 
-        if (availableCells != null) {
-            isFillColor = false;
-            setCellsColor(isFillColor);
-        }
-        availableCells = getAvailableCells(position);
-        isFillColor = true;
-        setCellsColor(isFillColor);
-
-        return isFillColor;
-    }
-
-    private int getCellsColor(boolean isFillColor){
-        int color;
-
-        if (isFillColor) {
-            color = Color.GREEN;
-            isFilled = true;
-        }   else {
-            color = Color.TRANSPARENT;
-            isFilled = false;
-        }
-        return color;
-    }
-
-    public boolean getIsFilled(){
-        return isFilled;
+        return true;
     }
 
     public boolean turnFigureIfExists(int position){
@@ -251,74 +210,22 @@ public class GamePlay {
                 Position turnedPosition = Position.getTurnedPosition(figure.position);
                 figure.position = turnedPosition;
 
-                addRandomFigure();
+                addRandomFigure(1);
 
-                fillOrClearCells(position);
+                mAvailableSteps = new AvailableSteps(currentFigurePosition);
+                isFilled = true;
+
                 return true;
             }
         }   else
         return false;
     }
 
-    private void setBackgroundColor(List<Cell> availableCells, int color){
-        for (int y = 0; y<mDesk.getDesk().length; y++ ){
-            for (int x = 0; x<mDesk.getDesk()[y].length; x++){
-                Cell cell = new Cell(x, y);
-                int position = cellToPosition(cell);
-
-                if (availableCells.contains(cell)){
-                    setBackgroundColor(position, color);
-                }   else {
-                    setBackgroundColor(position, Color.TRANSPARENT);
-                }
-            }
-        }
-        int currentFigureColor;
-
-        if (color == Color.GREEN){
-            currentFigureColor = Color.BLUE;
-        }   else {
-            currentFigureColor = Color.TRANSPARENT;
-        }
-
-        setBackgroundColor(this.currentFigurePosition, currentFigureColor);
-    }
-
-    private void setBackgroundColor(int position, int color){
-        mRecyclerGridDesk.getLayoutManager().findViewByPosition(position).setBackgroundColor(color);
-    }
-
-    public List<Cell> getAvailableCells(int position){
-        Cell cell = positionToCell(position);
-
-        availableCells = new ArrayList<>();
-
-        Figure figure = mDesk.getFigure(cell);
-
-        for (int y = 0; y<mDesk.getDesk().length; y++ ){
-            for (int x = 0; x<mDesk.getDesk()[y].length; x++){
-                if (isStepAvailable(figure, new Cell(x, y))){
-                    availableCells.add(new Cell(x, y));
-                }
-            }
-        }
-        return availableCells;
-    }
-
-    private boolean isCellEmpty(Cell cell){
-        if (mDesk.getFigure(cell) == null){
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
-
     public int makeStep(Cell fromWhere, Cell toWhere){
         Figure ourFigure = mDesk.getFigure(fromWhere);
 
-        if (isStepAvailable(ourFigure,toWhere)){
-            if (isCellEmpty(toWhere)){
+        if (isStepAvailable(ourFigure,toWhere) != -1){
+            if (mDesk.isCellEmpty(toWhere)){
                 mDesk.replaceFigure(ourFigure, toWhere);
                 return 0;
 
@@ -344,7 +251,7 @@ public class GamePlay {
         return gamerCount;
     }
 
-    public boolean areSemiFiguresAreWhole(Figure figure1, Figure figure2){ // являются ли обе половины части одной целой фигуры
+    public boolean areSemiFiguresAreWhole(Figure figure1, Figure figure2){ // являются ли обе половины одной фигурой
         Position position1 = figure1.position;
         Position position2 = figure2.position;
 
@@ -355,8 +262,8 @@ public class GamePlay {
                 && figure1.getClass() == figure2.getClass();
     }
 
-    public boolean isStepAvailable(Figure figure, Cell toWhere){
-        boolean isStepAvailable = false;
+    public int isStepAvailable(Figure figure, Cell toWhere){
+        int isStepAvailable = -1;
 
         int x0 = figure.mCell.getX();
         int y0 = figure.mCell.getY();
@@ -369,12 +276,12 @@ public class GamePlay {
         if (mDesk.getFigure(toWhere) != null){
             Figure figure2 = mDesk.getFigure(toWhere);
             if (isOnStepLimit && areSemiFiguresAreWhole(figure, figure2)) {
-                isStepAvailable = true;
+                isStepAvailable = 1;
             }
         }   else
-            if (isOnStepLimit) {
-                isStepAvailable = true;
-            }
+        if (isOnStepLimit) {
+            isStepAvailable = 0;
+        }
         return isStepAvailable;
     }
 
@@ -388,5 +295,73 @@ public class GamePlay {
 
     public void setTurnAvailable(boolean turnAvailable) {
         isTurnAvailable = turnAvailable;
+    }
+
+    public class AvailableSteps{
+        private List<Cell> availableToStepCells;
+        private List<Cell> availableToUniteCells;
+
+        public AvailableSteps(int position){
+            availableToUniteCells = new ArrayList<>();
+            availableToStepCells = new ArrayList<>();
+
+            init(position);
+        }
+
+        public List<Cell> getAvailableToStepCells(){
+            return availableToStepCells;
+        }
+
+        public List<Cell> getAvailableToUniteCells(){
+            return availableToUniteCells;
+        }
+
+        private void init(int position){
+            Cell cell = positionToCell(position);
+
+            Figure figure = mDesk.getFigure(cell);
+
+            for (int y = 0; y<mDesk.getArr().length; y++ ){
+                for (int x = 0; x<mDesk.getArr()[y].length; x++){
+                    int isStepAvailable = isStepAvailable(figure, new Cell(x, y));
+
+                    switch (isStepAvailable){
+                        case 1:
+                            availableToUniteCells.add(new Cell(x, y));
+                            break;
+                        case 0:
+                            availableToStepCells.add(new Cell(x, y));
+                            break;
+                        case -1:
+                            break;
+                    }
+                }
+            }
+        }
+
+        public int isPositionOnStep(int position){ // можно ли переставить фигуру на заданую позицию
+
+            Cell chosenCell = positionToCell(position);
+
+            for (Cell cell: availableToUniteCells){
+                if (chosenCell.equals(cell)){
+                    return 1;
+                }
+            }
+
+            for (Cell cell: availableToStepCells){
+                if (chosenCell.equals(cell)){
+                    return 0;
+                }
+            }
+            return -1;
+        }
+
+        public boolean isEmpty(){
+            if (availableToStepCells.isEmpty() && availableToUniteCells.isEmpty()){
+                return false;
+            }   else
+                return true;
+        }
     }
 }

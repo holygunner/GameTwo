@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
 
 import com.holygunner.game_two.figures.Figure;
+import com.holygunner.game_two.figures.FigureFactory;
 import com.holygunner.game_two.game_mechanics.*;
 import com.holygunner.game_two.database.FigureDbSchema.FigureTable;
 
@@ -18,8 +19,6 @@ public class Saver {
     private SQLiteDatabase mDatabase;
 
     private static final String TAG = "Log";
-
-    public static final String XML_SAVE_FILE_NAME = "game_process_save.xml";
 
     public static final String IS_GAME_STARTED_KEY = "is_game_started_key";
     public static final String GAMER_COUNT_KEY = "gamer_count_key";
@@ -34,7 +33,7 @@ public class Saver {
     private static ContentValues getContentValues (Figure figure){
         ContentValues values = new ContentValues();
         values.put(FigureTable.Cols.UUID, figure.getUUID().toString());
-        values.put(FigureTable.Cols.FIGURE_TYPE, Figure.getFigureRes(figure));
+        values.put(FigureTable.Cols.FIGURE_TYPE, FigureFactory.figureTypeToString(figure));
         values.put(FigureTable.Cols.POSITION, figure.getPosition().toString());
         values.put(FigureTable.Cols.COLOR, figure.getColor());
         values.put(FigureTable.Cols.CELL_X, figure.getCell().getX());
@@ -70,11 +69,10 @@ public class Saver {
     }
 
     public void saveToSQLiteDatabase(Desk desk){
-        if (desk.getDesk() != null){
-            Figure arr[][] = desk.getDesk();
+        if (desk.getArr() != null){
+            Figure arr[][] = desk.getArr();
 
             clearSQLiteDatabase();
-
 
             for (int x=0; x<arr.length; ++x){
                 for (int y=0; y<arr[x].length; ++y){

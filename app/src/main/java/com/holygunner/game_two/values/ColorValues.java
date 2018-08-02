@@ -8,8 +8,8 @@ import android.graphics.Color;
 
 public class ColorValues {
     public static final class FigureColors{
-        public static final int BORDO = 8323072; // 7F0000
-        public static final int PURPLE = 4456585; // 440089
+        public static final int BORDO = Color.argb(255, 127, 0, 0); // 7F0000
+        public static final int PURPLE = Color.argb(255, 68, 0, 127); // 440089
 
         public static int[] getColors(){
             return new int[]{BORDO, PURPLE};
@@ -17,7 +17,8 @@ public class ColorValues {
     }
 
     public static final class FillColors{
-        public static final int CURRENT_FIGURE_FILL = 4456585; // 440089
+//        public static final int CURRENT_FIGURE_FILL = Color.argb(255, 215, 218, 186);
+        public static final int CURRENT_FIGURE_FILL = Color.argb(155, 0, 247, 16);
     }
 
     public static final class FigureRes{

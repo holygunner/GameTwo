@@ -62,7 +62,7 @@ public class GameManager {
             return false;
         }
 
-        if (!getGamePlay().isGameContinue()){ // если игрок победил, сейв не осуществляется и последний сейв удаляется
+        if (!getGamePlay().isGameContinue()){ // если игрок проиграл, сейв не осуществляется и последний сейв удаляется
             mSaver.clearSQLiteDatabase();
             Saver.writeIsSaveExists(mContext, false);
             return false;

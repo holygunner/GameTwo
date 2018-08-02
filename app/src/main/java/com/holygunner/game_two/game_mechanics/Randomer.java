@@ -70,6 +70,7 @@ public class Randomer {
 
     public Class<?> getRandomFigureType() {
         Class<?>[] classArray = new Class<?>[]{SemiSquare.class, SemiCircle.class};
+//        Class<?>[] classArray = new Class<?>[]{SemiCircle.class};
         return classArray[mRandom.nextInt(classArray.length)];
     }
 }

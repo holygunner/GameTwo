@@ -1,24 +1,26 @@
 package com.holygunner.game_two.game_mechanics;
 
-import android.util.Log;
-
 import com.holygunner.game_two.figures.Figure;
-import com.holygunner.game_two.game_mechanics.*;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class DeskToCellsListConverter {
-    private Desk mDesk;
-//    private String deskVisualization = "";
+    private static DeskToCellsListConverter instance;
 
-    public DeskToCellsListConverter(Desk desk){
-        this.mDesk = desk;
+    private DeskToCellsListConverter(){
+    }
+
+    public static DeskToCellsListConverter getInstanse(){
+        if (instance == null){
+            instance = new DeskToCellsListConverter();
+        }
+        return instance;
     }
 
     // преобразовать 2х-мерный массив в List. Нужно для корректной работы с RecyclerView
-    public List<String> getCellList(){
-        Figure[][] figureTwoDArr = mDesk.getDesk();
+    public List<String> getCellList(Desk desk){
+        Figure[][] figureTwoDArr = desk.getArr();
 
         List<String> characterList = new LinkedList<>();
 
@@ -29,11 +31,6 @@ public class DeskToCellsListConverter {
                 characterList.add(p++, whichCharacter(figureTwoDArr[x][y]));
             }
         }
-
-        for (String ch: characterList){
-            Log.i("LOG", ch);
-        }
-
         return characterList;
     }
 

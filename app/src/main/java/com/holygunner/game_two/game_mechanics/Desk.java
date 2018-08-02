@@ -102,7 +102,7 @@ public class Desk {
         addFreeCell(x2, y2);
     }
 
-    public Figure[][] getDesk(){
+    public Figure[][] getArr(){
         return desk;
     }
 
@@ -115,5 +115,14 @@ public class Desk {
         int x = cell.getX();
         int y = cell.getY();
         return this.desk[y][x];
+    }
+
+    public boolean isCellEmpty(Cell cell){
+        if (getFigure(cell) == null){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 }

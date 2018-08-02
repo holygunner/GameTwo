@@ -1,8 +1,11 @@
 package com.holygunner.game_two.figures;
 
+import android.graphics.Color;
+
 import com.holygunner.game_two.R;
 import com.holygunner.game_two.game_mechanics.Cell;
 import com.holygunner.game_two.values.ColorValues;
+import com.holygunner.game_two.values.ColorValues.FigureColors;
 
 import java.util.UUID;
 
@@ -37,15 +40,27 @@ public class SemiCircle extends Figure { // половина круга
         setFullPositionRes();
     }
 
+//    @Override
+//    public void setFullPositionRes(){
+//        switch (super.color) {
+//            case ColorValues.FigureColors.BORDO:
+//                super.fullPositionRes = resBordoPosFull;
+//                break;
+//            case ColorValues.FigureColors.PURPLE:
+//                super.fullPositionRes = resPurplePosFull;
+//                break;
+//        }
+//    }
+
     @Override
     public void setFullPositionRes(){
-        switch (super.color) {
-            case ColorValues.FigureColors.BORDO:
-                super.fullPositionRes = resBordoPosFull;
-                break;
-            case ColorValues.FigureColors.PURPLE:
-                super.fullPositionRes = resPurplePosFull;
-                break;
+        int color = super.color;
+
+        if (color == FigureColors.BORDO){
+            super.fullPositionRes = resBordoPosFull;
+        }   else
+        if (color == FigureColors.PURPLE){
+            super.fullPositionRes = resPurplePosFull;
         }
     }
 

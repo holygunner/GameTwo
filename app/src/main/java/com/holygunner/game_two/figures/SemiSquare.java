@@ -31,16 +31,28 @@ public class SemiSquare extends Figure { // половина квадрата
         setFullPositionRes();
     }
 
+//    @Override
+//    public void setFullPositionRes(){
+//            switch (super.color) {
+//                case FigureColors.BORDO:
+//                    super.fullPositionRes = resBordoPosFull;
+//                    break;
+//                case FigureColors.PURPLE:
+//                    super.fullPositionRes = resPurplePosFull;
+//                    break;
+//            }
+//    }
+
     @Override
     public void setFullPositionRes(){
-            switch (super.color) {
-                case FigureColors.BORDO:
-                    super.fullPositionRes = resBordoPosFull;
-                    break;
-                case FigureColors.PURPLE:
-                    super.fullPositionRes = resPurplePosFull;
-                    break;
-            }
+        int color = super.color;
+
+        if (color == FigureColors.BORDO){
+            super.fullPositionRes = resBordoPosFull;
+        }   else
+        if (color == FigureColors.PURPLE){
+            super.fullPositionRes = resPurplePosFull;
+        }
     }
 
     public static int getRes(int color, Position position) {
