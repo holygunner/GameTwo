@@ -21,9 +21,7 @@ public class DeskToCellsListConverter {
     // преобразовать 2х-мерный массив в List. Нужно для корректной работы с RecyclerView
     public List<String> getCellList(Desk desk){
         Figure[][] figureTwoDArr = desk.getArr();
-
         List<String> characterList = new LinkedList<>();
-
         int p = 0;
 
         for (int x = 0; x< figureTwoDArr.length; ++x){
@@ -35,7 +33,6 @@ public class DeskToCellsListConverter {
     }
 
     private String whichCharacter(Figure figure){
-
         if (figure == null)
             return "";
         else return figure.toString();

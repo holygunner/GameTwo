@@ -4,10 +4,6 @@ import com.holygunner.game_two.game_mechanics.Cell;
 
 import java.util.UUID;
 
-/**
- * Created by Holygunner on 01.07.2018.
- */
-
 public class Figure {
     private UUID mUUID;
     public Position position;
@@ -43,7 +39,7 @@ public class Figure {
             return 0;
     }
 
-    public static int getFigureResMeth2(Figure figure){
+    public static int getFigureResMeth2(Figure figure){ // поворот программно
         int color = figure.color;
         Position position = Position.POSITION_ONE;
 
@@ -53,40 +49,8 @@ public class Figure {
             return 0;
     }
 
-    public boolean equals(Object obj){
-
-        if (obj == this)
-            return true;
-        if (!(obj instanceof Figure))
-            return false;
-
-        Figure figure = (Figure) obj;
-
-//        return  (figure.name.equals(this.name) && figure.attack == this.attack
-//                && figure.stamina == this.stamina && figure.magicAbility == this.magicAbility);
-        return false;
-    }
-
     public int getFullPositionRes(){
         return fullPositionRes;
-    }
-
-    public String getFigureType(Figure figure){
-        if (figure instanceof SemiSquare){
-            return "SemiSquare";
-        }
-
-        if (figure instanceof SemiCircle){
-            return "SemiCircle";
-        }
-
-        return null;
-    }
-
-    public int hashCode(){
-//        int hashCode = name.hashCode() + attack + stamina;
-        int hashCode = 0;
-        return hashCode;
     }
 
     public void setStepLimit(int stepLimit){

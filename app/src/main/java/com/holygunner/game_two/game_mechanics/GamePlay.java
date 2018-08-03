@@ -1,17 +1,12 @@
 package com.holygunner.game_two.game_mechanics;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.os.Handler;
-import android.support.v7.widget.RecyclerView;
-import android.widget.ImageView;
 
-import com.holygunner.game_two.GameDeskFragment;
-import com.holygunner.game_two.R;
 import com.holygunner.game_two.database.Saver;
 import com.holygunner.game_two.figures.Figure;
 import com.holygunner.game_two.figures.FigureFactory;
 import com.holygunner.game_two.figures.Position;
+import com.holygunner.game_two.figures.SemiCircle;
 import com.holygunner.game_two.values.ColorValues;
 import com.holygunner.game_two.values.DeskValues;
 
@@ -36,7 +31,7 @@ public class GamePlay {
 
     private AvailableSteps mAvailableSteps;
 
-    public Integer currentFigurePosition;
+    public Integer recentPosition;
 
     private boolean isFilled;
 
@@ -70,15 +65,17 @@ public class GamePlay {
         return recentRandomFigures;
     }
 
+    public void resetRecentRandomFigures(){
+        recentRandomFigures.clear();
+    }
+
     public Desk loadDesk(Figure[] figures){
         mDesk = new Desk(deskWidth, deskHeight);
 
         for (int i = 0; i< figures.length; ++i){
             Figure figure = figures[i];
-
             mDesk.addFigure(figure);
         }
-
         return mDesk;
     }
 
@@ -86,7 +83,6 @@ public class GamePlay {
         mDesk = new Desk(deskWidth, deskHeight);
 
         addRandomFigure(3);
-//        addRandomFigure(8);
 
         return mDesk;
     }
@@ -94,11 +90,20 @@ public class GamePlay {
     public Figure getRandomFigure(List<Cell> freeCells){
         UUID uuid = UUID.randomUUID();
         Class<?> FigureType = mRandomer.getRandomFigureType();
+//        Class<?> FigureType = SemiCircle.class;
         FigureFactory factory = FigureFactory.getInstance();
 //        Position position = mRandomer.getRandomPosition();
         Position position = mRandomer.getRandomPositionMethod2();
         Cell cell = mRandomer.getRandomCell(freeCells);
-        int color = mRandomer.getRandomColor();
+//        int color = mRandomer.getRandomColor();
+
+        int color;
+
+        if (FigureType == SemiCircle.class){
+            color = ColorValues.FigureColors.PURPLE;
+        }   else {
+            color = ColorValues.FigureColors.BORDO;
+        }
 
         return factory.createFigure(uuid, FigureType, color,
                 position, cell);
@@ -114,18 +119,12 @@ public class GamePlay {
     }
 
     public int tryToStep(int position){
-        if (!isGameContinue()){
-            return -1;
-        }
-
-        // try to make step or attack
-
-        if (mAvailableSteps == null){
+        if (!isGameContinue() || mAvailableSteps == null){
             return -1;
         }
 
         if (mAvailableSteps.isPositionOnStep(position) != -1 && isFilled==true) {
-            Cell fromWhere = positionToCell(currentFigurePosition);
+            Cell fromWhere = positionToCell(recentPosition);
             Cell toWhere = positionToCell(position);
 
             int stepResult = makeStep(fromWhere, toWhere);
@@ -151,7 +150,7 @@ public class GamePlay {
             return -1;
     }
 
-    private Figure addRandomFigure(){
+    private Figure getRandomFigure(){
         if (!mDesk.getFreeCells().isEmpty()) {
             Figure figure = getRandomFigure(mDesk.getFreeCells());
             mDesk.addFigure(figure);
@@ -164,7 +163,7 @@ public class GamePlay {
         recentRandomFigures.clear();
 
         for (int i=0; i<howMuchFigures; i++){
-            Figure figure = addRandomFigure();
+            Figure figure = getRandomFigure();
 
             if (figure != null){
                 recentRandomFigures.add(figure);
@@ -188,7 +187,7 @@ public class GamePlay {
         if (mDesk.isCellEmpty(positionToCell(position))){
             return false;
         }
-        currentFigurePosition = position;
+        recentPosition = position;
         mAvailableSteps = new AvailableSteps(position);
 
         return true;
@@ -197,7 +196,6 @@ public class GamePlay {
     public boolean turnFigureIfExists(int position){
         if (isGameContinue()) {
             Cell cell = positionToCell(position);
-
             Figure figure = mDesk.getFigure(cell);
 
             if (figure == null || !isFilled) {
@@ -210,9 +208,9 @@ public class GamePlay {
                 Position turnedPosition = Position.getTurnedPosition(figure.position);
                 figure.position = turnedPosition;
 
-                addRandomFigure(1);
+//                addRandomFigure(1); // +1 рандомная фигура при повороте (также раскомментить код в анимации поворота в фрагменте)
 
-                mAvailableSteps = new AvailableSteps(currentFigurePosition);
+                mAvailableSteps = new AvailableSteps(recentPosition);
                 isFilled = true;
 
                 return true;
@@ -340,7 +338,6 @@ public class GamePlay {
         }
 
         public int isPositionOnStep(int position){ // можно ли переставить фигуру на заданую позицию
-
             Cell chosenCell = positionToCell(position);
 
             for (Cell cell: availableToUniteCells){

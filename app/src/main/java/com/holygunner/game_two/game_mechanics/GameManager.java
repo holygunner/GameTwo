@@ -68,9 +68,7 @@ public class GameManager {
             return false;
         }
 
-//        boolean isSaveSuccessful = mSaver.saveToFile(mDesk, mGamePlay);
         mSaver.saveToSQLiteDatabase(mDesk);
-
         mSaver.writeGamerCount(mContext, mGamePlay.getGamerCount());
         mSaver.writeIsTurnButtonClickable(mContext, mGamePlay.isTurnAvailable());
 

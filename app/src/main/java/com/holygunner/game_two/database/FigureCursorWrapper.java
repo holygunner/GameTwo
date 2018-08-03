@@ -36,7 +36,6 @@ public class FigureCursorWrapper extends CursorWrapper {
         String cellYString = getString(getColumnIndex(FigureTable.Cols.CELL_Y));
         String stepLimitString = getString(getColumnIndex(FigureTable.Cols.STEP_LIMIT));
 
-
         int x = Integer.parseInt(cellXString);
         int y = Integer.parseInt(cellYString);
         UUID uuid = UUID.fromString(uuidString);

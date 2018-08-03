@@ -10,10 +10,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Created by Holygunner on 01.07.2018.
- */
-
 public class Randomer {
 
     private final Position[] POSITIONS = new Position[]{Position.POSITION_ONE, Position.POSITION_TWO,
@@ -70,7 +66,6 @@ public class Randomer {
 
     public Class<?> getRandomFigureType() {
         Class<?>[] classArray = new Class<?>[]{SemiSquare.class, SemiCircle.class};
-//        Class<?>[] classArray = new Class<?>[]{SemiCircle.class};
         return classArray[mRandom.nextInt(classArray.length)];
     }
 }
