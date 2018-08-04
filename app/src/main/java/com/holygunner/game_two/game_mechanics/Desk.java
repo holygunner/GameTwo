@@ -3,21 +3,24 @@ package com.holygunner.game_two.game_mechanics;
 import android.util.Log;
 
 import com.holygunner.game_two.figures.Figure;
+import com.holygunner.game_two.values.DeskValues;
 
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 public class Desk {
     private static final String TAG = "Log";
     private Figure[][] desk;
+    private int deskWidth = DeskValues.DESK_WIDTH;
+    private int deskHeight = DeskValues.DESK_HEIGHT;
+    private int deskSize;
 
     private List<Cell> freeCells;
 
-    public Desk(int width, int height){
-        desk = new Figure[height][width];
+    public Desk(){
+        desk = new Figure[deskHeight][deskWidth];
+        deskSize = deskHeight*deskWidth;
         initFreeCells();
     }
 
@@ -124,5 +127,12 @@ public class Desk {
         else{
             return false;
         }
+    }
+
+    public boolean isDeskEmpty(){
+        if (freeCells.size() == deskSize){
+            return true;
+        }   else
+            return false;
     }
 }

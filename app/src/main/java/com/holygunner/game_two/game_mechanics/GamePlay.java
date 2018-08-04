@@ -35,9 +35,6 @@ public class GamePlay {
 
     private boolean isFilled;
 
-    private int deskWidth = DeskValues.DESK_WIDTH;
-    private int deskHeight = DeskValues.DESK_HEIGHT;
-
     private Randomer mRandomer;
     private Saver mSaver;
 
@@ -70,7 +67,7 @@ public class GamePlay {
     }
 
     public Desk loadDesk(Figure[] figures){
-        mDesk = new Desk(deskWidth, deskHeight);
+        mDesk = new Desk();
 
         for (int i = 0; i< figures.length; ++i){
             Figure figure = figures[i];
@@ -80,9 +77,10 @@ public class GamePlay {
     }
 
     public Desk createNewDesk() {
-        mDesk = new Desk(deskWidth, deskHeight);
+        mDesk = new Desk();
 
-        addRandomFigure(3);
+//        addRandomFigure(3);
+        addRandomFigure(2);
 
         return mDesk;
     }
@@ -130,11 +128,14 @@ public class GamePlay {
             int stepResult = makeStep(fromWhere, toWhere);
 
             switch (stepResult){
+                case 0:
+                    addRandomFigure(3);
+                    break;
                 case 1:
                     addRandomFigure(1);
                     break;
-                case 0:
-                    addRandomFigure(3);
+                case 2:
+                    bonus();
                     break;
             }
 
@@ -148,6 +149,13 @@ public class GamePlay {
             return stepResult;
         }   else
             return -1;
+    }
+
+    public static final int BONUS = 10;
+
+    private void bonus(){
+        gamerCount += BONUS;
+        addRandomFigure(3);
     }
 
     private Figure getRandomFigure(){
@@ -234,6 +242,10 @@ public class GamePlay {
                     unitedFigureRes = figure2.fullPositionRes;
                     increaseGamerCount();
                     mDesk.uniteSemiFigures(fromWhere, toWhere);
+
+                    if (mDesk.isDeskEmpty()){
+                        return 2;
+                    }
                     return 1;
                 }
             }

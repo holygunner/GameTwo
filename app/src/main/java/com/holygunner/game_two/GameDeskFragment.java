@@ -225,7 +225,6 @@ public class GameDeskFragment extends Fragment {
                         case MotionEvent.ACTION_CANCEL:
                             break;
                     }
-
                     return true;
                 }
 
@@ -236,12 +235,11 @@ public class GameDeskFragment extends Fragment {
                         setIsTurnButtonClickable(true);
                         setIsTurnButtonVisible(false);
 
-                        if (stepResult == 1){
+                        if (stepResult == 1 || stepResult == 2){
                             showUnitedFigure(mImageViewCell, gamePlay);
 
                         }   else {
-//                            updateRecyclerGridDesk();
-                            showAddedFigureWithDelay(position);
+                            replaceCell(position);
                         }
                     }   else {
                         boolean isFilled = gamePlay.setAvailableCells(position);
@@ -264,8 +262,6 @@ public class GameDeskFragment extends Fragment {
                                     }
                                 }
                             });
-                        }   else {
-//                            setIsTurnButtonClickable(false);
                         }
                     }
 
@@ -280,16 +276,15 @@ public class GameDeskFragment extends Fragment {
 
     private Handler mHandler;
     int indx;
-    List<Figure> recentRandomFigures;
 
-    private void showAddedFigureWithDelay(int currentPosition){
+    private void replaceCell(int currentPosition){
         if (mRecyclerGridDesk == null){
             return;
         }
 
-        recentRandomFigures = mGameManager.getGamePlay().getRecentRandomFigures();
+        List<Figure> recentRandFigures = mGameManager.getGamePlay().getRecentRandomFigures();
 
-        if (recentRandomFigures.isEmpty()){
+        if (recentRandFigures.isEmpty()){
             return;
         }
 
@@ -301,7 +296,12 @@ public class GameDeskFragment extends Fragment {
 
         setImageViewRes(currentPosition, Figure.getFigureRes(mGameManager.getDesk().getFigure(currentPosition)));
 
-        indx = recentRandomFigures.size()-1;
+        showRecentRandomFiguresWithDelay();
+    }
+
+    public void showRecentRandomFiguresWithDelay(){
+        final List<Figure> recentRandFigures = mGameManager.getGamePlay().getRecentRandomFigures();
+        indx = recentRandFigures.size()-1;
 
         final long delay = 100;
 
@@ -310,7 +310,7 @@ public class GameDeskFragment extends Fragment {
                 super.handleMessage(msg);
 
                 if(indx > -1) {
-                    Figure figure = recentRandomFigures.get(indx);
+                    Figure figure = recentRandFigures.get(indx);
                     int position = cellToPosition(figure.mCell);
                     mAdapter.notifyItemChanged(position);
                 }
@@ -326,7 +326,7 @@ public class GameDeskFragment extends Fragment {
             public void run() {
                 updateRecyclerGridDesk();
             }
-        }, delay*(recentRandomFigures.size()-1));
+        }, delay*(indx));
     }
 
 
@@ -446,7 +446,8 @@ public class GameDeskFragment extends Fragment {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                updateRecyclerGridDesk();
+//                updateRecyclerGridDesk();
+                showRecentRandomFiguresWithDelay();
             }
         }, delay);
     }
