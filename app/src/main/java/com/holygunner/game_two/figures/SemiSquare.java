@@ -10,7 +10,7 @@ import java.util.UUID;
  * Created by Holygunner on 01.07.2018.
  */
 
-public class SemiSquare extends Figure { // половина квадрата
+public class SemiSquare extends Figure {
     private static int resBordoPos1 = R.drawable.semi_square_bordo_p1;
     private static int resBordoPos2 = R.drawable.semi_square_bordo_p2;
     private static int resBordoPos3 = R.drawable.semi_square_bordo_p3;
@@ -30,18 +30,6 @@ public class SemiSquare extends Figure { // половина квадрата
         super.mCell = cell;
         setFullPositionRes();
     }
-
-//    @Override
-//    public void setFullPositionRes(){
-//            switch (super.color) {
-//                case FigureColors.BORDO:
-//                    super.fullPositionRes = resBordoPosFull;
-//                    break;
-//                case FigureColors.PURPLE:
-//                    super.fullPositionRes = resPurplePosFull;
-//                    break;
-//            }
-//    }
 
     @Override
     public void setFullPositionRes(){

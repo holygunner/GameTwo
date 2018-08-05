@@ -6,32 +6,28 @@ import com.holygunner.game_two.game_mechanics.Cell;
 import java.util.UUID;
 
 public class FigureFactory {
+
+//Класс Figure, сейчас внутри он знает о наследниках. Напр в public static int getFigureRes(Figure figure)
+// По идее getRes может быть виртуальной и не статической, тогда базовый класс не будет знать о наследниках.
+// Если никак уж нельзя иначе то стоит эту логику вынести в отдельный класс.
+// Короче базовый класс не должен знать о наследниках.
+
+    public static final String SEMISQUARE = "SemiSquare";
+    public static final String SEMICIRCLE = "SemiCircle";
+
     private static FigureFactory ourInstance = new FigureFactory();
+
+    private FigureFactory() {
+    }
 
     public static FigureFactory getInstance() {
         return ourInstance;
-    }
-
-    private FigureFactory() {
     }
 
     public Figure createFigure(UUID uuid, Class figureType, int color, Position position, Cell cell){
         Figure figure = getInstanceOfChildClass(uuid, figureType, color, position, cell);
         return figure;
     }
-
-    private Figure getInstanceOfChildClass(UUID uuid, Class figureClass, int color,
-                                           Position position, Cell cell){
-        if (figureClass == SemiSquare.class)
-            return new SemiSquare(uuid, color, position, cell);
-        if (figureClass == SemiCircle.class)
-            return new SemiCircle(uuid, color, position, cell);
-        else
-            return new Figure(uuid);
-    }
-
-    public static final String SEMISQUARE = "SemiSquare";
-    public static final String SEMICIRCLE = "SemiCircle";
 
     public static Class<?> getClassOfFigure(String figureType) {
         if (figureType.equals(SEMISQUARE))
@@ -49,5 +45,15 @@ public class FigureFactory {
             return SEMICIRCLE;
         else
             return null;
+    }
+
+    private Figure getInstanceOfChildClass(UUID uuid, Class figureClass, int color,
+                                           Position position, Cell cell){
+        if (figureClass == SemiSquare.class)
+            return new SemiSquare(uuid, color, position, cell);
+        if (figureClass == SemiCircle.class)
+            return new SemiCircle(uuid, color, position, cell);
+        else
+            return new Figure(uuid);
     }
 }

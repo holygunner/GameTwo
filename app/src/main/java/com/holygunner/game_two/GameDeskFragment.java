@@ -8,6 +8,7 @@ import com.holygunner.game_two.values.DeskValues;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -43,7 +44,8 @@ public class GameDeskFragment extends Fragment {
     private RelativeLayout gameOverLayout;
     private TextView gameOverTextView;
 
-    boolean userActionAvailable;
+    private boolean userActionAvailable;
+    private boolean isTurnButtonClickable;
 
     public GameDeskFragment(){
     }
@@ -149,11 +151,10 @@ public class GameDeskFragment extends Fragment {
     }
 
     private class RecyclerGridAdapter extends RecyclerView.Adapter<GridViewHolder> {
-
         private List<String> mData;
-
         private LayoutInflater mLayoutInflater;
-        private int mPosition;
+
+
 
         public RecyclerGridAdapter(Context context, List<String> data){
             mLayoutInflater = LayoutInflater.from(context);
@@ -176,27 +177,30 @@ public class GameDeskFragment extends Fragment {
         public int getItemCount() {
             return mData.size();
         }
-    }
 
-    private void setImage(int position, GridViewHolder holder){
-        Cell cell = mGameManager.positionToCell(position);
+        private void setImage(int position, GridViewHolder holder){
+            Cell cell = mGameManager.positionToCell(position);
 
-        Figure figure = mGameManager.getDesk().getFigure(cell);
-        int res;
+            Figure figure = mGameManager.getDesk().getFigure(cell);
+            int res;
 
-        if (figure != null){
-            res = Figure.getFigureRes(figure);
-            holder.mImageViewCell.setImageResource(res);
-            return;
-        }   else {
-            res = R.drawable.empty_cell;
-            holder.mImageViewCell.setImageResource(res);
+            if (figure != null){
+                res = Figure.getFigureRes(figure);
+                holder.mImageViewCell.setImageResource(res);
+                return;
+            }   else {
+                res = R.drawable.empty_cell;
+                holder.mImageViewCell.setImageResource(res);
+            }
         }
     }
 
-    public class GridViewHolder extends RecyclerView.ViewHolder{
+    private class GridViewHolder extends RecyclerView.ViewHolder{
+
         public ImageView mImageViewCell;
         private int position;
+
+        private int indx;
 
         public GridViewHolder(View itemView) {
             super(itemView);
@@ -269,110 +273,178 @@ public class GameDeskFragment extends Fragment {
             });
         }
 
+        private void showUnitedFigure(ImageView imageViewCell, GamePlay gamePlay){
+            userActionAvailable = false;
+            final Handler handler = new Handler();
+            final long delay = 150;
+
+            setImageViewRes(gamePlay.recentPosition, R.drawable.empty_cell);
+            imageViewCell.setImageResource(gamePlay.getLastUnitedFigureRes());
+            fillCells(false, Color.TRANSPARENT);
+
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+//                updateRecyclerGridDesk();
+
+                    showRecentRandomFiguresWithDelay();
+                }
+            }, delay);
+        }
+
         public void setPosition(int position) {
             this.position = position;
         }
-    }
 
-    private Handler mHandler;
-    int indx;
+        private Handler handler;
 
-    private void replaceCell(int currentPosition){
-        if (mRecyclerGridDesk == null){
-            return;
-        }
+        private void turnFigure(ImageView imageView){
+            final long delay = 150;
 
-        List<Figure> recentRandFigures = mGameManager.getGamePlay().getRecentRandomFigures();
+            userActionAvailable = false;
 
-        if (recentRandFigures.isEmpty()){
-            return;
-        }
+            handler = new Handler();
 
-        userActionAvailable = false;
+            imageView.animate().rotation(90).setDuration(delay).start();
 
-        fillCells(false, Color.TRANSPARENT);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    setIsTurnButtonClickable(false);
+                    isTurnButtonClickable = false;
 
-        setImageViewRes(mGameManager.getGamePlay().recentPosition, R.drawable.empty_cell);
+                    updateFillCells();
+                    userActionAvailable = true;
 
-        setImageViewRes(currentPosition, Figure.getFigureRes(mGameManager.getDesk().getFigure(currentPosition)));
-
-        showRecentRandomFiguresWithDelay();
-    }
-
-    public void showRecentRandomFiguresWithDelay(){
-        final List<Figure> recentRandFigures = mGameManager.getGamePlay().getRecentRandomFigures();
-        indx = recentRandFigures.size()-1;
-
-        final long delay = 100;
-
-        mHandler = new Handler(){
-            public void handleMessage(Message msg){
-                super.handleMessage(msg);
-
-                if(indx > -1) {
-                    Figure figure = recentRandFigures.get(indx);
-                    int position = cellToPosition(figure.mCell);
-                    mAdapter.notifyItemChanged(position);
+                    if (!mGameManager.getGamePlay().isGameContinue()){
+//                        getActivity().getSupportFragmentManager().findFragmentById(R.id.);
+                        updateRecyclerGridDesk();
+                    }
                 }
-                --indx;
-                mHandler.sendEmptyMessageDelayed(0, delay);
+            }, delay);
+        }
+
+        private void replaceCell(int currentPosition){
+            if (mRecyclerGridDesk == null){
+                return;
             }
-        };
 
-        mHandler.sendEmptyMessage(0);
+            List<Figure> recentRandFigures = mGameManager.getGamePlay().getRecentRandomFigures();
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                updateRecyclerGridDesk();
+            if (recentRandFigures.isEmpty()){
+                return;
             }
-        }, delay*(indx));
-    }
 
+            userActionAvailable = false;
+            fillCells(false, Color.TRANSPARENT);
+            setImageViewRes(mGameManager.getGamePlay().recentPosition, R.drawable.empty_cell);
+            setImageViewRes(currentPosition, Figure.getFigureRes(mGameManager.getDesk().getFigure(currentPosition)));
+            showRecentRandomFiguresWithDelay();
+        }
 
-    private void fillCells(boolean isFill, int currentFigureColor){
-        int color = getCellsColor(isFill);
-        Desk desk = mGameManager.getDesk();
-        GamePlay.AvailableSteps availableSteps = mGameManager.getGamePlay().getAvailableSteps();
+        private void setImageViewRes(int position, int res){
+            GridViewHolder holder = (GridViewHolder) mRecyclerGridDesk.findViewHolderForAdapterPosition(position);
+            ImageView imageView = (ImageView) holder.mImageViewCell.findViewById(R.id.cell_image_view);
+            imageView.setImageResource(res);
+        }
 
-        for (int y = 0; y<desk.getArr().length; y++){
-            for (int x = 0; x<desk.getArr()[y].length; x++){
-                Cell cell = new Cell(x, y);
-                int position = cellToPosition(cell);
+        private void updateFillCells(){
+            Figure recentFigure =  mGameManager.getDesk().getFigure(mGameManager.getGamePlay().recentPosition);
 
-                if (availableSteps.getAvailableToStepCells().contains(cell)){
-                    setBackgroundColorOnPosition(position, color);
-                }   else
-                if (availableSteps.getAvailableToUniteCells().contains(cell)) {
-                    setBackgroundColorOnPosition(position, currentFigureColor);
-                }   else {
-                    setBackgroundColorOnPosition(position, Color.TRANSPARENT);
+//        if (!mGameManager.getGamePlay().getRecentRandomFigures().isEmpty()){ // расскоментить при добавлении 1 рандомной фигуры при повороте
+//            Figure addedRandomFigure = mGameManager.getGamePlay().getRecentRandomFigures().get(0);
+////                    mAdapter.notifyItemChanged(cellToPosition(addedRandomFigure.mCell)); // не срабатывает выделение, если фигура попадает в слияние
+//            setImageViewRes(cellToPosition(addedRandomFigure.mCell), Figure.getFigureRes(addedRandomFigure));
+//        }
+
+            int currentFigureColor = recentFigure.color;
+            fillCells(true, currentFigureColor);
+        }
+
+        private void fillCells(boolean isFill, int currentFigureColor){
+            int color = getCellsColor(isFill);
+            Desk desk = mGameManager.getDesk();
+            AvailableSteps availableSteps = mGameManager.getGamePlay().getAvailableSteps();
+
+            for (int y = 0; y<desk.deskToMultiArr().length; y++){
+                for (int x = 0; x<desk.deskToMultiArr()[y].length; x++){
+                    Cell cell = new Cell(x, y);
+                    int position = cellToPosition(cell);
+
+                    if (availableSteps.getAvailableToStepCells().contains(cell)){
+                        setBackgroundColorOnPosition(position, color);
+                    }   else
+                    if (availableSteps.getAvailableToUniteCells().contains(cell)) {
+                        setBackgroundColorOnPosition(position, currentFigureColor);
+                    }   else {
+                        setBackgroundColorOnPosition(position, Color.TRANSPARENT);
+                    }
                 }
             }
+
+            if (color == ColorValues.FillColors.CURRENT_FIGURE_FILL){
+            }   else {
+                currentFigureColor = Color.TRANSPARENT;
+            }
+
+            setBackgroundColorOnPosition(mGameManager.getGamePlay().recentPosition, currentFigureColor);
         }
 
-        if (color == ColorValues.FillColors.CURRENT_FIGURE_FILL){
-        }   else {
-            currentFigureColor = Color.TRANSPARENT;
+        public void setBackgroundColorOnPosition(int position, int color){
+            mRecyclerGridDesk.getLayoutManager().findViewByPosition(position).setBackgroundColor(color);
         }
 
-        setBackgroundColorOnPosition(mGameManager.getGamePlay().recentPosition, currentFigureColor);
+        private int getCellsColor(boolean isFillColor){
+            int color;
+
+            if (isFillColor) {
+                color = ColorValues.FillColors.CURRENT_FIGURE_FILL;
+                mGameManager.getGamePlay().setIsFilled(true);
+            }   else {
+                color = Color.TRANSPARENT;
+                mGameManager.getGamePlay().setIsFilled(false);
+            }
+            return color;
+        }
+
+        public void showRecentRandomFiguresWithDelay(){
+            final List<Figure> recentRandFigures = mGameManager.getGamePlay().getRecentRandomFigures();
+//            final int indx = recentRandFigures.size() - 1;
+
+//            indx = recentRandFigures.size() - 1;
+
+            final long delay = 100;
+
+            Handler mHandler = new Handler(){
+                int indx = recentRandFigures.size() - 1;
+//                indx = recentRandFigures.size() - 1;
+
+                public void handleMessage(Message msg){
+                    super.handleMessage(msg);
+
+                    if(indx > -1) {
+                        Figure figure = recentRandFigures.get(indx);
+                        int position = cellToPosition(figure.mCell);
+                        mAdapter.notifyItemChanged(position);
+                    }
+                        --indx;
+                        this.sendEmptyMessageDelayed(0, delay);
+
+                }
+            };
+
+            mHandler.sendEmptyMessage(0);
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    updateRecyclerGridDesk();
+                }
+            }, delay*(recentRandFigures.size()));
+        }
     }
 
-    private int getCellsColor(boolean isFillColor){
-        int color;
-
-        if (isFillColor) {
-            color = ColorValues.FillColors.CURRENT_FIGURE_FILL;
-            mGameManager.getGamePlay().setIsFilled(true);
-        }   else {
-            color = Color.TRANSPARENT;
-            mGameManager.getGamePlay().setIsFilled(false);
-        }
-        return color;
-    }
-
-    private boolean isTurnButtonClickable;
+    //----------------------------------------------------------------------------------------
 
     private void setIsTurnButtonClickable(boolean isClickable){
         mGameManager.getGamePlay().setTurnAvailable(isClickable);
@@ -386,73 +458,5 @@ public class GameDeskFragment extends Fragment {
         }   else {
             turnFigureButton.setVisibility(View.INVISIBLE);
         }
-    }
-
-    public void updateFillCells(){
-        Figure recentFigure =  mGameManager.getDesk().getFigure(mGameManager.getGamePlay().recentPosition);
-
-//        if (!mGameManager.getGamePlay().getRecentRandomFigures().isEmpty()){ // расскоментить при добавлении 1 рандомной фигуры при повороте
-//            Figure addedRandomFigure = mGameManager.getGamePlay().getRecentRandomFigures().get(0);
-////                    mAdapter.notifyItemChanged(cellToPosition(addedRandomFigure.mCell)); // не срабатывает выделение, если фигура попадает в слияние
-//            setImageViewRes(cellToPosition(addedRandomFigure.mCell), Figure.getFigureRes(addedRandomFigure));
-//        }
-
-        int currentFigureColor = recentFigure.color;
-        fillCells(true, currentFigureColor);
-    }
-
-    private Handler handler;
-
-    private void turnFigure(ImageView imageView){
-        final long delay = 150;
-
-        userActionAvailable = false;
-
-        setIsTurnButtonClickable(false);
-        isTurnButtonClickable = false;
-
-        handler = new Handler();
-        imageView.animate().rotation(90).setDuration(delay).start();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                updateFillCells();
-                userActionAvailable = true;
-
-                if (!mGameManager.getGamePlay().isGameContinue()){
-                    updateRecyclerGridDesk();
-                }
-            }
-        }, delay);
-    }
-
-    private void setImageViewRes(int position, int res){
-        GridViewHolder holder = (GridViewHolder) mRecyclerGridDesk.findViewHolderForAdapterPosition(position);
-        ImageView imageView = (ImageView) holder.mImageViewCell.findViewById(R.id.cell_image_view);
-        imageView.setImageResource(res);
-
-    }
-
-    private void showUnitedFigure(ImageView imageViewCell, GamePlay gamePlay){
-        userActionAvailable = false;
-        final Handler handler = new Handler();
-
-        final long delay = 150;
-
-        setImageViewRes(gamePlay.recentPosition, R.drawable.empty_cell);
-
-        imageViewCell.setImageResource(gamePlay.getLastUnitedFigureRes());
-
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-//                updateRecyclerGridDesk();
-                showRecentRandomFiguresWithDelay();
-            }
-        }, delay);
-    }
-
-    public void setBackgroundColorOnPosition(int position, int color){
-        mRecyclerGridDesk.getLayoutManager().findViewByPosition(position).setBackgroundColor(color);
     }
 }

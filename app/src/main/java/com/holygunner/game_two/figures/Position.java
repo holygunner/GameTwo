@@ -8,13 +8,13 @@ public enum Position {
     POSITION_ONE ("CornerUpLeft"),
     POSITION_TWO ("CornerDownRight"),
     POSITION_THREE ("CornerUpRight"),
-    POSITION_FOUR ("CornerDownLeft"), // смотри рисунок в тетрадке
+    POSITION_FOUR ("CornerDownLeft"),
     POSITION_FULL ("Full figure");
 
-    private final String name;
+    private final String mName;
 
-    private Position(String s){
-        name = s;
+    private Position(String name){
+        mName = name;
     }
 
     public static boolean areHalfesOfWhole(Position position1, Position position2){
@@ -66,6 +66,6 @@ public enum Position {
 
     @Override
     public String toString(){
-        return this.name;
+        return this.mName;
     }
 }

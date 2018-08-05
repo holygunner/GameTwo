@@ -13,7 +13,7 @@ import java.util.UUID;
  * Created by Holygunner on 01.07.2018.
  */
 
-public class SemiCircle extends Figure { // половина круга
+public class SemiCircle extends Figure {
     private static int resBordoPos1 = R.drawable.semi_circle_bordo_p1;
     private static int resBordoPos2 = R.drawable.semi_circle_bordo_p2;
     private static int resBordoPos3 = R.drawable.semi_circle_bordo_p3;
@@ -39,18 +39,6 @@ public class SemiCircle extends Figure { // половина круга
         super.mCell = cell;
         setFullPositionRes();
     }
-
-//    @Override
-//    public void setFullPositionRes(){
-//        switch (super.color) {
-//            case ColorValues.FigureColors.BORDO:
-//                super.fullPositionRes = resBordoPosFull;
-//                break;
-//            case ColorValues.FigureColors.PURPLE:
-//                super.fullPositionRes = resPurplePosFull;
-//                break;
-//        }
-//    }
 
     @Override
     public void setFullPositionRes(){
@@ -102,7 +90,6 @@ public class SemiCircle extends Figure { // половина круга
             }
             return res;
         }
-
         return res;
     }
 }

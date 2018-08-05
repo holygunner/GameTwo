@@ -20,7 +20,7 @@ public class DeskToCellsListConverter {
 
     // преобразовать 2х-мерный массив в List. Нужно для корректной работы с RecyclerView
     public List<String> getCellList(Desk desk){
-        Figure[][] figureTwoDArr = desk.getArr();
+        Figure[][] figureTwoDArr = desk.deskToMultiArr();
         List<String> characterList = new LinkedList<>();
         int p = 0;
 

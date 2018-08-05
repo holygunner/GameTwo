@@ -18,8 +18,6 @@ public class Saver {
     private Context mContext;
     private SQLiteDatabase mDatabase;
 
-    private static final String TAG = "Log";
-
     public static final String IS_GAME_STARTED_KEY = "is_game_started_key";
     public static final String GAMER_COUNT_KEY = "gamer_count_key";
     public static final String MAX_SCORE_KEY = "max_score_key";
@@ -28,19 +26,6 @@ public class Saver {
     public Saver (Context context){
         mContext = context.getApplicationContext();
         mDatabase = new FigureBaseHelper(mContext).getWritableDatabase();
-    }
-
-    private static ContentValues getContentValues (Figure figure){
-        ContentValues values = new ContentValues();
-        values.put(FigureTable.Cols.UUID, figure.getUUID().toString());
-        values.put(FigureTable.Cols.FIGURE_TYPE, FigureFactory.figureTypeToString(figure));
-        values.put(FigureTable.Cols.POSITION, figure.getPosition().toString());
-        values.put(FigureTable.Cols.COLOR, figure.getColor());
-        values.put(FigureTable.Cols.CELL_X, figure.getCell().getX());
-        values.put(FigureTable.Cols.CELL_Y, figure.getCell().getY());
-        values.put(FigureTable.Cols.STEP_LIMIT, figure.getStepLimit());
-
-        return values;
     }
 
     public void addFigure(Figure figure){
@@ -69,13 +54,13 @@ public class Saver {
     }
 
     public void saveToSQLiteDatabase(Desk desk){
-        if (desk.getArr() != null){
-            Figure arr[][] = desk.getArr();
+        if (desk.deskToMultiArr() != null){
+            Figure arr[][] = desk.deskToMultiArr();
 
             clearSQLiteDatabase();
 
-            for (int x=0; x<arr.length; ++x){
-                for (int y=0; y<arr[x].length; ++y){
+            for (int x=0; x < arr.length; ++x){
+                for (int y=0; y < arr[x].length; ++y){
                     if (arr[x][y] != null){
                         Figure figure = arr[x][y];
                         addFigure(figure);
@@ -89,13 +74,6 @@ public class Saver {
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
                 .putBoolean(IS_TURN_BUTTON_CLICKABLE_KEY, isClickable)
-                .apply();
-    }
-
-    private void resetIsTurnButtonClickable(Context context){
-        PreferenceManager.getDefaultSharedPreferences(context)
-                .edit()
-                .putBoolean(IS_TURN_BUTTON_CLICKABLE_KEY, true)
                 .apply();
     }
 
@@ -118,42 +96,12 @@ public class Saver {
         writeMaxScore(context, gamerCount);
     }
 
-    private void writeMaxScore(Context context, int gamerCount){
-        int maxScore = readMaxScore(context);
-
-        if (maxScore<gamerCount){
-            PreferenceManager.getDefaultSharedPreferences(context)
-                    .edit()
-                    .putInt(MAX_SCORE_KEY, gamerCount)
-                    .apply();
-        }
-
-    }
-
     public static int readMaxScore(Context context){
         return PreferenceManager.getDefaultSharedPreferences(context).getInt(MAX_SCORE_KEY, 0);
     }
 
-    private void resetGamerCount(Context context){
-        PreferenceManager.getDefaultSharedPreferences(context)
-                .edit()
-                .putInt(GAMER_COUNT_KEY, 0)
-                .apply();
-    }
-
     public static int readGamerCount(Context context){
         return PreferenceManager.getDefaultSharedPreferences(context).getInt(GAMER_COUNT_KEY, 0);
-    }
-
-    private FigureCursorWrapper queryFigures(String whereClause, String[] whereArgs){
-        Cursor cursor = mDatabase.query(FigureTable.NAME,
-                null,
-                whereClause,
-                whereArgs,
-                null,
-                null,
-                null);
-        return new FigureCursorWrapper(cursor);
     }
 
     public Figure[] loadFigures(){
@@ -176,5 +124,54 @@ public class Saver {
 
     public void clearSQLiteDatabase(){
         mDatabase.execSQL("delete from " + FigureTable.NAME);
+    }
+
+    private static ContentValues getContentValues (Figure figure){
+        ContentValues values = new ContentValues();
+        values.put(FigureTable.Cols.UUID, figure.getUUID().toString());
+        values.put(FigureTable.Cols.FIGURE_TYPE, FigureFactory.figureTypeToString(figure));
+        values.put(FigureTable.Cols.POSITION, figure.getPosition().toString());
+        values.put(FigureTable.Cols.COLOR, figure.getColor());
+        values.put(FigureTable.Cols.CELL_X, figure.getCell().getX());
+        values.put(FigureTable.Cols.CELL_Y, figure.getCell().getY());
+        values.put(FigureTable.Cols.STEP_LIMIT, figure.getStepLimit());
+
+        return values;
+    }
+
+    private FigureCursorWrapper queryFigures(String whereClause, String[] whereArgs){
+        Cursor cursor = mDatabase.query(FigureTable.NAME,
+                null,
+                whereClause,
+                whereArgs,
+                null,
+                null,
+                null);
+        return new FigureCursorWrapper(cursor);
+    }
+
+    private void resetGamerCount(Context context){
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putInt(GAMER_COUNT_KEY, 0)
+                .apply();
+    }
+
+    private void writeMaxScore(Context context, int gamerCount){
+        int maxScore = readMaxScore(context);
+
+        if (maxScore < gamerCount){
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .edit()
+                    .putInt(MAX_SCORE_KEY, gamerCount)
+                    .apply();
+        }
+    }
+
+    private void resetIsTurnButtonClickable(Context context){
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putBoolean(IS_TURN_BUTTON_CLICKABLE_KEY, true)
+                .apply();
     }
 }

@@ -33,16 +33,9 @@ public class FigureBaseHelper extends SQLiteOpenHelper {
                 + FigureTable.Cols.STEP_LIMIT
                 + ")"
                 );
-
-//        db.execSQL("create table " + FigureTable.NAME + "(" +
-//                " _id integer primary key autoincrement, " +
-//                FigureTable.Cols.UUID +
-//                ")");
-
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
     }
 }

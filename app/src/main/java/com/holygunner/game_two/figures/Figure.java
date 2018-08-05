@@ -5,12 +5,12 @@ import com.holygunner.game_two.game_mechanics.Cell;
 import java.util.UUID;
 
 public class Figure {
-    private UUID mUUID;
     public Position position;
     public int color;
     public int stepLimit = 1; // количество клеток за раз которые может преоделеть персонаж, по умолчанию 1
     public Cell mCell;
     public int fullPositionRes;
+    private UUID mUUID;
 
     public Figure(){
         mUUID = UUID.randomUUID();
@@ -37,24 +37,6 @@ public class Figure {
             return SemiCircle.getRes(color, position);
         else
             return 0;
-    }
-
-    public static int getFigureResMeth2(Figure figure){ // поворот программно
-        int color = figure.color;
-        Position position = Position.POSITION_ONE;
-
-        if (figure instanceof SemiSquare)
-            return SemiSquare.getRes(color, position);
-        else
-            return 0;
-    }
-
-    public int getFullPositionRes(){
-        return fullPositionRes;
-    }
-
-    public void setStepLimit(int stepLimit){
-        this.stepLimit = stepLimit;
     }
 
     public String toString(){

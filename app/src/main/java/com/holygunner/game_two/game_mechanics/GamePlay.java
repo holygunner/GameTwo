@@ -18,20 +18,19 @@ import static com.holygunner.game_two.game_mechanics.GameManager.cellToPosition;
 import static com.holygunner.game_two.game_mechanics.GameManager.positionToCell;
 
 public class GamePlay {
+    public Integer recentPosition;
+
     private Desk mDesk;
     private Context mContext;
 
     private boolean isGameStarted;
 
     private int unitedFigureRes;
-
-    private int gamerCount; // счет игрока
+    private int gamerCount;
 
     private boolean isTurnAvailable;
 
     private AvailableSteps mAvailableSteps;
-
-    public Integer recentPosition;
 
     private boolean isFilled;
 
@@ -39,6 +38,8 @@ public class GamePlay {
     private Saver mSaver;
 
     private List<Figure> recentRandomFigures;
+
+    private static final int BONUS = 10;
 
     public GamePlay(Desk desk, Saver saver, Context context){ // если игрока загружаем с файла
         mRandomer = new Randomer();
@@ -62,10 +63,6 @@ public class GamePlay {
         return recentRandomFigures;
     }
 
-    public void resetRecentRandomFigures(){
-        recentRandomFigures.clear();
-    }
-
     public Desk loadDesk(Figure[] figures){
         mDesk = new Desk();
 
@@ -78,7 +75,6 @@ public class GamePlay {
 
     public Desk createNewDesk() {
         mDesk = new Desk();
-
 //        addRandomFigure(3);
         addRandomFigure(2);
 
@@ -111,11 +107,6 @@ public class GamePlay {
         return isGameStarted;
     }
 
-    public void setGameStarted(){
-        isGameStarted = true;
-        Saver.writeIsSaveExists(mContext, isGameStarted);
-    }
-
     public int tryToStep(int position){
         if (!isGameContinue() || mAvailableSteps == null){
             return -1;
@@ -140,7 +131,7 @@ public class GamePlay {
             }
 
             if (stepResult != -1) {
-                if (isGameStarted() == false){ //если первый шаг не сделан, при выходе игра не сохр
+                if (isGameStarted() == false){
                     setGameStarted();
                 }
             }
@@ -149,34 +140,6 @@ public class GamePlay {
             return stepResult;
         }   else
             return -1;
-    }
-
-    public static final int BONUS = 10;
-
-    private void bonus(){
-        gamerCount += BONUS;
-        addRandomFigure(3);
-    }
-
-    private Figure getRandomFigure(){
-        if (!mDesk.getFreeCells().isEmpty()) {
-            Figure figure = getRandomFigure(mDesk.getFreeCells());
-            mDesk.addFigure(figure);
-            return figure;
-        }
-        return null;
-    }
-
-    private void addRandomFigure(int howMuchFigures){
-        recentRandomFigures.clear();
-
-        for (int i=0; i<howMuchFigures; i++){
-            Figure figure = getRandomFigure();
-
-            if (figure != null){
-                recentRandomFigures.add(figure);
-            }
-        }
     }
 
     public boolean isGameContinue(){
@@ -196,7 +159,7 @@ public class GamePlay {
             return false;
         }
         recentPosition = position;
-        mAvailableSteps = new AvailableSteps(position);
+        mAvailableSteps = new AvailableSteps(this, recentPosition, mDesk);
 
         return true;
     }
@@ -218,43 +181,13 @@ public class GamePlay {
 
 //                addRandomFigure(1); // +1 рандомная фигура при повороте (также раскомментить код в анимации поворота в фрагменте)
 
-                mAvailableSteps = new AvailableSteps(recentPosition);
+                mAvailableSteps = new AvailableSteps(this, recentPosition, mDesk);
                 isFilled = true;
 
                 return true;
             }
         }   else
         return false;
-    }
-
-    public int makeStep(Cell fromWhere, Cell toWhere){
-        Figure ourFigure = mDesk.getFigure(fromWhere);
-
-        if (isStepAvailable(ourFigure,toWhere) != -1){
-            if (mDesk.isCellEmpty(toWhere)){
-                mDesk.replaceFigure(ourFigure, toWhere);
-                return 0;
-
-            }   else {
-                Figure figure2 = mDesk.getFigure(toWhere);
-
-                if (areSemiFiguresAreWhole(ourFigure, figure2)){
-                    unitedFigureRes = figure2.fullPositionRes;
-                    increaseGamerCount();
-                    mDesk.uniteSemiFigures(fromWhere, toWhere);
-
-                    if (mDesk.isDeskEmpty()){
-                        return 2;
-                    }
-                    return 1;
-                }
-            }
-        }
-        return -1;
-    }
-
-    private void increaseGamerCount(){
-        ++gamerCount;
     }
 
     public int getGamerCount(){
@@ -307,70 +240,69 @@ public class GamePlay {
         isTurnAvailable = turnAvailable;
     }
 
-    public class AvailableSteps{
-        private List<Cell> availableToStepCells;
-        private List<Cell> availableToUniteCells;
+    private int makeStep(Cell fromWhere, Cell toWhere){
+        Figure ourFigure = mDesk.getFigure(fromWhere);
 
-        public AvailableSteps(int position){
-            availableToUniteCells = new ArrayList<>();
-            availableToStepCells = new ArrayList<>();
+        if (isStepAvailable(ourFigure,toWhere) != -1){
+            if (mDesk.isCellEmpty(toWhere)){
+                mDesk.replaceFigure(ourFigure, toWhere);
+                return 0;
 
-            init(position);
-        }
+            }   else {
+                Figure figure2 = mDesk.getFigure(toWhere);
 
-        public List<Cell> getAvailableToStepCells(){
-            return availableToStepCells;
-        }
+                if (areSemiFiguresAreWhole(ourFigure, figure2)){
+                    unitedFigureRes = figure2.fullPositionRes;
+                    increaseGamerCount();
+                    mDesk.uniteSemiFigures(fromWhere, toWhere);
 
-        public List<Cell> getAvailableToUniteCells(){
-            return availableToUniteCells;
-        }
-
-        private void init(int position){
-            Cell cell = positionToCell(position);
-
-            Figure figure = mDesk.getFigure(cell);
-
-            for (int y = 0; y<mDesk.getArr().length; y++ ){
-                for (int x = 0; x<mDesk.getArr()[y].length; x++){
-                    int isStepAvailable = isStepAvailable(figure, new Cell(x, y));
-
-                    switch (isStepAvailable){
-                        case 1:
-                            availableToUniteCells.add(new Cell(x, y));
-                            break;
-                        case 0:
-                            availableToStepCells.add(new Cell(x, y));
-                            break;
-                        case -1:
-                            break;
+                    if (mDesk.isDeskEmpty()){
+                        return 2;
                     }
-                }
-            }
-        }
 
-        public int isPositionOnStep(int position){ // можно ли переставить фигуру на заданую позицию
-            Cell chosenCell = positionToCell(position);
-
-            for (Cell cell: availableToUniteCells){
-                if (chosenCell.equals(cell)){
                     return 1;
                 }
             }
+        }
+        return -1;
+    }
 
-            for (Cell cell: availableToStepCells){
-                if (chosenCell.equals(cell)){
-                    return 0;
-                }
+    private void setGameStarted(){
+        isGameStarted = true;
+        Saver.writeIsSaveExists(mContext, isGameStarted);
+    }
+
+    private void increaseGamerCount(){
+        ++gamerCount;
+    }
+
+    private void bonus(){
+        gamerCount += BONUS;
+        addRandomFigure(3);
+    }
+
+    private Figure getRandomFigure(){
+        if (!mDesk.getFreeCells().isEmpty()) {
+            Figure figure = getRandomFigure(mDesk.getFreeCells());
+            mDesk.addFigure(figure);
+            return figure;
+        }
+        return null;
+    }
+
+    private void addRandomFigure(int howMuchFigures){
+        recentRandomFigures.clear();
+
+        for (int i = 0; i < howMuchFigures; i++){
+            Figure figure = getRandomFigure();
+
+            if (figure != null){
+                recentRandomFigures.add(figure);
             }
-            return -1;
         }
+    }
 
-        public boolean isEmpty(){
-            if (availableToStepCells.isEmpty() && availableToUniteCells.isEmpty()){
-                return false;
-            }   else
-                return true;
-        }
+    public void clearRecentRandomFigures(){
+        recentRandomFigures.clear();
     }
 }
