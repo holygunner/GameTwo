@@ -7,11 +7,6 @@ import java.util.UUID;
 
 public class FigureFactory {
 
-//Класс Figure, сейчас внутри он знает о наследниках. Напр в public static int getFigureRes(Figure figure)
-// По идее getRes может быть виртуальной и не статической, тогда базовый класс не будет знать о наследниках.
-// Если никак уж нельзя иначе то стоит эту логику вынести в отдельный класс.
-// Короче базовый класс не должен знать о наследниках.
-
     public static final String SEMISQUARE = "SemiSquare";
     public static final String SEMICIRCLE = "SemiCircle";
 
@@ -36,6 +31,18 @@ public class FigureFactory {
             return SemiCircle.class;
         else
             return null;
+    }
+
+    public static int getFigureRes(Figure figure){
+        int color = figure.color;
+        Position position = figure.position;
+
+        if (figure instanceof SemiSquare)
+            return SemiSquare.getRes(color, position);
+        if (figure instanceof SemiCircle)
+            return SemiCircle.getRes(color, position);
+        else
+            return 0;
     }
 
     public static String figureTypeToString(Figure figure) {

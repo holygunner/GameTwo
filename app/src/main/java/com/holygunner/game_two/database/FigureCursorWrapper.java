@@ -13,10 +13,6 @@ import com.holygunner.game_two.game_mechanics.Cell;
 
 import java.util.UUID;
 
-/**
- * Created by Holygunner on 17.07.2018.
- */
-
 public class FigureCursorWrapper extends CursorWrapper {
     /**
      * Creates a cursor wrapper.

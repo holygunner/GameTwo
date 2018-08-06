@@ -18,7 +18,7 @@ public class DeskToCellsListConverter {
         return instance;
     }
 
-    // преобразовать 2х-мерный массив в List. Нужно для корректной работы с RecyclerView
+    // Convert 2nd dimension array to List. Required for a correct work with a RecyclerView
     public List<String> getCellList(Desk desk){
         Figure[][] figureTwoDArr = desk.deskToMultiArr();
         List<String> characterList = new LinkedList<>();

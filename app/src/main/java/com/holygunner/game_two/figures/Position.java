@@ -13,7 +13,7 @@ public enum Position {
 
     private final String mName;
 
-    private Position(String name){
+    Position(String name){
         mName = name;
     }
 

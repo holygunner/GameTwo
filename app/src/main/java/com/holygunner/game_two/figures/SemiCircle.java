@@ -1,17 +1,11 @@
 package com.holygunner.game_two.figures;
 
-import android.graphics.Color;
-
 import com.holygunner.game_two.R;
 import com.holygunner.game_two.game_mechanics.Cell;
 import com.holygunner.game_two.values.ColorValues;
 import com.holygunner.game_two.values.ColorValues.FigureColors;
 
 import java.util.UUID;
-
-/**
- * Created by Holygunner on 01.07.2018.
- */
 
 public class SemiCircle extends Figure {
     private static int resBordoPos1 = R.drawable.semi_circle_bordo_p1;
@@ -25,12 +19,6 @@ public class SemiCircle extends Figure {
     private static int resPurplePos3 = R.drawable.semi_circle_purple_p3;
     private static int resPurplePos4 = R.drawable.semi_circle_purple_p4;
     private static int resPurplePosFull = R.drawable.full_circle_purple;
-
-    public SemiCircle(int color, Position position, Cell cell){
-        super.color = color;
-        super.position = position;
-        super.mCell = cell;
-    }
 
     public SemiCircle(UUID uuid, int color, Position position, Cell cell) {
         super(uuid);
@@ -70,10 +58,7 @@ public class SemiCircle extends Figure {
                     res = resBordoPos4;
                     break;
             }
-            return res;
-        }
-
-        if (color == ColorValues.FigureColors.PURPLE) {
+        } else if (color == ColorValues.FigureColors.PURPLE) {
             switch (position) {
                 case POSITION_ONE:
                     res = resPurplePos1;
@@ -88,7 +73,6 @@ public class SemiCircle extends Figure {
                     res = resPurplePos4;
                     break;
             }
-            return res;
         }
         return res;
     }

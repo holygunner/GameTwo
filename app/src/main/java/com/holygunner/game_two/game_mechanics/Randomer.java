@@ -17,19 +17,11 @@ public class Randomer {
 
     private List<Position> positions;
 
-    Random mRandom;
+    private Random mRandom;
 
     public Randomer(){
         mRandom = getRandom();
         initPositions();
-    }
-
-    private void initPositions(){
-        positions = new ArrayList<>(Arrays.asList(POSITIONS));
-    }
-
-    private static Random getRandom(){
-        return new Random();
     }
 
     public Position getRandomPosition(){
@@ -67,5 +59,13 @@ public class Randomer {
     public Class<?> getRandomFigureType() {
         Class<?>[] classArray = new Class<?>[]{SemiSquare.class, SemiCircle.class};
         return classArray[mRandom.nextInt(classArray.length)];
+    }
+
+    private void initPositions(){
+        positions = new ArrayList<>(Arrays.asList(POSITIONS));
+    }
+
+    private static Random getRandom(){
+        return new Random();
     }
 }

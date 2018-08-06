@@ -12,7 +12,6 @@ public class Desk {
     private int deskWidth = DeskValues.DESK_WIDTH;
     private int deskHeight = DeskValues.DESK_HEIGHT;
     private int deskSize;
-
     private List<Cell> freeCells;
 
     public Desk(){

@@ -61,10 +61,8 @@ public class SemiSquare extends Figure {
                     res = resBordoPos4;
                     break;
             }
-            return res;
-        }
 
-        if (color == FigureColors.PURPLE) {
+        }   else if (color == FigureColors.PURPLE) {
             switch (position) {
                 case POSITION_ONE:
                     res = resPurplePos1;
@@ -79,9 +77,7 @@ public class SemiSquare extends Figure {
                     res = resPurplePos4;
                     break;
             }
-            return res;
         }
-
         return res;
     }
 }

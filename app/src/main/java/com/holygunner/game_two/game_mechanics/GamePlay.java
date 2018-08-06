@@ -19,33 +19,26 @@ import static com.holygunner.game_two.game_mechanics.GameManager.positionToCell;
 
 public class GamePlay {
     public Integer recentPosition;
+    public static final int BONUS = 10;
 
     private Desk mDesk;
     private Context mContext;
-
-    private boolean isGameStarted;
+    private AvailableSteps mAvailableSteps;
+    private Randomer mRandomer;
+    private Saver mSaver;
+    private List<Figure> recentRandomFigures;
 
     private int unitedFigureRes;
     private int gamerCount;
-
+    private boolean isGameStarted;
     private boolean isTurnAvailable;
-
-    private AvailableSteps mAvailableSteps;
-
     private boolean isFilled;
-
-    private Randomer mRandomer;
-    private Saver mSaver;
-
-    private List<Figure> recentRandomFigures;
-
-    private static final int BONUS = 10;
 
     public GamePlay(Desk desk, Saver saver, Context context){ // если игрока загружаем с файла
         mRandomer = new Randomer();
-        this.mSaver = saver;
-        this.mContext = context.getApplicationContext();
-        this.mDesk = desk;
+        mSaver = saver;
+        mContext = context.getApplicationContext();
+        mDesk = desk;
         isGameStarted = Saver.isSaveExists(mContext);
         gamerCount = Saver.readGamerCount(context);
         recentRandomFigures = new ArrayList<>();
@@ -66,7 +59,7 @@ public class GamePlay {
     public Desk loadDesk(Figure[] figures){
         mDesk = new Desk();
 
-        for (int i = 0; i< figures.length; ++i){
+        for (int i = 0; i < figures.length; ++i){
             Figure figure = figures[i];
             mDesk.addFigure(figure);
         }
@@ -75,8 +68,7 @@ public class GamePlay {
 
     public Desk createNewDesk() {
         mDesk = new Desk();
-//        addRandomFigure(3);
-        addRandomFigure(2);
+        addRandomFigure(3);
 
         return mDesk;
     }
@@ -126,6 +118,7 @@ public class GamePlay {
                     addRandomFigure(1);
                     break;
                 case 2:
+                    addRandomFigure(3);
                     bonus();
                     break;
             }
@@ -136,7 +129,6 @@ public class GamePlay {
                 }
             }
             isFilled = false;
-
             return stepResult;
         }   else
             return -1;
@@ -278,7 +270,6 @@ public class GamePlay {
 
     private void bonus(){
         gamerCount += BONUS;
-        addRandomFigure(3);
     }
 
     private Figure getRandomFigure(){

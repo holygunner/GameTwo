@@ -11,13 +11,13 @@ import android.widget.TextView;
 import com.holygunner.game_two.database.*;
 
 public class StartGameActivity extends AppCompatActivity implements View.OnClickListener {
+
+    public static final String IS_OPEN_SAVE_KEY = "is open save";
+
     private Button resumeButton;
     private Button newGameButton;
     private Button exitButton;
-
     private TextView maxScoreTextView;
-
-    public static final String IS_OPEN_SAVE_KEY = "is open save";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -17,13 +17,10 @@ public class ColorValues {
     }
 
     public static final class FillColors{
-//        public static final int CURRENT_FIGURE_FILL = Color.argb(255, 215, 218, 186);
         public static final int CURRENT_FIGURE_FILL = Color.argb(155, 0, 247, 16);
     }
 
-    public static final class FigureRes{
-
-    }
+    public static final class FigureRes{}
 
 
 }

@@ -1,16 +1,9 @@
 package com.holygunner.game_two.database;
 
-
-
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import com.holygunner.game_two.database.FigureDbSchema.FigureTable;
-
-/**
- * Created by Holygunner on 16.07.2018.
- */
 
 public class FigureBaseHelper extends SQLiteOpenHelper {
     private static final int VERSION = 1;

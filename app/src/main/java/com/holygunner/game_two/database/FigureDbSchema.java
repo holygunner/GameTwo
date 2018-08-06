@@ -5,7 +5,6 @@ package com.holygunner.game_two.database;
  */
 
 public class FigureDbSchema {
-
     public static final class FigureTable{
         public static final String NAME = "figures";
 

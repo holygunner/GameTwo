@@ -2,13 +2,13 @@ package com.holygunner.game_two;
 
 import com.holygunner.game_two.database.Saver;
 import com.holygunner.game_two.figures.Figure;
+import com.holygunner.game_two.figures.FigureFactory;
 import com.holygunner.game_two.game_mechanics.*;
 import com.holygunner.game_two.values.ColorValues;
 import com.holygunner.game_two.values.DeskValues;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.AnimatorSet;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -56,7 +56,7 @@ public class GameDeskFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        View view = inflater.inflate(R.layout.activity_game_upd, container, false);
+        View view = inflater.inflate(R.layout.activity_game, container, false);
         parentLayout = (RelativeLayout) view.findViewById(R.id.parentLayout);
         gameOverTextView = (TextView) view.findViewById(R.id.gameOverTextView);
         gameOverLayout = (RelativeLayout) view.findViewById(R.id.gameOverLayout);
@@ -151,10 +151,9 @@ public class GameDeskFragment extends Fragment {
     }
 
     private class RecyclerGridAdapter extends RecyclerView.Adapter<GridViewHolder> {
+
         private List<String> mData;
         private LayoutInflater mLayoutInflater;
-
-
 
         public RecyclerGridAdapter(Context context, List<String> data){
             mLayoutInflater = LayoutInflater.from(context);
@@ -185,7 +184,7 @@ public class GameDeskFragment extends Fragment {
             int res;
 
             if (figure != null){
-                res = Figure.getFigureRes(figure);
+                res = FigureFactory.getFigureRes(figure);
                 holder.mImageViewCell.setImageResource(res);
                 return;
             }   else {
@@ -197,10 +196,9 @@ public class GameDeskFragment extends Fragment {
 
     private class GridViewHolder extends RecyclerView.ViewHolder{
 
+
         public ImageView mImageViewCell;
         private int position;
-
-        private int indx;
 
         public GridViewHolder(View itemView) {
             super(itemView);
@@ -286,7 +284,6 @@ public class GameDeskFragment extends Fragment {
                 @Override
                 public void run() {
 //                updateRecyclerGridDesk();
-
                     showRecentRandomFiguresWithDelay();
                 }
             }, delay);
@@ -317,7 +314,6 @@ public class GameDeskFragment extends Fragment {
                     userActionAvailable = true;
 
                     if (!mGameManager.getGamePlay().isGameContinue()){
-//                        getActivity().getSupportFragmentManager().findFragmentById(R.id.);
                         updateRecyclerGridDesk();
                     }
                 }
@@ -338,7 +334,7 @@ public class GameDeskFragment extends Fragment {
             userActionAvailable = false;
             fillCells(false, Color.TRANSPARENT);
             setImageViewRes(mGameManager.getGamePlay().recentPosition, R.drawable.empty_cell);
-            setImageViewRes(currentPosition, Figure.getFigureRes(mGameManager.getDesk().getFigure(currentPosition)));
+            setImageViewRes(currentPosition, FigureFactory.getFigureRes(mGameManager.getDesk().getFigure(currentPosition)));
             showRecentRandomFiguresWithDelay();
         }
 
@@ -409,15 +405,10 @@ public class GameDeskFragment extends Fragment {
 
         public void showRecentRandomFiguresWithDelay(){
             final List<Figure> recentRandFigures = mGameManager.getGamePlay().getRecentRandomFigures();
-//            final int indx = recentRandFigures.size() - 1;
-
-//            indx = recentRandFigures.size() - 1;
-
             final long delay = 100;
 
             Handler mHandler = new Handler(){
                 int indx = recentRandFigures.size() - 1;
-//                indx = recentRandFigures.size() - 1;
 
                 public void handleMessage(Message msg){
                     super.handleMessage(msg);
@@ -429,7 +420,6 @@ public class GameDeskFragment extends Fragment {
                     }
                         --indx;
                         this.sendEmptyMessageDelayed(0, delay);
-
                 }
             };
 
@@ -443,8 +433,6 @@ public class GameDeskFragment extends Fragment {
             }, delay*(recentRandFigures.size()));
         }
     }
-
-    //----------------------------------------------------------------------------------------
 
     private void setIsTurnButtonClickable(boolean isClickable){
         mGameManager.getGamePlay().setTurnAvailable(isClickable);
