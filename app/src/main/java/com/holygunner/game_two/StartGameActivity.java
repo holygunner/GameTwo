@@ -1,6 +1,5 @@
 package com.holygunner.game_two;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,27 +13,38 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
 
     public static final String IS_OPEN_SAVE_KEY = "is open save";
 
-    private Button resumeButton;
-    private Button newGameButton;
+    private Button resetGameButton;
+    private Button gameButton;
     private Button exitButton;
     private TextView maxScoreTextView;
+
+    @Override
+    public void onClick(View view) {
+        boolean isSaveExists = Saver.isSaveExists(getApplicationContext());
+        Intent intent = new Intent(this, GameFragmentActivity.class);
+
+        if (isSaveExists){
+            resumeGameIntent(intent, view);
+        }   else {
+            newGameIntent(intent, view);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
 
-        resumeButton = (Button) findViewById(R.id.start_game_button);
-        resumeButton.setOnClickListener(this);
-        newGameButton = (Button) findViewById(R.id.new_game_button);
-        newGameButton.setOnClickListener(this);
+        resetGameButton = (Button) findViewById(R.id.reset_game_button);
+        resetGameButton.setOnClickListener(this);
+        gameButton = (Button) findViewById(R.id.game_button);
+        gameButton.setOnClickListener(this);
         exitButton = (Button) findViewById(R.id.exit_button);
         exitButton.setOnClickListener(this);
 
         maxScoreTextView = (TextView) findViewById(R.id.maxScoreTextView);
         updateMaxScore();
-
-        setResumeButtonVisibility();
+        setButtonsOrder();
     }
 
     private void updateMaxScore(){
@@ -46,33 +56,55 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    private void setResumeButtonVisibility(){
+    private void setResetGameOptionVisibility(boolean isSaveExists){
+        if (isSaveExists){
+            resetGameButton.setVisibility(View.VISIBLE);
+            resetGameButton.setText(R.string.reset_game);
+        }   else {
+            resetGameButton.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void setButtonsOrder(){ // 1st start: New Game button & invisible Reset Game option;
+                                    // Save exists: Resume Game button, visible Reset Game option
         boolean isSaveExists = Saver.isSaveExists(getApplicationContext());
+        setResetGameOptionVisibility(isSaveExists);
 
         if (isSaveExists){
-            resumeButton.setVisibility(View.VISIBLE);
+            gameButton.setText(R.string.resume_game);
+            resetGameButton.setText(R.string.reset_game);
         }   else {
-            resumeButton.setVisibility(View.INVISIBLE);
+            gameButton.setText(R.string.new_game);
         }
+
     }
 
     @Override
     protected void onResume(){
         super.onResume();
         updateMaxScore();
-        setResumeButtonVisibility();
+        setButtonsOrder();
     }
 
-    @Override
-    public void onClick(View view) {
-        Intent intent = new Intent(this, GameFragmentActivity.class);
-
+    private void resumeGameIntent(Intent intent, View view){
         switch (view.getId()){
-            case R.id.start_game_button:
+            case R.id.reset_game_button:
+                intent.putExtra(IS_OPEN_SAVE_KEY, false);
+                startActivity(intent);
+                break;
+            case R.id.game_button:
                 intent.putExtra(IS_OPEN_SAVE_KEY, true);
                 startActivity(intent);
                 break;
-            case R.id.new_game_button:
+            case R.id.exit_button:
+                exit();
+                break;
+        }
+    }
+
+    private void newGameIntent(Intent intent, View view){
+        switch (view.getId()){
+            case R.id.game_button:
                 intent.putExtra(IS_OPEN_SAVE_KEY, false);
                 startActivity(intent);
                 break;

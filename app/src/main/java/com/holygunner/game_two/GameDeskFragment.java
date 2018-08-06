@@ -196,7 +196,6 @@ public class GameDeskFragment extends Fragment {
 
     private class GridViewHolder extends RecyclerView.ViewHolder{
 
-
         public ImageView mImageViewCell;
         private int position;
 

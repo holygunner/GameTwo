@@ -2,6 +2,7 @@
     <string name="app_name">GameTwo</string>
     <string name="new_game">New Game</string>
     <string name="resume_game">Resume Game</string>
+    <string name="reset_game">Reset Game</string>
     <string name="exit">Exit</string>
     <string name="turn">TURN</string>
     <string name="your_max_score">your max score:</string>

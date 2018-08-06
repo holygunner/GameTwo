@@ -1,9 +1,5 @@
 package com.holygunner.game_two.game_mechanics;
 
-/**
- * Created by Holygunner on 04.04.2018.
- */
-
 public class Cell {
     private int x;
     private int y;

@@ -20,10 +20,9 @@
 
         <Button
             android:textSize="@dimen/textSize"
-            android:text="@string/resume_game"
             android:layout_width="@dimen/start_activity_button_width"
             android:layout_height="wrap_content"
-            android:id="@+id/start_game_button"
+            android:id="@+id/reset_game_button"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"/>
     </RelativeLayout>
@@ -36,10 +35,10 @@
 
         <Button
             android:textSize="@dimen/textSize"
-            android:text="@string/new_game"
+
             android:layout_width="@dimen/start_activity_button_width"
             android:layout_height="wrap_content"
-            android:id="@+id/new_game_button"
+            android:id="@+id/game_button"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"/>
     </RelativeLayout>
