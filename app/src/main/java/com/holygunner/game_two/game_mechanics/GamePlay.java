@@ -28,7 +28,7 @@ public class GamePlay {
     private boolean isTurnAvailable;
     private boolean isFilled;
 
-    public GamePlay(Desk desk, Saver saver, Context context){ // если игрока загружаем с файла
+    public GamePlay(Desk desk, Saver saver, Context context){
         mLevel = new Level(1); // TEST
         mRandomer = new Randomer(mLevel);
         mSaver = saver;
@@ -145,7 +145,7 @@ public class GamePlay {
                 Position turnedPosition = Position.getTurnedPosition(figure.position);
                 figure.position = turnedPosition;
 
-//                addRandomFigure(1); // +1 рандомная фигура при повороте (также раскомментить код в анимации поворота в фрагменте)
+                addRandomFigure(mLevel.getAddForTurn()); // +1 рандомная фигура при повороте (также раскомментить код в анимации поворота в фрагменте)
 
                 mAvailableSteps = new AvailableSteps(this, recentPosition, mDesk);
                 isFilled = true;

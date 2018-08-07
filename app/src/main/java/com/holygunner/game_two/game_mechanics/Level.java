@@ -10,7 +10,7 @@ public class Level {
     private int mAddForStep; // quantity Of Rand Figures For Empty Step (2-4(?))
     private int mAddForTurn; // quantity Of Rand Figures For Empty Turn (0-1)
     private int mAddForUnit; // quantity Of Rand Figures For Empty Turn (0-1)
-    private FigureClassAndColorPair[] mAvailableFigureTypesAndColors; // available figures and their colors on a level
+    private FigureClassAndColorPair[] mFigureClassAndColorPairs; // available figures and their colors on a level
 
     public Level(int levelNumb){
         mLevelNumb = levelNumb;
@@ -19,7 +19,7 @@ public class Level {
         mAddForStep = LevelsValues.ADDS_FOR_STEP[levelNumb];
         mAddForTurn = LevelsValues.ADDS_FOR_TURN[levelNumb];
         mAddForUnit = LevelsValues.ADDS_FOR_UNIT[levelNumb];
-        mAvailableFigureTypesAndColors = LevelsValues.FIGURE_COLORS_PAIR[levelNumb];
+        mFigureClassAndColorPairs = LevelsValues.FIGURE_COLORS_PAIR[levelNumb];
     }
 
     public int getLevelNumb() {
@@ -46,7 +46,7 @@ public class Level {
         return mAddForUnit;
     }
 
-    public FigureClassAndColorPair[] getAvailableFigureTypesAndColors() {
-        return mAvailableFigureTypesAndColors;
+    public FigureClassAndColorPair[] getFigureClassesAndColorPairs() {
+        return mFigureClassAndColorPairs;
     }
 }

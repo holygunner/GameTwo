@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -362,11 +363,11 @@ public class GameDeskFragment extends Fragment {
         private void updateFillCells(){
             Figure recentFigure =  mGameManager.getDesk().getFigure(mGameManager.getGamePlay().recentPosition);
 
-//        if (!mGameManager.getGamePlay().getRecentRandomFigures().isEmpty()){ // расскоментить при добавлении 1 рандомной фигуры при повороте
-//            Figure addedRandomFigure = mGameManager.getGamePlay().getRecentRandomFigures().get(0);
-////                    mAdapter.notifyItemChanged(cellToPosition(addedRandomFigure.mCell)); // не срабатывает выделение, если фигура попадает в слияние
-//            setImageViewRes(cellToPosition(addedRandomFigure.mCell), Figure.getFigureRes(addedRandomFigure));
-//        }
+        if (!mGameManager.getGamePlay().getRecentRandomFigures().isEmpty()){ // расскоментить при добавлении 1 рандомной фигуры при повороте
+            Figure addedRandomFigure = mGameManager.getGamePlay().getRecentRandomFigures().get(0);
+//            mAdapter.notifyItemChanged(mGameManager.getDesk().cellToPosition(addedRandomFigure.mCell)); // не срабатывает выделение, если фигура попадает в слияние
+            setImageViewRes(mGameManager.getDesk().cellToPosition(addedRandomFigure.mCell), FigureFactory.getFigureRes(addedRandomFigure));
+        }
 
             int currentFigureColor = recentFigure.color;
             fillCells(true, currentFigureColor);
@@ -380,7 +381,6 @@ public class GameDeskFragment extends Fragment {
             for (int y = 0; y<desk.deskToMultiArr().length; y++){
                 for (int x = 0; x<desk.deskToMultiArr()[y].length; x++){
                     Cell cell = new Cell(x, y);
-//                    int position = cellToPosition(cell);
                     int position = mGameManager.getDesk().cellToPosition(cell);
 
                     if (availableSteps.getAvailableToStepCells().contains(cell)){
@@ -411,6 +411,7 @@ public class GameDeskFragment extends Fragment {
 
             if (isFillColor) {
                 color = ColorsValues.FillColors.CURRENT_FIGURE_FILL;
+//                color = ContextCompat.getColor(getContext(), R.color.colorAccent);
                 mGameManager.getGamePlay().setIsFilled(true);
             }   else {
                 color = Color.TRANSPARENT;

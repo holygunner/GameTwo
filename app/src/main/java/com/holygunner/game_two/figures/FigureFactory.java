@@ -14,8 +14,7 @@ public class FigureFactory {
 
     private static FigureFactory ourInstance = new FigureFactory();
 
-    private FigureFactory() {
-    }
+    private FigureFactory() {}
 
     public static FigureFactory getInstance() {
         return ourInstance;
@@ -33,7 +32,8 @@ public class FigureFactory {
                 position, cell);
     }
 
-    public Figure createFigure(UUID uuid, Class figureType, int color, Position position, Cell cell){
+    public Figure createFigure(UUID uuid, Class figureType, int color,
+                               Position position, Cell cell){
         Figure figure = getInstanceOfChildClass(uuid, figureType, color, position, cell);
         return figure;
     }

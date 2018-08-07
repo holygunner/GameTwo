@@ -25,7 +25,7 @@ public class Randomer {
         initPositions();
     }
 
-    public Position getRandomPositionFirstMethod(){
+    public Position getRandomPositionFirstRealization(){
         int length = POSITIONS.length;
         return POSITIONS[mRandom.nextInt(length)];
     }
@@ -53,7 +53,7 @@ public class Randomer {
     }
 
     public FigureClassAndColorPair getRandomFigureTypeAndColorPair(){
-        FigureClassAndColorPair[] pairArr = mLevel.getAvailableFigureTypesAndColors();
+        FigureClassAndColorPair[] pairArr = mLevel.getFigureClassesAndColorPairs();
 
         return pairArr[mRandom.nextInt(pairArr.length)];
 

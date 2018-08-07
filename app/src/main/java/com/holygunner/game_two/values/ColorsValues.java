@@ -2,6 +2,8 @@ package com.holygunner.game_two.values;
 
 import android.graphics.Color;
 
+import com.holygunner.game_two.R;
+
 public class ColorsValues {
     public static final class FigureColors{
         public static final int BORDO = Color.argb(255, 127, 0, 0); // 7F0000
