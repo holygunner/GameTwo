@@ -2,7 +2,9 @@ package com.holygunner.game_two.figures;
 
 
 import com.holygunner.game_two.game_mechanics.Cell;
+import com.holygunner.game_two.game_mechanics.Randomer;
 
+import java.util.List;
 import java.util.UUID;
 
 public class FigureFactory {
@@ -17,6 +19,18 @@ public class FigureFactory {
 
     public static FigureFactory getInstance() {
         return ourInstance;
+    }
+
+    public Figure getRandomFigure(List<Cell> freeCells, Randomer randomer){
+        UUID uuid = UUID.randomUUID();
+        FigureClassAndColorPair pair = randomer.getRandomFigureTypeAndColorPair();
+        Class<?> FigureType = pair.getFigureClass();
+        int color = pair.getColor();
+        Position position = randomer.getRandomPosition();
+        Cell cell = randomer.getRandomCell(freeCells);
+
+        return createFigure(uuid, FigureType, color,
+                position, cell);
     }
 
     public Figure createFigure(UUID uuid, Class figureType, int color, Position position, Cell cell){

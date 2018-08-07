@@ -3,9 +3,7 @@ package com.holygunner.game_two.game_mechanics;
 import android.content.Context;
 import android.util.Log;
 
-import com.holygunner.game_two.figures.Figure;
 import com.holygunner.game_two.database.*;
-import com.holygunner.game_two.values.DeskValues;
 
 public class GameManager {
     private static final String TAG = "Log";
@@ -16,27 +14,6 @@ public class GameManager {
 
     public GameManager(Context context){
         mContext = context;
-    }
-
-    public static int cellToPosition(Cell cell){
-        int desk_width = DeskValues.DESK_WIDTH;
-        int desk_height = DeskValues.DESK_HEIGHT;
-        int x = cell.getX();
-        int y = cell.getY();
-
-        int position = y*desk_width+x;
-
-        return position;
-    }
-
-    public static Cell positionToCell(int position){
-        int desk_width = DeskValues.DESK_WIDTH;
-        int deskHeight = DeskValues.DESK_HEIGHT;
-
-        int y = position/desk_width;
-        int x = position%desk_width;
-
-        return new Cell(x,y);
     }
 
     public void startOrResumeGame(boolean isOpenSave){
@@ -57,12 +34,12 @@ public class GameManager {
     }
 
     public boolean save(){
-        if (!getGamePlay().isGameStarted()){ // если первый шаг не был сделан, сейв не осуществляется
+        if (!getGamePlay().isGameStarted()){ // there is no save if the first step or turn is not complete
             Saver.writeIsSaveExists(mContext, getGamePlay().isGameStarted());
             return false;
         }
 
-        if (!getGamePlay().isGameContinue()){ // если игрок проиграл, сейв не осуществляется и последний сейв удаляется
+        if (!getGamePlay().isGameContinue()){ // there is no save if a gamer loses, also the last save will delete
             mSaver.clearSQLiteDatabase();
             Saver.writeIsSaveExists(mContext, false);
             return false;

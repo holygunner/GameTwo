@@ -20,13 +20,13 @@ public class DeskToCellsListConverter {
 
     // Convert 2nd dimension array to List. Required for a correct work with a RecyclerView
     public List<String> getCellList(Desk desk){
-        Figure[][] figureTwoDArr = desk.deskToMultiArr();
+        Figure[][] figureTwoDimensionArr = desk.deskToMultiArr();
         List<String> characterList = new LinkedList<>();
         int p = 0;
 
-        for (int x = 0; x< figureTwoDArr.length; ++x){
-            for (int y = 0; y< figureTwoDArr[x].length; ++y){
-                characterList.add(p++, whichCharacter(figureTwoDArr[x][y]));
+        for (int x = 0; x< figureTwoDimensionArr.length; ++x){
+            for (int y = 0; y< figureTwoDimensionArr[x].length; ++y){
+                characterList.add(p++, whichCharacter(figureTwoDimensionArr[x][y]));
             }
         }
         return characterList;

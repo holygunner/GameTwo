@@ -1,9 +1,7 @@
 package com.holygunner.game_two.game_mechanics;
 
+import com.holygunner.game_two.figures.FigureClassAndColorPair;
 import com.holygunner.game_two.figures.Position;
-import com.holygunner.game_two.figures.SemiCircle;
-import com.holygunner.game_two.figures.SemiSquare;
-import com.holygunner.game_two.values.ColorValues.FigureColors;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,17 +17,20 @@ public class Randomer {
 
     private Random mRandom;
 
-    public Randomer(){
+    private Level mLevel;
+
+    public Randomer(Level level){
+        mLevel = level;
         mRandom = getRandom();
         initPositions();
     }
 
-    public Position getRandomPosition(){
+    public Position getRandomPositionFirstMethod(){
         int length = POSITIONS.length;
         return POSITIONS[mRandom.nextInt(length)];
     }
 
-    public Position getRandomPositionMethod2(){ // returned positions are not same by every time
+    public Position getRandomPosition(){ // returned position which is not same by every time
         int size;
         int index;
         Position position;
@@ -51,14 +52,11 @@ public class Randomer {
         return cells.get(mRandom.nextInt(length));
     }
 
-    public int getRandomColor(){
-        int[] colors = FigureColors.getColors();
-        return colors[mRandom.nextInt(colors.length)];
-    }
+    public FigureClassAndColorPair getRandomFigureTypeAndColorPair(){
+        FigureClassAndColorPair[] pairArr = mLevel.getAvailableFigureTypesAndColors();
 
-    public Class<?> getRandomFigureType() {
-        Class<?>[] classArray = new Class<?>[]{SemiSquare.class, SemiCircle.class};
-        return classArray[mRandom.nextInt(classArray.length)];
+        return pairArr[mRandom.nextInt(pairArr.length)];
+
     }
 
     private void initPositions(){

@@ -1,7 +1,6 @@
 package com.holygunner.game_two.game_mechanics;
 
 import com.holygunner.game_two.figures.Figure;
-import com.holygunner.game_two.values.DeskValues;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -9,12 +8,17 @@ import java.util.List;
 
 public class Desk {
     private Figure[][] desk;
-    private int deskWidth = DeskValues.DESK_WIDTH;
-    private int deskHeight = DeskValues.DESK_HEIGHT;
+    private int deskWidth;
+    private int deskHeight;
     private int deskSize;
     private List<Cell> freeCells;
+    private GamePlay mGamePlay;
 
-    public Desk(){
+    public Desk(GamePlay gamePlay, int[] deskXY){
+        mGamePlay = gamePlay;
+        deskHeight = deskXY[0];
+        deskWidth = deskXY[1];
+
         desk = new Figure[deskHeight][deskWidth];
         deskSize = deskHeight*deskWidth;
         initFreeCells();
@@ -72,7 +76,7 @@ public class Desk {
     }
 
     public Figure getFigure(int position){
-        Cell cell = GameManager.positionToCell(position);
+        Cell cell = positionToCell(position);
         return getFigure(cell);
     }
 
@@ -96,6 +100,27 @@ public class Desk {
         }   else {
             return false;
         }
+    }
+
+    public int cellToPosition(Cell cell){
+        int desk_height = mGamePlay.getLevel().getDeskSize()[0];
+        int desk_width = mGamePlay.getLevel().getDeskSize()[1];
+        int x = cell.getX();
+        int y = cell.getY();
+
+        int position = y*desk_width+x;
+
+        return position;
+    }
+
+    public Cell positionToCell(int position){
+        int desk_height = mGamePlay.getLevel().getDeskSize()[0];
+        int desk_width = mGamePlay.getLevel().getDeskSize()[1];
+
+        int y = position/desk_width;
+        int x = position%desk_width;
+
+        return new Cell(x,y);
     }
 
     private void initFreeCells(){

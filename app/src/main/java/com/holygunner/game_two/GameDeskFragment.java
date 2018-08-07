@@ -4,8 +4,7 @@ import com.holygunner.game_two.database.Saver;
 import com.holygunner.game_two.figures.Figure;
 import com.holygunner.game_two.figures.FigureFactory;
 import com.holygunner.game_two.game_mechanics.*;
-import com.holygunner.game_two.values.ColorValues;
-import com.holygunner.game_two.values.DeskValues;
+import com.holygunner.game_two.values.ColorsValues;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -27,8 +26,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
-
-import static com.holygunner.game_two.game_mechanics.GameManager.cellToPosition;
 
 public class GameDeskFragment extends Fragment {
 
@@ -58,16 +55,23 @@ public class GameDeskFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.activity_game, container, false);
         parentLayout = (RelativeLayout) view.findViewById(R.id.parentLayout);
+        //
+        initGameManagerIfNotExists();
+        mGameManager.startOrResumeGame(Saver.isSaveExists(getContext()));
+        //
+
         gameOverTextView = (TextView) view.findViewById(R.id.gameOverTextView);
         gameOverLayout = (RelativeLayout) view.findViewById(R.id.gameOverLayout);
 
         mRecyclerGridDesk = (RecyclerView) view.findViewById(R.id.recycler_grid_game_desk);
-        mRecyclerGridDesk.setLayoutManager(new GridLayoutManager(getActivity(), DeskValues.DESK_WIDTH));
+//        mRecyclerGridDesk.setLayoutManager(new GridLayoutManager(getActivity(), DeskValues.DESK_WIDTH));
+        mRecyclerGridDesk.setLayoutManager(new GridLayoutManager(getActivity(),
+                mGameManager.getGamePlay().getLevel().getDeskSize()[1]));
 
         turnFigureButton = (Button) view.findViewById(R.id.turnFigureButton);
         gamerCountView = (TextView) view.findViewById(R.id.gamerCountTextView);
-        gamerCountView.setText(readGamerCount());
 
+        updateGamerCount(true);
         boolean isOpenSave = getActivity().getIntent().getBooleanExtra(StartGameActivity.IS_OPEN_SAVE_KEY, false);
         Saver.writeIsSaveExists(getActivity(), isOpenSave);
 
@@ -77,7 +81,7 @@ public class GameDeskFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        mGameManager = new GameManager(getActivity());
+        initGameManagerIfNotExists();
         mGameManager.startOrResumeGame(Saver.isSaveExists(getContext()));
         setIsTurnButtonClickable(Saver.readIsTurnButtonClickable(getContext()));
         updateRecyclerGridDesk();
@@ -93,12 +97,18 @@ public class GameDeskFragment extends Fragment {
         }
     }
 
+    private void initGameManagerIfNotExists(){
+        if (mGameManager == null){
+            mGameManager = new GameManager(getActivity());
+        }
+    }
+
     private void updateRecyclerGridDesk(){
         List<String> data = DeskToCellsListConverter.getInstanse().getCellList(mGameManager.getDesk());
         mAdapter = new RecyclerGridAdapter(getActivity(), data);
         mRecyclerGridDesk.setAdapter(mAdapter);
 
-        updateGamerCount();
+        updateGamerCount(false);
         userActionAvailable = true;
         if (!mGameManager.getGamePlay().isGameContinue()){
             userActionAvailable = false;
@@ -106,14 +116,20 @@ public class GameDeskFragment extends Fragment {
         }
     }
 
-    private void updateGamerCount(){
-        int gamerCount = mGameManager.getGamePlay().getGamerCount();
-        gamerCountView.setText(gamerCount + "/" + "100"); // 100 - демо, с раундами будет показывать счет которорый нужно набрать, чтобы перейти к след раунду
-    }
+    private void updateGamerCount(boolean isReadGamerCount){
+        int gamerCount;
+        int levelRounds;
 
-    private String readGamerCount(){
-        int gamerCount = Saver.readGamerCount(getContext());
-        return gamerCount + "/" + "100";
+        if (isReadGamerCount){
+            gamerCount = Saver.readGamerCount(getContext());
+            levelRounds = 0;
+            // getLevelRounds = Saver.readGamerLevel(getContext()); - MAKE THIS METHOD
+        }   else {
+            gamerCount = mGameManager.getGamePlay().getGamerCount();
+            levelRounds = mGameManager.getGamePlay().getLevel().getLevelRounds();
+        }
+
+        gamerCountView.setText(gamerCount + "/" + levelRounds);
     }
 
     private void gameOver(){
@@ -178,7 +194,7 @@ public class GameDeskFragment extends Fragment {
         }
 
         private void setImage(int position, GridViewHolder holder){
-            Cell cell = mGameManager.positionToCell(position);
+            Cell cell = mGameManager.getDesk().positionToCell(position);
 
             Figure figure = mGameManager.getDesk().getFigure(cell);
             int res;
@@ -364,7 +380,8 @@ public class GameDeskFragment extends Fragment {
             for (int y = 0; y<desk.deskToMultiArr().length; y++){
                 for (int x = 0; x<desk.deskToMultiArr()[y].length; x++){
                     Cell cell = new Cell(x, y);
-                    int position = cellToPosition(cell);
+//                    int position = cellToPosition(cell);
+                    int position = mGameManager.getDesk().cellToPosition(cell);
 
                     if (availableSteps.getAvailableToStepCells().contains(cell)){
                         setBackgroundColorOnPosition(position, color);
@@ -377,7 +394,7 @@ public class GameDeskFragment extends Fragment {
                 }
             }
 
-            if (color == ColorValues.FillColors.CURRENT_FIGURE_FILL){
+            if (color == ColorsValues.FillColors.CURRENT_FIGURE_FILL){
             }   else {
                 currentFigureColor = Color.TRANSPARENT;
             }
@@ -393,7 +410,7 @@ public class GameDeskFragment extends Fragment {
             int color;
 
             if (isFillColor) {
-                color = ColorValues.FillColors.CURRENT_FIGURE_FILL;
+                color = ColorsValues.FillColors.CURRENT_FIGURE_FILL;
                 mGameManager.getGamePlay().setIsFilled(true);
             }   else {
                 color = Color.TRANSPARENT;
@@ -414,7 +431,7 @@ public class GameDeskFragment extends Fragment {
 
                     if(indx > -1) {
                         Figure figure = recentRandFigures.get(indx);
-                        int position = cellToPosition(figure.mCell);
+                        int position = mGameManager.getDesk().cellToPosition(figure.mCell);
                         mAdapter.notifyItemChanged(position);
                     }
                         --indx;

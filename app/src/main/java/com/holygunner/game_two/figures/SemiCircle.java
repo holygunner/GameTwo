@@ -2,8 +2,8 @@ package com.holygunner.game_two.figures;
 
 import com.holygunner.game_two.R;
 import com.holygunner.game_two.game_mechanics.Cell;
-import com.holygunner.game_two.values.ColorValues;
-import com.holygunner.game_two.values.ColorValues.FigureColors;
+import com.holygunner.game_two.values.ColorsValues;
+import com.holygunner.game_two.values.ColorsValues.FigureColors;
 
 import java.util.UUID;
 
@@ -43,7 +43,7 @@ public class SemiCircle extends Figure {
     public static int getRes(int color, Position position) {
         int res = 0;
 
-        if (color == ColorValues.FigureColors.BORDO) {
+        if (color == ColorsValues.FigureColors.BORDO) {
             switch (position) {
                 case POSITION_ONE:
                     res = resBordoPos1;
@@ -58,7 +58,7 @@ public class SemiCircle extends Figure {
                     res = resBordoPos4;
                     break;
             }
-        } else if (color == ColorValues.FigureColors.PURPLE) {
+        } else if (color == ColorsValues.FigureColors.PURPLE) {
             switch (position) {
                 case POSITION_ONE:
                     res = resPurplePos1;

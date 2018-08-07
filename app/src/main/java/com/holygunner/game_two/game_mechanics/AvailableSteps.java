@@ -5,8 +5,6 @@ import com.holygunner.game_two.figures.Figure;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.holygunner.game_two.game_mechanics.GameManager.positionToCell;
-
 public class AvailableSteps {
     private List<Cell> availableToStepCells;
     private List<Cell> availableToUniteCells;
@@ -31,7 +29,7 @@ public class AvailableSteps {
     }
 
     public int isPositionOnStep(int position){ // is Figure removed to given position
-        Cell chosenCell = positionToCell(position);
+        Cell chosenCell = mDesk.positionToCell(position);
 
         for (Cell cell: availableToUniteCells){
             if (chosenCell.equals(cell)){
@@ -55,7 +53,7 @@ public class AvailableSteps {
     }
 
     private void init(int position){
-        Cell cell = positionToCell(position);
+        Cell cell = mDesk.positionToCell(position);
 
         Figure figure = mDesk.getFigure(cell);
 

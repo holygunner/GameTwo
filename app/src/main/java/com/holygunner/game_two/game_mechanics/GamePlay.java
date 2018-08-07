@@ -6,42 +6,37 @@ import com.holygunner.game_two.database.Saver;
 import com.holygunner.game_two.figures.Figure;
 import com.holygunner.game_two.figures.FigureFactory;
 import com.holygunner.game_two.figures.Position;
-import com.holygunner.game_two.figures.SemiCircle;
-import com.holygunner.game_two.values.ColorValues;
-import com.holygunner.game_two.values.DeskValues;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-
-import static com.holygunner.game_two.game_mechanics.GameManager.cellToPosition;
-import static com.holygunner.game_two.game_mechanics.GameManager.positionToCell;
 
 public class GamePlay {
     public Integer recentPosition;
     public static final int BONUS = 10;
 
-    private Desk mDesk;
     private Context mContext;
+    private Level mLevel;
+    private Desk mDesk;
     private AvailableSteps mAvailableSteps;
     private Randomer mRandomer;
     private Saver mSaver;
-    private List<Figure> recentRandomFigures;
+    private List<Figure> mRecentRandomFigures;
+    private int mGamerCount;
 
     private int unitedFigureRes;
-    private int gamerCount;
     private boolean isGameStarted;
     private boolean isTurnAvailable;
     private boolean isFilled;
 
     public GamePlay(Desk desk, Saver saver, Context context){ // если игрока загружаем с файла
-        mRandomer = new Randomer();
+        mLevel = new Level(1); // TEST
+        mRandomer = new Randomer(mLevel);
         mSaver = saver;
         mContext = context.getApplicationContext();
         mDesk = desk;
         isGameStarted = Saver.isSaveExists(mContext);
-        gamerCount = Saver.readGamerCount(context);
-        recentRandomFigures = new ArrayList<>();
+        mGamerCount = Saver.readGamerCount(context);
+        mRecentRandomFigures = new ArrayList<>();
     }
 
     public void setIsFilled(boolean isFilled){
@@ -53,11 +48,12 @@ public class GamePlay {
     }
 
     public List<Figure> getRecentRandomFigures(){
-        return recentRandomFigures;
+        return mRecentRandomFigures;
     }
 
     public Desk loadDesk(Figure[] figures){
-        mDesk = new Desk();
+//        mDesk = new Desk();
+        mDesk = new Desk(this, mLevel.getDeskSize());
 
         for (int i = 0; i < figures.length; ++i){
             Figure figure = figures[i];
@@ -67,32 +63,10 @@ public class GamePlay {
     }
 
     public Desk createNewDesk() {
-        mDesk = new Desk();
+        mDesk = new Desk(this, mLevel.getDeskSize());
         addRandomFigure(3);
 
         return mDesk;
-    }
-
-    public Figure getRandomFigure(List<Cell> freeCells){
-        UUID uuid = UUID.randomUUID();
-        Class<?> FigureType = mRandomer.getRandomFigureType();
-//        Class<?> FigureType = SemiCircle.class;
-        FigureFactory factory = FigureFactory.getInstance();
-//        Position position = mRandomer.getRandomPosition();
-        Position position = mRandomer.getRandomPositionMethod2();
-        Cell cell = mRandomer.getRandomCell(freeCells);
-//        int color = mRandomer.getRandomColor();
-
-        int color;
-
-        if (FigureType == SemiCircle.class){
-            color = ColorValues.FigureColors.PURPLE;
-        }   else {
-            color = ColorValues.FigureColors.BORDO;
-        }
-
-        return factory.createFigure(uuid, FigureType, color,
-                position, cell);
     }
 
     public boolean isGameStarted() {
@@ -105,17 +79,17 @@ public class GamePlay {
         }
 
         if (mAvailableSteps.isPositionOnStep(position) != -1 && isFilled==true) {
-            Cell fromWhere = positionToCell(recentPosition);
-            Cell toWhere = positionToCell(position);
+            Cell fromWhere = mDesk.positionToCell(recentPosition);
+            Cell toWhere = mDesk.positionToCell(position);
 
             int stepResult = makeStep(fromWhere, toWhere);
 
             switch (stepResult){
                 case 0:
-                    addRandomFigure(3);
+                    addRandomFigure(mLevel.getAddForStep());
                     break;
                 case 1:
-                    addRandomFigure(1);
+                    addRandomFigure(mLevel.getAddForUnit());
                     break;
                 case 2:
                     addRandomFigure(3);
@@ -136,7 +110,7 @@ public class GamePlay {
 
     public boolean isGameContinue(){
         if (mDesk.getFreeCells().isEmpty()){
-            mSaver.writeGamerCount(mContext, gamerCount);
+            mSaver.writeGamerCount(mContext, mGamerCount);
             return false;
         }   else
             return true;
@@ -147,7 +121,7 @@ public class GamePlay {
             return false;
         }
 
-        if (mDesk.isCellEmpty(positionToCell(position))){
+        if (mDesk.isCellEmpty(mDesk.positionToCell(position))){
             return false;
         }
         recentPosition = position;
@@ -158,7 +132,7 @@ public class GamePlay {
 
     public boolean turnFigureIfExists(int position){
         if (isGameContinue()) {
-            Cell cell = positionToCell(position);
+            Cell cell = mDesk.positionToCell(position);
             Figure figure = mDesk.getFigure(cell);
 
             if (figure == null || !isFilled) {
@@ -183,7 +157,11 @@ public class GamePlay {
     }
 
     public int getGamerCount(){
-        return gamerCount;
+        return mGamerCount;
+    }
+
+    public Level getLevel(){
+        return mLevel;
     }
 
     public boolean areSemiFiguresAreWhole(Figure figure1, Figure figure2){ // являются ли обе половины одной фигурой
@@ -265,16 +243,16 @@ public class GamePlay {
     }
 
     private void increaseGamerCount(){
-        ++gamerCount;
+        ++mGamerCount;
     }
 
     private void bonus(){
-        gamerCount += BONUS;
+        mGamerCount += BONUS;
     }
 
     private Figure getRandomFigure(){
         if (!mDesk.getFreeCells().isEmpty()) {
-            Figure figure = getRandomFigure(mDesk.getFreeCells());
+            Figure figure = FigureFactory.getInstance().getRandomFigure(mDesk.getFreeCells(), mRandomer);
             mDesk.addFigure(figure);
             return figure;
         }
@@ -282,18 +260,18 @@ public class GamePlay {
     }
 
     private void addRandomFigure(int howMuchFigures){
-        recentRandomFigures.clear();
+        mRecentRandomFigures.clear();
 
         for (int i = 0; i < howMuchFigures; i++){
             Figure figure = getRandomFigure();
 
             if (figure != null){
-                recentRandomFigures.add(figure);
+                mRecentRandomFigures.add(figure);
             }
         }
     }
 
     public void clearRecentRandomFigures(){
-        recentRandomFigures.clear();
+        mRecentRandomFigures.clear();
     }
 }

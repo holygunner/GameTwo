@@ -2,7 +2,7 @@ package com.holygunner.game_two.figures;
 
 import com.holygunner.game_two.R;
 import com.holygunner.game_two.game_mechanics.Cell;
-import com.holygunner.game_two.values.ColorValues.FigureColors;
+import com.holygunner.game_two.values.ColorsValues.FigureColors;
 
 import java.util.UUID;
 
