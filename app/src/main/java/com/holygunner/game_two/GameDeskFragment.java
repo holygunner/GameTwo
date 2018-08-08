@@ -5,16 +5,17 @@ import com.holygunner.game_two.figures.Figure;
 import com.holygunner.game_two.figures.FigureFactory;
 import com.holygunner.game_two.game_mechanics.*;
 import com.holygunner.game_two.values.ColorsValues;
+import com.holygunner.game_two.values.LevelsValues;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -40,7 +41,7 @@ public class GameDeskFragment extends Fragment {
 
     private RelativeLayout parentLayout;
     private RelativeLayout gameOverLayout;
-    private TextView gameOverTextView;
+    private TextView warningTextView;
 
     private boolean userActionAvailable;
     private boolean isTurnButtonClickable;
@@ -61,11 +62,10 @@ public class GameDeskFragment extends Fragment {
         mGameManager.startOrResumeGame(Saver.isSaveExists(getContext()));
         //
 
-        gameOverTextView = (TextView) view.findViewById(R.id.gameOverTextView);
+        warningTextView = (TextView) view.findViewById(R.id.warningTextView);
         gameOverLayout = (RelativeLayout) view.findViewById(R.id.gameOverLayout);
 
         mRecyclerGridDesk = (RecyclerView) view.findViewById(R.id.recycler_grid_game_desk);
-//        mRecyclerGridDesk.setLayoutManager(new GridLayoutManager(getActivity(), DeskValues.DESK_WIDTH));
         mRecyclerGridDesk.setLayoutManager(new GridLayoutManager(getActivity(),
                 mGameManager.getGamePlay().getLevel().getDeskSize()[1]));
 
@@ -105,7 +105,7 @@ public class GameDeskFragment extends Fragment {
     }
 
     private void updateRecyclerGridDesk(){
-        List<String> data = DeskToCellsListConverter.getInstanse().getCellList(mGameManager.getDesk());
+        List<String> data = DeskToCellsListConverter.getInstance().getCellList(mGameManager.getDesk());
         mAdapter = new RecyclerGridAdapter(getActivity(), data);
         mRecyclerGridDesk.setAdapter(mAdapter);
 
@@ -119,21 +119,51 @@ public class GameDeskFragment extends Fragment {
 
     private void updateGamerCount(boolean isReadGamerCount){
         int gamerCount;
-        int levelRounds;
+        int levelRounds = 0;
 
         if (isReadGamerCount){
             gamerCount = Saver.readGamerCount(getContext());
-            levelRounds = 0;
+//            levelRounds = 0;
             // getLevelRounds = Saver.readGamerLevel(getContext()); - MAKE THIS METHOD
         }   else {
-            gamerCount = mGameManager.getGamePlay().getGamerCount();
+            gamerCount = mGameManager.getGamePlay().getLevel().getGamerCount();
             levelRounds = mGameManager.getGamePlay().getLevel().getLevelRounds();
         }
 
-        gamerCountView.setText(gamerCount + "/" + levelRounds);
+        String levelName = mGameManager.getGamePlay().getLevel().getLevelName();
+
+        gamerCountView.setText(levelName + ": " + gamerCount + "/" + levelRounds);
     }
 
     private void gameOver(){
+        String gameOver = getResources().getString(R.string.game_over);
+        prepareViewsForFinish(gameOver);
+
+        gameOverLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    finishActivity();
+                }
+        });
+    }
+
+    private void goingToNextLevel(){
+        mGameManager.getGamePlay().increseLevelNumb();
+        int indx = mGameManager.getGamePlay().getLevelNumb();
+
+        String nextLevelStr = new String(LevelsValues.LEVELS_NAMES[indx]);
+        prepareViewsForFinish(nextLevelStr);
+
+        gameOverLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), GameFragmentActivity.class));
+                getActivity().finish();
+            }
+        });
+    }
+
+    private void prepareViewsForFinish(String warningText){
         parentLayout.setAlpha(0.4f);
 
         for (int i = 0; i < parentLayout.getChildCount(); i++) {
@@ -141,14 +171,9 @@ public class GameDeskFragment extends Fragment {
             child.setEnabled(false);
         }
 
-        gameOverTextView.setVisibility(View.VISIBLE);
-        animateGameOver(gameOverTextView);
-        gameOverLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                    finishActivity();
-                }
-        });
+        warningTextView.setText(warningText);
+        warningTextView.setVisibility(View.VISIBLE);
+        animateGameOver(warningTextView);
     }
 
     private void finishActivity(){
@@ -253,8 +278,13 @@ public class GameDeskFragment extends Fragment {
                         setIsTurnButtonClickable(true);
                         setIsTurnButtonVisible(false);
 
-                        if (stepResult == 1 || stepResult == 2){
+                        if (stepResult == 1 || stepResult == 2 || stepResult == 3){
                             showUnitedFigure(mImageViewCell, gamePlay);
+
+                            if (stepResult == 3){
+                                goingToNextLevel();
+                                return;
+                            }
 
                         }   else {
                             replaceCell(position);
@@ -363,7 +393,7 @@ public class GameDeskFragment extends Fragment {
         private void updateFillCells(){
             Figure recentFigure =  mGameManager.getDesk().getFigure(mGameManager.getGamePlay().recentPosition);
 
-        if (!mGameManager.getGamePlay().getRecentRandomFigures().isEmpty()){ // расскоментить при добавлении 1 рандомной фигуры при повороте
+        if (!mGameManager.getGamePlay().getRecentRandomFigures().isEmpty()){
             Figure addedRandomFigure = mGameManager.getGamePlay().getRecentRandomFigures().get(0);
 //            mAdapter.notifyItemChanged(mGameManager.getDesk().cellToPosition(addedRandomFigure.mCell)); // не срабатывает выделение, если фигура попадает в слияние
             setImageViewRes(mGameManager.getDesk().cellToPosition(addedRandomFigure.mCell), FigureFactory.getFigureRes(addedRandomFigure));
@@ -402,7 +432,7 @@ public class GameDeskFragment extends Fragment {
             setBackgroundColorOnPosition(mGameManager.getGamePlay().recentPosition, currentFigureColor);
         }
 
-        public void setBackgroundColorOnPosition(int position, int color){
+        private void setBackgroundColorOnPosition(int position, int color){
             mRecyclerGridDesk.getLayoutManager().findViewByPosition(position).setBackgroundColor(color);
         }
 
@@ -420,7 +450,7 @@ public class GameDeskFragment extends Fragment {
             return color;
         }
 
-        public void showRecentRandomFiguresWithDelay(){
+        private void showRecentRandomFiguresWithDelay(){
             final List<Figure> recentRandFigures = mGameManager.getGamePlay().getRecentRandomFigures();
             final long delay = 100;
 

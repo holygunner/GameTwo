@@ -16,14 +16,17 @@ import java.util.List;
 
 public class Saver {
     private Context mContext;
+    private GameManager mGameManager;
     private SQLiteDatabase mDatabase;
 
     public static final String IS_GAME_STARTED_KEY = "is_game_started_key";
     public static final String GAMER_COUNT_KEY = "gamer_count_key";
     public static final String MAX_SCORE_KEY = "max_score_key";
     public static final String IS_TURN_BUTTON_CLICKABLE_KEY = "is_turn_button_clickable_key";
+    public static final String CURRENT_LEVEL = "current_level";
 
-    public Saver (Context context){
+    public Saver (GameManager gameManager, Context context){
+        mGameManager = gameManager;
         mContext = context.getApplicationContext();
         mDatabase = new FigureBaseHelper(mContext).getWritableDatabase();
     }
@@ -70,16 +73,16 @@ public class Saver {
         }
     }
 
-    public void writeIsTurnButtonClickable(Context context, boolean isClickable){
-        PreferenceManager.getDefaultSharedPreferences(context)
+    public void writeIsTurnButtonClickable(boolean isClickable){
+        PreferenceManager.getDefaultSharedPreferences(mContext)
                 .edit()
                 .putBoolean(IS_TURN_BUTTON_CLICKABLE_KEY, isClickable)
                 .apply();
     }
 
-    public void reset(Context context){
-        resetIsTurnButtonClickable(context);
-        resetGamerCount(context);
+    public void reset(){
+        resetIsTurnButtonClickable();
+        resetGamerCount();
     }
 
     public static boolean readIsTurnButtonClickable(Context context){
@@ -87,13 +90,13 @@ public class Saver {
                 .getBoolean(IS_TURN_BUTTON_CLICKABLE_KEY, true);
     }
 
-    public void writeGamerCount(Context context, int gamerCount){
-        PreferenceManager.getDefaultSharedPreferences(context)
+    public void writeGamerCount(int gamerCount){
+        PreferenceManager.getDefaultSharedPreferences(mContext)
                 .edit()
                 .putInt(GAMER_COUNT_KEY, gamerCount)
                 .apply();
 
-        writeMaxScore(context, gamerCount);
+        writeMaxScore(gamerCount);
     }
 
     public static int readMaxScore(Context context){
@@ -102,6 +105,15 @@ public class Saver {
 
     public static int readGamerCount(Context context){
         return PreferenceManager.getDefaultSharedPreferences(context).getInt(GAMER_COUNT_KEY, 0);
+    }
+
+    public static int readCurrentLevel(Context context){
+        return PreferenceManager.getDefaultSharedPreferences(context).getInt(CURRENT_LEVEL, 0);
+    }
+
+    public void writeCurrentLevel(){
+        int currentLevel = mGameManager.getGamePlay().getLevelNumb();
+        writeLevel(currentLevel);
     }
 
     public Figure[] loadFigures(){
@@ -124,6 +136,13 @@ public class Saver {
 
     public void clearSQLiteDatabase(){
         mDatabase.execSQL("delete from " + FigureTable.NAME);
+    }
+
+    private void writeLevel(int level){
+        PreferenceManager.getDefaultSharedPreferences(mContext)
+                .edit()
+                .putInt(CURRENT_LEVEL, level)
+                .apply();
     }
 
     private static ContentValues getContentValues (Figure figure){
@@ -150,26 +169,26 @@ public class Saver {
         return new FigureCursorWrapper(cursor);
     }
 
-    private void resetGamerCount(Context context){
-        PreferenceManager.getDefaultSharedPreferences(context)
+    private void resetGamerCount(){
+        PreferenceManager.getDefaultSharedPreferences(mContext)
                 .edit()
                 .putInt(GAMER_COUNT_KEY, 0)
                 .apply();
     }
 
-    private void writeMaxScore(Context context, int gamerCount){
-        int maxScore = readMaxScore(context);
+    private void writeMaxScore(int gamerCount){
+        int maxScore = readMaxScore(mContext);
 
         if (maxScore < gamerCount){
-            PreferenceManager.getDefaultSharedPreferences(context)
+            PreferenceManager.getDefaultSharedPreferences(mContext)
                     .edit()
                     .putInt(MAX_SCORE_KEY, gamerCount)
                     .apply();
         }
     }
 
-    private void resetIsTurnButtonClickable(Context context){
-        PreferenceManager.getDefaultSharedPreferences(context)
+    private void resetIsTurnButtonClickable(){
+        PreferenceManager.getDefaultSharedPreferences(mContext)
                 .edit()
                 .putBoolean(IS_TURN_BUTTON_CLICKABLE_KEY, true)
                 .apply();

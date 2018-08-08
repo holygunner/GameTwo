@@ -4,7 +4,10 @@ import com.holygunner.game_two.figures.FigureClassAndColorPair;
 import com.holygunner.game_two.values.LevelsValues;
 
 public class Level {
+    public static final int BONUS = 10;
     private int mLevelNumb;
+    private int mGamerCount;
+    private String mLevelName;
     private int mLevelRounds; // required steps to finish level
     private int[] mDeskSize; // width & height of the desk
     private int mAddForStep; // quantity Of Rand Figures For Empty Step (2-4(?))
@@ -14,6 +17,11 @@ public class Level {
 
     public Level(int levelNumb){
         mLevelNumb = levelNumb;
+        setValues(levelNumb);
+    }
+
+    private void setValues(int levelNumb){
+        mLevelName = LevelsValues.LEVELS_NAMES[levelNumb];
         mLevelRounds = LevelsValues.LEVELS_ROUNDS[levelNumb];
         mDeskSize = LevelsValues.DESKS_SIZES[levelNumb];
         mAddForStep = LevelsValues.ADDS_FOR_STEP[levelNumb];
@@ -48,5 +56,33 @@ public class Level {
 
     public FigureClassAndColorPair[] getFigureClassesAndColorPairs() {
         return mFigureClassAndColorPairs;
+    }
+
+    public String getLevelName() {
+        return mLevelName;
+    }
+
+    public int getGamerCount() {
+        return mGamerCount;
+    }
+
+    public void setGamerCount(int gamerCount) {
+        mGamerCount = gamerCount;
+    }
+
+    public void increaseGamerCount(){
+        ++mGamerCount;
+    }
+
+    public void addBonus(){
+        mGamerCount += BONUS;
+    }
+
+    public boolean isLevelComplete(){
+        if (mGamerCount >= mLevelRounds){
+            return true;
+        }   else {
+            return false;
+        }
     }
 }

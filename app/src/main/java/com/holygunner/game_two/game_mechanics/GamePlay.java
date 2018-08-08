@@ -6,36 +6,37 @@ import com.holygunner.game_two.database.Saver;
 import com.holygunner.game_two.figures.Figure;
 import com.holygunner.game_two.figures.FigureFactory;
 import com.holygunner.game_two.figures.Position;
+import com.holygunner.game_two.values.LevelsValues;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GamePlay {
     public Integer recentPosition;
-    public static final int BONUS = 10;
 
     private Context mContext;
     private Level mLevel;
+    private int mLevelNumb;
     private Desk mDesk;
     private AvailableSteps mAvailableSteps;
     private Randomer mRandomer;
     private Saver mSaver;
     private List<Figure> mRecentRandomFigures;
-    private int mGamerCount;
 
     private int unitedFigureRes;
     private boolean isGameStarted;
     private boolean isTurnAvailable;
     private boolean isFilled;
 
-    public GamePlay(Desk desk, Saver saver, Context context){
-        mLevel = new Level(1); // TEST
-        mRandomer = new Randomer(mLevel);
-        mSaver = saver;
+    public GamePlay(Context context, Desk desk, Saver saver){
         mContext = context.getApplicationContext();
+        mSaver = saver;
+        mLevel = new Level(Saver.readCurrentLevel(mContext));
+        mLevelNumb = mLevel.getLevelNumb();
+        mRandomer = new Randomer(mLevel);
         mDesk = desk;
         isGameStarted = Saver.isSaveExists(mContext);
-        mGamerCount = Saver.readGamerCount(context);
+        mLevel.setGamerCount(Saver.readGamerCount(context));
         mRecentRandomFigures = new ArrayList<>();
     }
 
@@ -52,7 +53,6 @@ public class GamePlay {
     }
 
     public Desk loadDesk(Figure[] figures){
-//        mDesk = new Desk();
         mDesk = new Desk(this, mLevel.getDeskSize());
 
         for (int i = 0; i < figures.length; ++i){
@@ -93,8 +93,12 @@ public class GamePlay {
                     break;
                 case 2:
                     addRandomFigure(3);
-                    bonus();
+                    mLevel.addBonus();
                     break;
+            }
+
+            if (mLevel.isLevelComplete()){
+                return 3;
             }
 
             if (stepResult != -1) {
@@ -110,7 +114,7 @@ public class GamePlay {
 
     public boolean isGameContinue(){
         if (mDesk.getFreeCells().isEmpty()){
-            mSaver.writeGamerCount(mContext, mGamerCount);
+            mSaver.writeGamerCount(mLevel.getGamerCount());
             return false;
         }   else
             return true;
@@ -144,8 +148,7 @@ public class GamePlay {
 
                 Position turnedPosition = Position.getTurnedPosition(figure.position);
                 figure.position = turnedPosition;
-
-                addRandomFigure(mLevel.getAddForTurn()); // +1 рандомная фигура при повороте (также раскомментить код в анимации поворота в фрагменте)
+                addRandomFigure(mLevel.getAddForTurn());
 
                 mAvailableSteps = new AvailableSteps(this, recentPosition, mDesk);
                 isFilled = true;
@@ -156,15 +159,11 @@ public class GamePlay {
         return false;
     }
 
-    public int getGamerCount(){
-        return mGamerCount;
-    }
-
     public Level getLevel(){
         return mLevel;
     }
 
-    public boolean areSemiFiguresAreWhole(Figure figure1, Figure figure2){ // являются ли обе половины одной фигурой
+    public boolean areSemiFiguresAreWhole(Figure figure1, Figure figure2){ // are the both halves the whole figure
         Position position1 = figure1.position;
         Position position2 = figure2.position;
 
@@ -223,13 +222,12 @@ public class GamePlay {
 
                 if (areSemiFiguresAreWhole(ourFigure, figure2)){
                     unitedFigureRes = figure2.fullPositionRes;
-                    increaseGamerCount();
+                    mLevel.increaseGamerCount();
                     mDesk.uniteSemiFigures(fromWhere, toWhere);
 
                     if (mDesk.isDeskEmpty()){
                         return 2;
                     }
-
                     return 1;
                 }
             }
@@ -240,14 +238,6 @@ public class GamePlay {
     private void setGameStarted(){
         isGameStarted = true;
         Saver.writeIsSaveExists(mContext, isGameStarted);
-    }
-
-    private void increaseGamerCount(){
-        ++mGamerCount;
-    }
-
-    private void bonus(){
-        mGamerCount += BONUS;
     }
 
     private Figure getRandomFigure(){
@@ -273,5 +263,20 @@ public class GamePlay {
 
     public void clearRecentRandomFigures(){
         mRecentRandomFigures.clear();
+    }
+
+    public int getLevelNumb() {
+        return mLevelNumb;
+    }
+
+//    public void setLevelNumb(int levelNumb) {
+//        mLevelNumb = levelNumb;
+//    }
+
+    public void increseLevelNumb(){
+        if (mLevelNumb < LevelsValues.LEVELS_NAMES.length - 1){
+            mLevelNumb += 1;
+        }   else
+            mLevelNumb = LevelsValues.LEVELS_NAMES.length - 1; // проработать переход в endless mode
     }
 }

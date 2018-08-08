@@ -17,17 +17,17 @@ public class GameManager {
     }
 
     public void startOrResumeGame(boolean isOpenSave){
-        mSaver = new Saver(mContext);
+        mSaver = new Saver(this, mContext);
 
         if (isOpenSave){
             // open SQLite DB
-            mGamePlay = new GamePlay(mDesk, mSaver, mContext);
+            mGamePlay = new GamePlay(mContext, mDesk, mSaver);
             mDesk = mGamePlay.loadDesk(mSaver.loadFigures());
             Log.i(TAG, "GAME LOAD");
         }   else {
             // create new game
-            mSaver.reset(mContext);
-            mGamePlay = new GamePlay(mDesk, mSaver, mContext);
+            mSaver.reset();
+            mGamePlay = new GamePlay(mContext, mDesk, mSaver);
             mDesk = mGamePlay.createNewDesk();
             Log.i(TAG, "NEW GAME");
         }
@@ -46,8 +46,9 @@ public class GameManager {
         }
 
         mSaver.saveToSQLiteDatabase(mDesk);
-        mSaver.writeGamerCount(mContext, mGamePlay.getGamerCount());
-        mSaver.writeIsTurnButtonClickable(mContext, mGamePlay.isTurnAvailable());
+        mSaver.writeCurrentLevel();
+        mSaver.writeGamerCount(mGamePlay.getLevel().getGamerCount());
+        mSaver.writeIsTurnButtonClickable(mGamePlay.isTurnAvailable());
 
         Log.i(TAG, "Save is succesful");
         return true;

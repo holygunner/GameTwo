@@ -63,12 +63,12 @@
         <TextView
             android:textColor="#000000"
             android:visibility="invisible"
-            android:text="GAME OVER!"
+            android:text="@string/game_over"
             android:textStyle="bold"
             android:textSize="48dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/gameOverTextView"
+            android:id="@+id/warningTextView"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"/>
     </RelativeLayout>

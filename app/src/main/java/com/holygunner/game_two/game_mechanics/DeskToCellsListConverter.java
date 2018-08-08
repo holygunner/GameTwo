@@ -11,7 +11,7 @@ public class DeskToCellsListConverter {
     private DeskToCellsListConverter(){
     }
 
-    public static DeskToCellsListConverter getInstanse(){
+    public static DeskToCellsListConverter getInstance(){
         if (instance == null){
             instance = new DeskToCellsListConverter();
         }
