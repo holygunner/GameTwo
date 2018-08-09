@@ -19,12 +19,12 @@
         android:orientation="vertical">
 
         <Button
-            android:textSize="@dimen/textSize"
-            android:layout_width="@dimen/start_activity_button_width"
-            android:layout_height="wrap_content"
-            android:id="@+id/reset_game_button"
+            style="@style/StartActivityButton"
+            android:text="@string/choose_level"
+            android:id="@+id/choose_level_button"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"/>
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -34,10 +34,7 @@
         android:orientation="vertical">
 
         <Button
-            android:textSize="@dimen/textSize"
-
-            android:layout_width="@dimen/start_activity_button_width"
-            android:layout_height="wrap_content"
+            style="@style/StartActivityButton"
             android:id="@+id/game_button"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"/>
@@ -50,18 +47,16 @@
         android:orientation="vertical">
 
         <Button
-            android:textSize="@dimen/textSize"
-            android:text="@string/exit"
-            android:layout_width="@dimen/start_activity_button_width"
-            android:layout_height="wrap_content"
-            android:id="@+id/exit_button"
+            style="@style/StartActivityButton"
+            android:text="@string/about"
+            android:id="@+id/about_button"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"/>
 
         <TextView
             android:hint="@string/your_max_score"
             android:visibility="invisible"
-            android:textSize="@dimen/textSize"
+            android:textSize="@dimen/start_button_text_size"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"

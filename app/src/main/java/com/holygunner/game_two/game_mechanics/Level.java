@@ -85,4 +85,12 @@ public class Level {
             return false;
         }
     }
+
+    public static boolean isEndlessMode(int levelNumb){
+        if (levelNumb >= LevelsValues.LEVELS_NAMES.length - 1){
+            return true;
+        }   else {
+            return false;
+        }
+    }
 }

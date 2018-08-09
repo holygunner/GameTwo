@@ -4,4 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="currentFigureFill">#00f710</color>
+    <color name="purple">#440089</color>
+    <color name="empty_cell_color">#D7DABA</color>
+    <color name="start_button_text_color">#010101</color>
 </resources>

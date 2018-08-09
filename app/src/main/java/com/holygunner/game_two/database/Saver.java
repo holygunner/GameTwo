@@ -24,10 +24,12 @@ public class Saver {
     public static final String MAX_SCORE_KEY = "max_score_key";
     public static final String IS_TURN_BUTTON_CLICKABLE_KEY = "is_turn_button_clickable_key";
     public static final String CURRENT_LEVEL = "current_level";
+    public static final String MAX_LEVEL_AVAILABLE = "max_level_available"; // required for start any level
+    // which is completed already from start activity
 
     public Saver (GameManager gameManager, Context context){
-        mGameManager = gameManager;
         mContext = context.getApplicationContext();
+        mGameManager = gameManager;
         mDatabase = new FigureBaseHelper(mContext).getWritableDatabase();
     }
 
@@ -47,6 +49,13 @@ public class Saver {
 
     public static boolean isSaveExists(Context context){
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(IS_GAME_STARTED_KEY, false);
+    }
+
+    public static void resetSave(Context context){
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putBoolean(IS_GAME_STARTED_KEY, false)
+                .apply();
     }
 
     public static void writeIsSaveExists(Context context, boolean isGameStarted){
@@ -113,7 +122,7 @@ public class Saver {
 
     public void writeCurrentLevel(){
         int currentLevel = mGameManager.getGamePlay().getLevelNumb();
-        writeLevel(currentLevel);
+        writeLevel(mContext, currentLevel);
     }
 
     public Figure[] loadFigures(){
@@ -138,8 +147,8 @@ public class Saver {
         mDatabase.execSQL("delete from " + FigureTable.NAME);
     }
 
-    private void writeLevel(int level){
-        PreferenceManager.getDefaultSharedPreferences(mContext)
+    public static void writeLevel(Context context, int level){
+        PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
                 .putInt(CURRENT_LEVEL, level)
                 .apply();

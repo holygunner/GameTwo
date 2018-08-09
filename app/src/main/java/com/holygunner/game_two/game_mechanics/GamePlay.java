@@ -273,10 +273,12 @@ public class GamePlay {
 //        mLevelNumb = levelNumb;
 //    }
 
-    public void increseLevelNumb(){
-        if (mLevelNumb < LevelsValues.LEVELS_NAMES.length - 1){
+    public void increaseLevelNumb(){
+        if (!Level.isEndlessMode(mLevelNumb)){
             mLevelNumb += 1;
-        }   else
-            mLevelNumb = LevelsValues.LEVELS_NAMES.length - 1; // проработать переход в endless mode
+        }   else {
+            mLevelNumb = LevelsValues.LEVELS_NAMES.length - 1;
+//            mLevelNumb = 0; // back to 1st level
+        }
     }
 }

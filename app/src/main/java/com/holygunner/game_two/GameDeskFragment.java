@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -120,6 +121,8 @@ public class GameDeskFragment extends Fragment {
     private void updateGamerCount(boolean isReadGamerCount){
         int gamerCount;
         int levelRounds = 0;
+        int levelNumb = mGameManager.getGamePlay().getLevelNumb();
+        String levelName = mGameManager.getGamePlay().getLevel().getLevelName();
 
         if (isReadGamerCount){
             gamerCount = Saver.readGamerCount(getContext());
@@ -130,9 +133,12 @@ public class GameDeskFragment extends Fragment {
             levelRounds = mGameManager.getGamePlay().getLevel().getLevelRounds();
         }
 
-        String levelName = mGameManager.getGamePlay().getLevel().getLevelName();
-
-        gamerCountView.setText(levelName + ": " + gamerCount + "/" + levelRounds);
+        if (!Level.isEndlessMode(levelNumb)){
+            gamerCountView.setText(levelName + ": " + gamerCount + "/" + levelRounds);
+        }   else {
+            gamerCountView.setText(levelName + ": " + gamerCount + "/"
+                    + getResources().getString(R.string.infinity_symbol));
+        }
     }
 
     private void gameOver(){
@@ -148,7 +154,7 @@ public class GameDeskFragment extends Fragment {
     }
 
     private void goingToNextLevel(){
-        mGameManager.getGamePlay().increseLevelNumb();
+        mGameManager.getGamePlay().increaseLevelNumb();
         int indx = mGameManager.getGamePlay().getLevelNumb();
 
         String nextLevelStr = new String(LevelsValues.LEVELS_NAMES[indx]);
@@ -158,7 +164,7 @@ public class GameDeskFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(getActivity(), GameFragmentActivity.class));
-                getActivity().finish();
+                finishActivity();
             }
         });
     }
