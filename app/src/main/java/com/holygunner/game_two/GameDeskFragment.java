@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -39,6 +38,7 @@ public class GameDeskFragment extends Fragment {
 
     private Button turnFigureButton;
     private TextView gamerCountView;
+    private TextView levelNameTextView;
 
     private RelativeLayout parentLayout;
     private RelativeLayout gameOverLayout;
@@ -72,6 +72,7 @@ public class GameDeskFragment extends Fragment {
 
         turnFigureButton = (Button) view.findViewById(R.id.turnFigureButton);
         gamerCountView = (TextView) view.findViewById(R.id.gamerCountTextView);
+        levelNameTextView = (TextView) view.findViewById(R.id.levelNameTextView);
 
         updateGamerCount(true);
         boolean isOpenSave = getActivity().getIntent().getBooleanExtra(StartGameActivity.IS_OPEN_SAVE_KEY, false);
@@ -133,11 +134,12 @@ public class GameDeskFragment extends Fragment {
             levelRounds = mGameManager.getGamePlay().getLevel().getLevelRounds();
         }
 
+        levelNameTextView.setText(levelName);
+
         if (!Level.isEndlessMode(levelNumb)){
-            gamerCountView.setText(levelName + ": " + gamerCount + "/" + levelRounds);
+            gamerCountView.setText(gamerCount + " : " + levelRounds);
         }   else {
-            gamerCountView.setText(levelName + ": " + gamerCount + "/"
-                    + getResources().getString(R.string.infinity_symbol));
+            gamerCountView.setText(gamerCount + " : " + getResources().getString(R.string.infinity_symbol));
         }
     }
 

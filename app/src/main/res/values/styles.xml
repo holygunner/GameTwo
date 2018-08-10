@@ -9,8 +9,8 @@
     </style>
 
     <style name="StartActivityButton">
-        <item name="android:background">@drawable/start_button</item>
-        <item name="android:textColor">@color/start_button_text_color</item>
+        <item name="android:background">@drawable/start_button2</item>
+        <item name="android:textColor">@color/grey_text_color</item>
         <item name="android:alpha">@dimen/start_button_alpha</item>
         <item name="android:layout_width">@dimen/start_activity_button_width</item>
         <item name="android:layout_height">wrap_content</item>
@@ -18,23 +18,15 @@
     </style>
 
     <style
-        name="dialog" parent="@android:style/Theme.DeviceDefault.Light.Dialog">
-        <!-- title encapsulating main part (backgroud) of custom alertdialog -->
-        <item
-            name="android:windowFrame">@null</item>
-        <!-- turn off any drawable used to draw a frame on the window -->
-        <item
-            name="android:windowBackground">@null</item>
-        <!-- turn off any drawable used to draw a frame on the window -->
-        <item
-            name="android:windowIsFloating">false</item>
-        <!-- float the window so it does not fill the screen -->
-        <item
-            name="android:windowNoTitle">false</item>
-        <!-- remove the title bar we make our own-->
-        <item
-            name="android:windowContentOverlay">@null</item>
-        <!-- remove the shadow from under the title bar -->
+        name="dialog">
+        <!-- title encapsulating main part (background) of custom alertdialog -->
+        <item name="android:windowBackground">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionBar">true</item>
+        <item name="windowNoTitle">false</item>
+        <item name="android:buttonBarStyle">@style/Widget.AppCompat.ActionButton</item>
     </style>
 
 </resources>
