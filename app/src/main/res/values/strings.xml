@@ -2,11 +2,11 @@
     <string name="app_name">Halves→Whole</string>
     <string name="new_game">New Game</string>
     <string name="resume_game">Resume Game</string>
-    <string name="choose_level">Choose Level</string>
+    <string name="select_level">Select level</string>
     <string name="about">About</string>
     <string name="turn">TURN</string>
     <string name="your_max_score">your max score:</string>
     <string name="game_over">GAME OVER!</string>
     <string name="infinity_symbol">∞</string>
-    <string name="choose_your_level">Choose your level:</string>
+    <string name="select_your_level">Select your level:</string>
 </resources>

@@ -160,6 +160,7 @@ public class GameDeskFragment extends Fragment {
         int indx = mGameManager.getGamePlay().getLevelNumb();
 
         String nextLevelStr = new String(LevelsValues.LEVELS_NAMES[indx]);
+        levelNameTextView.setVisibility(View.INVISIBLE);
         prepareViewsForFinish(nextLevelStr);
 
         gameOverLayout.setOnClickListener(new View.OnClickListener() {

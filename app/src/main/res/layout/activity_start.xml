@@ -20,7 +20,7 @@
 
         <Button
             style="@style/StartActivityButton"
-            android:text="@string/choose_level"
+            android:text="@string/select_level"
             android:id="@+id/choose_level_button"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"/>
