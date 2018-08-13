@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -26,8 +27,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import java.util.List;
+
+import static com.holygunner.game_two.game_mechanics.StepResult.*;
 
 public class GameDeskFragment extends Fragment {
 
@@ -107,7 +109,7 @@ public class GameDeskFragment extends Fragment {
     }
 
     private void updateRecyclerGridDesk(){
-        List<String> data = DeskToCellsListConverter.getInstance().getCellList(mGameManager.getDesk());
+        List<String> data = DeskToCellsListConverter.getCellList(mGameManager.getDesk());
         mAdapter = new RecyclerGridAdapter(getActivity(), data);
         mRecyclerGridDesk.setAdapter(mAdapter);
 
@@ -136,7 +138,7 @@ public class GameDeskFragment extends Fragment {
 
         levelNameTextView.setText(levelName);
 
-        if (!Level.isEndlessMode(levelNumb)){
+        if (!LevelsValues.isEndlessMode(levelNumb)){
             gamerCountView.setText(gamerCount + " : " + levelRounds);
         }   else {
             gamerCountView.setText(gamerCount + " : " + getResources().getString(R.string.infinity_symbol));
@@ -263,7 +265,6 @@ public class GameDeskFragment extends Fragment {
                     if (!userActionAvailable){
                         return false;
                     }
-
                     final GamePlay gamePlay = mGameManager.getGamePlay();
 
                     switch (event.getAction()){
@@ -281,46 +282,47 @@ public class GameDeskFragment extends Fragment {
                 }
 
                 private void actionDown(GamePlay gamePlay){
-                    int stepResult;
+                    StepResult stepResult;
 
-                    if ((stepResult = gamePlay.tryToStep(position)) != -1){
+                    if ((stepResult = gamePlay.tryToStep(position)) != STEP_UNAVAILABLE){
                         setIsTurnButtonClickable(true);
                         setIsTurnButtonVisible(false);
 
-                        if (stepResult == 1 || stepResult == 2 || stepResult == 3){
+                        if (stepResult == UNITE_FIGURE
+                                || stepResult == DESK_EMPTY
+                                || stepResult == LEVEL_COMPLETE){
                             showUnitedFigure(mImageViewCell, gamePlay);
 
-                            if (stepResult == 3){
+                            if (stepResult == LEVEL_COMPLETE){
                                 goingToNextLevel();
                                 return;
                             }
-
-                        }   else {
+                        } else {
                             replaceCell(position);
                         }
                     }   else {
-                        boolean isFilled = gamePlay.setAvailableCells(position);
-                        if (isFilled){
-                            int currentFigureColor = mGameManager.getDesk().getFigure(position).color;
-                            fillCells(isFilled, currentFigureColor);
+                            boolean isFilled = gamePlay.setAvailableCells(position);
+                            if (isFilled){
+                                int currentFigureColor = mGameManager.getDesk().getFigure(position).color;
+                                fillCells(isFilled, currentFigureColor);
 
-                            if (isTurnButtonClickable) {
-                                setIsTurnButtonClickable(true);
-                            }
+                                if (isTurnButtonClickable) {
+                                    setIsTurnButtonClickable(true);
+                                }
 
-                            turnFigureButton.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    if (isTurnButtonClickable) {
-                                        if (mGameManager.getGamePlay().turnFigureIfExists(position)) {
-                                            turnFigure(mImageViewCell);
-                                        } else {
+                                turnFigureButton.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        if (isTurnButtonClickable) {
+                                            if (mGameManager.getGamePlay().turnFigureIfExists(position)) {
+                                                turnFigure(mImageViewCell);
+                                            } else {
+                                            }
                                         }
                                     }
-                                }
-                            });
+                                });
+                            }
                         }
-                    }
 
                 }
             });
@@ -432,12 +434,6 @@ public class GameDeskFragment extends Fragment {
                     }
                 }
             }
-
-            if (color == ColorsValues.FillColors.CURRENT_FIGURE_FILL){
-            }   else {
-                currentFigureColor = Color.TRANSPARENT;
-            }
-
             setBackgroundColorOnPosition(mGameManager.getGamePlay().recentPosition, currentFigureColor);
         }
 
@@ -449,8 +445,8 @@ public class GameDeskFragment extends Fragment {
             int color;
 
             if (isFillColor) {
-                color = ColorsValues.FillColors.CURRENT_FIGURE_FILL;
-//                color = ContextCompat.getColor(getContext(), R.color.colorAccent);
+//                color = ColorsValues.FillColors.CURRENT_FIGURE_FILL;
+                color = ContextCompat.getColor(getContext(), R.color.currentFigureFill);
                 mGameManager.getGamePlay().setIsFilled(true);
             }   else {
                 color = Color.TRANSPARENT;
@@ -478,9 +474,7 @@ public class GameDeskFragment extends Fragment {
                         this.sendEmptyMessageDelayed(0, delay);
                 }
             };
-
             mHandler.sendEmptyMessage(0);
-
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {

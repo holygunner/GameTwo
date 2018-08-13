@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -38,8 +39,10 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_start);
         chooseLevelButton = (Button) findViewById(R.id.choose_level_button);
+        setChooseLevelButtonVisibility();
         chooseLevelButton.setOnClickListener(this);
         gameButton = (Button) findViewById(R.id.game_button);
         gameButton.setOnClickListener(this);
@@ -47,7 +50,15 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
         exitButton.setOnClickListener(this);
         maxScoreTextView = (TextView) findViewById(R.id.maxScoreTextView);
         updateMaxScore();
-        setButtonsOrder();
+        setGameButtonText();
+    }
+
+    private void setChooseLevelButtonVisibility() {
+        if (Saver.readMaxLevel(getApplicationContext()) > 0) {
+            chooseLevelButton.setVisibility(View.VISIBLE);
+        }   else {
+            chooseLevelButton.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void updateMaxScore(){
@@ -68,7 +79,7 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
         }
     }
 
-    private void setButtonsOrder(){ // 1st start: New Game button & invisible Choose level button;
+    private void setGameButtonText(){ // 1st start: New Game button & invisible Choose level button;
                                     // Save exists: Resume Game button, visible Choose level button
         boolean isSaveExists = Saver.isSaveExists(getApplicationContext());
 //        setChooseLevelButtonVisibility(isSaveExists);
@@ -84,7 +95,8 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
     protected void onResume(){
         super.onResume();
         updateMaxScore();
-        setButtonsOrder();
+        setChooseLevelButtonVisibility();
+        setGameButtonText();
     }
 
     private void showChooseLevelDialog(){

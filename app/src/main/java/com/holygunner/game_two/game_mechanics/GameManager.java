@@ -29,15 +29,20 @@ public class GameManager {
             mSaver.reset();
             mGamePlay = new GamePlay(mContext, mDesk, mSaver);
             mDesk = mGamePlay.createNewDesk();
+//            mDesk = mGamePlay.createDemoDesk();
             Log.i(TAG, "NEW GAME");
         }
     }
 
     public boolean save(){
+        mSaver.writeMaxLevelAndCount(mGamePlay.getLevelNumb(), mGamePlay.getLevel().getGamerCount());
+
         if (!getGamePlay().isGameStarted()){ // there is no save if the first step or turn is not complete
             Saver.writeIsSaveExists(mContext, getGamePlay().isGameStarted());
             return false;
         }
+
+
 
         if (!getGamePlay().isGameContinue()){ // there is no save if a gamer loses, also the last save will delete
             mSaver.clearSQLiteDatabase();
@@ -48,6 +53,7 @@ public class GameManager {
         mSaver.saveToSQLiteDatabase(mDesk);
         mSaver.writeCurrentLevel();
         mSaver.writeGamerCount(mGamePlay.getLevel().getGamerCount());
+
         mSaver.writeIsTurnButtonClickable(mGamePlay.isTurnAvailable());
 
         Log.i(TAG, "Save is succesful");

@@ -7,20 +7,11 @@ import com.holygunner.game_two.game_mechanics.Randomer;
 import java.util.List;
 import java.util.UUID;
 
-public class FigureFactory {
-
+public abstract class FigureFactory {
     public static final String SEMISQUARE = "SemiSquare";
     public static final String SEMICIRCLE = "SemiCircle";
 
-    private static FigureFactory ourInstance = new FigureFactory();
-
-    private FigureFactory() {}
-
-    public static FigureFactory getInstance() {
-        return ourInstance;
-    }
-
-    public Figure getRandomFigure(List<Cell> freeCells, Randomer randomer){
+    public static Figure getRandomFigure(List<Cell> freeCells, Randomer randomer){
         UUID uuid = UUID.randomUUID();
         FigureClassAndColorPair pair = randomer.getRandomFigureTypeAndColorPair();
         Class<?> FigureType = pair.getFigureClass();
@@ -32,7 +23,7 @@ public class FigureFactory {
                 position, cell);
     }
 
-    public Figure createFigure(UUID uuid, Class figureType, int color,
+    public static Figure createFigure(UUID uuid, Class figureType, int color,
                                Position position, Cell cell){
         Figure figure = getInstanceOfChildClass(uuid, figureType, color, position, cell);
         return figure;
@@ -68,7 +59,7 @@ public class FigureFactory {
             return null;
     }
 
-    private Figure getInstanceOfChildClass(UUID uuid, Class figureClass, int color,
+    private static Figure getInstanceOfChildClass(UUID uuid, Class figureClass, int color,
                                            Position position, Cell cell){
         if (figureClass == SemiSquare.class)
             return new SemiSquare(uuid, color, position, cell);

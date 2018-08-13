@@ -3,13 +3,33 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/purple</item>
+        <item name="colorPrimaryDark">#004f86</item>
+        <item name="colorAccent">#7F0000</item>
     </style>
 
+    <style name="Theme.AppCompat.Light.NoActionBar.Custom" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+
+<!--    <style name="StartActivityButton">
+        <item name="android:background">@drawable/gradient_blue_left_rounded_corners</item>
+        <item name="android:textColor">@color/grey_text_color</item>
+        <item name="android:alpha">@dimen/start_button_alpha</item>
+        <item name="android:layout_width">@dimen/start_activity_button_width</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/start_button_text_size</item>
+    </style>
+
+-->
+
     <style name="StartActivityButton">
-        <item name="android:background">@drawable/start_button2</item>
+        <item name="android:background">@drawable/gradient_purple_right_rounded_corners</item>
         <item name="android:textColor">@color/grey_text_color</item>
         <item name="android:alpha">@dimen/start_button_alpha</item>
         <item name="android:layout_width">@dimen/start_activity_button_width</item>

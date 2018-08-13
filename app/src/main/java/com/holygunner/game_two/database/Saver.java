@@ -21,11 +21,11 @@ public class Saver {
 
     public static final String IS_GAME_STARTED_KEY = "is_game_started_key";
     public static final String GAMER_COUNT_KEY = "gamer_count_key";
-    public static final String MAX_SCORE_KEY = "max_score_key";
     public static final String IS_TURN_BUTTON_CLICKABLE_KEY = "is_turn_button_clickable_key";
-    public static final String CURRENT_LEVEL = "current_level";
-    public static final String MAX_LEVEL_AVAILABLE = "max_level_available"; // required for start any level
-    // which is completed already from start activity
+    public static final String CURRENT_LEVEL_KEY = "current_level";
+    public static final String MAX_SCORE_KEY = "max_score_key";
+    public static final String MAX_LEVEL_KEY = "max_level";
+    public static final String MAX_LEVEL_COUNT_KEY = "max_level_count";
 
     public Saver (GameManager gameManager, Context context){
         mContext = context.getApplicationContext();
@@ -38,13 +38,35 @@ public class Saver {
         mDatabase.insert(FigureTable.NAME, null, values);
     }
 
-    public void updateFigure(Figure figure){
-        String uuidString = figure.getUUID().toString();
-        ContentValues values = getContentValues(figure);
+    public void writeMaxLevelAndCount(int levelNumb, int levelCount){ // save max open level and its count
+        int[] lastSavedScore = readMaxLevelAndCount(mContext);
 
-        mDatabase.update(FigureTable.NAME, values,
-                FigureTable.Cols.UUID + " = ?",
-                new String[] { uuidString });
+        if (levelNumb >=lastSavedScore[0]) {
+            PreferenceManager.getDefaultSharedPreferences(mContext)
+                    .edit()
+                    .putInt(MAX_LEVEL_KEY, levelNumb)
+                    .apply();
+        }
+
+        if (levelNumb > lastSavedScore[0] && levelCount >= lastSavedScore[1]) {
+            PreferenceManager.getDefaultSharedPreferences(mContext)
+                    .edit()
+                    .putInt(MAX_LEVEL_COUNT_KEY, levelCount)
+                    .apply();
+        }
+    }
+
+    public static int[] readMaxLevelAndCount(Context context){
+        int[] maxScore = new int[2];
+        maxScore[0] = readMaxLevel(context);
+        maxScore[1] = PreferenceManager.getDefaultSharedPreferences(context)
+                .getInt(MAX_LEVEL_COUNT_KEY, 0);
+        return maxScore;
+    }
+
+    public static int readMaxLevel(Context context){
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getInt(MAX_LEVEL_KEY, 0);
     }
 
     public static boolean isSaveExists(Context context){
@@ -105,7 +127,7 @@ public class Saver {
                 .putInt(GAMER_COUNT_KEY, gamerCount)
                 .apply();
 
-        writeMaxScore(gamerCount);
+        writeMaxScoreIfExists(gamerCount);
     }
 
     public static int readMaxScore(Context context){
@@ -117,7 +139,7 @@ public class Saver {
     }
 
     public static int readCurrentLevel(Context context){
-        return PreferenceManager.getDefaultSharedPreferences(context).getInt(CURRENT_LEVEL, 0);
+        return PreferenceManager.getDefaultSharedPreferences(context).getInt(CURRENT_LEVEL_KEY, 0);
     }
 
     public void writeCurrentLevel(){
@@ -150,7 +172,7 @@ public class Saver {
     public static void writeLevel(Context context, int level){
         PreferenceManager.getDefaultSharedPreferences(context)
                 .edit()
-                .putInt(CURRENT_LEVEL, level)
+                .putInt(CURRENT_LEVEL_KEY, level)
                 .apply();
     }
 
@@ -185,7 +207,7 @@ public class Saver {
                 .apply();
     }
 
-    private void writeMaxScore(int gamerCount){
+    private void writeMaxScoreIfExists(int gamerCount){
         int maxScore = readMaxScore(mContext);
 
         if (maxScore < gamerCount){

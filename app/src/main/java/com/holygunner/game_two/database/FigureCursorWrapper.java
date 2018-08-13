@@ -42,7 +42,7 @@ public class FigureCursorWrapper extends CursorWrapper {
 
         Class<?> figureType = FigureFactory.getClassOfFigure(figureTypeString);
 
-        Figure figure = FigureFactory.getInstance().createFigure(uuid, figureType,
+        Figure figure = FigureFactory.createFigure(uuid, figureType,
                 color, position, mCell);
 
         figure.color = color;

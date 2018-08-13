@@ -12,6 +12,8 @@ import android.view.Window;
 import com.holygunner.game_two.database.Saver;
 import com.holygunner.game_two.values.LevelsValues;
 
+import java.util.Arrays;
+
 public class ChooseLevelDialogFragment extends DialogFragment {
 
     @Override
@@ -24,11 +26,16 @@ public class ChooseLevelDialogFragment extends DialogFragment {
         super.onStart();
 
         Window window = getDialog().getWindow();
-        window.setBackgroundDrawableResource(R.drawable.gradient3);
+        window.setBackgroundDrawableResource(R.drawable.gradient_blue_left_rounded_corners);
     }
 
     @Override
     public Dialog onCreateDialog(Bundle onSaveInstanceState){
+        String[] levelNames = getAvailableLevelsNames();
+        if (levelNames.length == 0){
+            levelNames[0] = LevelsValues.LEVELS_NAMES[0];
+        }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -36,7 +43,7 @@ public class ChooseLevelDialogFragment extends DialogFragment {
 //                builder.setView(inflater.inflate(R.layout.fragment_dialog, null))
                     builder
                         .setTitle(R.string.select_your_level)
-                        .setItems(LevelsValues.LEVELS_NAMES, new DialogInterface.OnClickListener() {
+                        .setItems(levelNames, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 runLevel(which);
@@ -52,6 +59,13 @@ public class ChooseLevelDialogFragment extends DialogFragment {
         Saver.writeLevel(getContext(), which);
         Intent intent = new Intent(getActivity(), GameFragmentActivity.class);
         startActivity(intent);
+    }
+
+    private String[] getAvailableLevelsNames(){
+        int maxLevelNumb = Saver.readMaxLevel(getContext());
+        String[] availableLevelNames = Arrays.copyOfRange(LevelsValues.LEVELS_NAMES, 0, maxLevelNumb + 1);
+
+        return availableLevelNames;
     }
 
 

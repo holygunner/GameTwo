@@ -1,9 +1,5 @@
 package com.holygunner.game_two.database;
 
-/**
- * Created by Holygunner on 16.07.2018.
- */
-
 public class FigureDbSchema {
     public static final class FigureTable{
         public static final String NAME = "figures";
