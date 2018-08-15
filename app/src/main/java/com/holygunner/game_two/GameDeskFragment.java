@@ -62,7 +62,9 @@ public class GameDeskFragment extends Fragment {
         parentLayout = (RelativeLayout) view.findViewById(R.id.parentLayout);
         //
         initGameManagerIfNotExists();
-        mGameManager.startOrResumeGame(Saver.isSaveExists(getContext()));
+//        mGameManager.startOrResumeGame(Saver.isSaveExists(getContext()));
+        mGameManager.startOrResumeGame(getActivity().getIntent().getIntExtra(
+                StartGameActivity.OPEN_LEVEL_NUMB_KEY, 0));
         //
 
         warningTextView = (TextView) view.findViewById(R.id.warningTextView);
@@ -77,8 +79,8 @@ public class GameDeskFragment extends Fragment {
         levelNameTextView = (TextView) view.findViewById(R.id.levelNameTextView);
 
         updateGamerCount(true);
-        boolean isOpenSave = getActivity().getIntent().getBooleanExtra(StartGameActivity.IS_OPEN_SAVE_KEY, false);
-        Saver.writeIsSaveExists(getActivity(), isOpenSave);
+//        boolean isOpenSave = getActivity().getIntent().getBooleanExtra(StartGameActivity.IS_OPEN_SAVE_KEY, false);
+//        Saver.writeIsSaveExists(getActivity(), isOpenSave);
 
         return view;
     }
@@ -87,8 +89,11 @@ public class GameDeskFragment extends Fragment {
     public void onResume(){
         super.onResume();
         initGameManagerIfNotExists();
-        mGameManager.startOrResumeGame(Saver.isSaveExists(getContext()));
-        setIsTurnButtonClickable(Saver.readIsTurnButtonClickable(getContext()));
+//        mGameManager.startOrResumeGame(Saver.isSaveExists(getContext()));
+        mGameManager.startOrResumeGame(getActivity().getIntent().getIntExtra(
+                StartGameActivity.OPEN_LEVEL_NUMB_KEY, 0));
+        setIsTurnButtonClickable(mGameManager.getSaver().readIsTurnButtonClickable());
+//        setIsTurnButtonVisible(mGameManager.getSaver().readIsTurnButtonClickable());
         updateRecyclerGridDesk();
     }
 
@@ -97,9 +102,11 @@ public class GameDeskFragment extends Fragment {
         super.onPause();
         mGameManager.save();
 
-        if (!mGameManager.getGamePlay().isGameContinue() || !mGameManager.getGamePlay().isGameStarted()){
-            finishActivity();
-        }
+        finishActivity();
+
+//        if (!mGameManager.getGamePlay().isGameContinue() || !mGameManager.getGamePlay().isGameStarted()){
+//            finishActivity();
+//        }
     }
 
     private void initGameManagerIfNotExists(){
@@ -152,6 +159,7 @@ public class GameDeskFragment extends Fragment {
         gameOverLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                    mGameManager.getSaver().resetMaxLevelCountIfRequired();
                     finishActivity();
                 }
         });
@@ -168,7 +176,10 @@ public class GameDeskFragment extends Fragment {
         gameOverLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getActivity(), GameFragmentActivity.class));
+//                mGameManager.getSaver().resetMaxLevelCountIfRequired();
+                Intent intent = new Intent(getActivity(), GameFragmentActivity.class);
+                intent.putExtra(StartGameActivity.OPEN_LEVEL_NUMB_KEY, mGameManager.getGamePlay().getLevelNumb());
+                startActivity(intent);
                 finishActivity();
             }
         });
@@ -188,6 +199,12 @@ public class GameDeskFragment extends Fragment {
     }
 
     private void finishActivity(){
+        if (mGameManager.getGamePlay().getDesk().getFreeCells().size() == 0
+                || !(mGameManager.getGamePlay().getLevel().getGamerCount()
+                < LevelsValues.LEVELS_ROUNDS[mGameManager.getGamePlay().getLevel().getLevelNumb()])) {
+            mGameManager.getSaver().resetMaxLevelCountIfRequired();
+        }
+
         getActivity().finish();
     }
 
@@ -445,7 +462,6 @@ public class GameDeskFragment extends Fragment {
             int color;
 
             if (isFillColor) {
-//                color = ColorsValues.FillColors.CURRENT_FIGURE_FILL;
                 color = ContextCompat.getColor(getContext(), R.color.currentFigureFill);
                 mGameManager.getGamePlay().setIsFilled(true);
             }   else {

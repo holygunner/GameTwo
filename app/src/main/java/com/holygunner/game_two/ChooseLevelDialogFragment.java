@@ -54,10 +54,18 @@ public class ChooseLevelDialogFragment extends DialogFragment {
     }
 
 
+//    private void runLevel(int which){
+//        Saver.writeIsSaveExists(getContext(), false);
+//        Saver.writeLevel(getContext(), which);
+//        Intent intent = new Intent(getActivity(), GameFragmentActivity.class);
+//        startActivity(intent);
+//    }
+
     private void runLevel(int which){
-        Saver.resetSave(getContext());
+//        Saver.writeIsSaveExists(getContext(), false);
         Saver.writeLevel(getContext(), which);
         Intent intent = new Intent(getActivity(), GameFragmentActivity.class);
+        intent.putExtra(StartGameActivity.OPEN_LEVEL_NUMB_KEY, which);
         startActivity(intent);
     }
 

@@ -2,6 +2,7 @@ package com.holygunner.game_two;
 
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +14,7 @@ import com.holygunner.game_two.database.*;
 
 public class StartGameActivity extends AppCompatActivity implements View.OnClickListener {
     public static final String IS_OPEN_SAVE_KEY = "is open save";
+    public static final String OPEN_LEVEL_NUMB_KEY = "open_level_numb";
     private Button chooseLevelButton;
     private Button gameButton;
     private Button exitButton;
@@ -20,14 +22,13 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
 
     @Override
     public void onClick(View view) {
-        boolean isSaveExists = Saver.isSaveExists(getApplicationContext());
         Intent intent = new Intent(this, GameFragmentActivity.class);
         switch (view.getId()){
             case R.id.choose_level_button:
                 showChooseLevelDialog();
                 break;
             case R.id.game_button:
-                intent.putExtra(IS_OPEN_SAVE_KEY, isSaveExists);
+                intent.putExtra(OPEN_LEVEL_NUMB_KEY, Saver.readMaxLevel(getApplicationContext()));
                 startActivity(intent);
                 break;
             case R.id.about_button:
@@ -65,24 +66,14 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
         int maxScore = Saver.readMaxScore(this);
 
         if (maxScore>0){
-            maxScoreTextView.setText("Your max score: " + maxScore);
+            maxScoreTextView.setText(getResources().getString(R.string.your_max_score) + maxScore);
             maxScoreTextView.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void setChooseLevelButtonVisibility(boolean isSaveExists){
-        if (isSaveExists){
-            chooseLevelButton.setVisibility(View.VISIBLE);
-//            chooseLevelButton.setText(R.string.choose_level);
-        }   else {
-            chooseLevelButton.setVisibility(View.INVISIBLE);
         }
     }
 
     private void setGameButtonText(){ // 1st start: New Game button & invisible Choose level button;
                                     // Save exists: Resume Game button, visible Choose level button
-        boolean isSaveExists = Saver.isSaveExists(getApplicationContext());
-//        setChooseLevelButtonVisibility(isSaveExists);
+        boolean isSaveExists = Saver.readSaveExists(getApplicationContext());
 
         if (isSaveExists){
             gameButton.setText(R.string.resume_game);
@@ -105,14 +96,7 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
         dialogFragment.show(manager, "TAG");
     }
 
-    private void exit(){
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_HOME);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-    }
-
     private void showAbout(){
-        // show game rules here
+        // show game rules here by DialogFragment or another View
     }
 }

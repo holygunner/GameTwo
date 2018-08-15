@@ -1,13 +1,14 @@
 package com.holygunner.game_two.game_mechanics;
 
+import com.holygunner.game_two.database.Saver;
 import com.holygunner.game_two.values.LevelsValues;
 
 public abstract class LevelLoader {
 
-    public static Level loadLevel(int levelNumb){
+    public static Level loadLevel(int recentLevelNumb){
         Level level = new Level();
-        level.setLevelNumb(levelNumb);
-        setValues(level, levelNumb);
+        level.setLevelNumb(recentLevelNumb);
+        setValues(level, recentLevelNumb);
         return level;
     }
 

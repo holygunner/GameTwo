@@ -3,7 +3,7 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="currentFigureFill">#9b00f710</color>
+    <color name="currentFigureFill">#7d00f710</color>
     <color name="currentFigureFill2">#de36b0fb</color>
     <color name="purple">#440089</color>
     <color name="empty_cell_color">#D7DABA</color>

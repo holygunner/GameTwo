@@ -32,16 +32,24 @@ public class GamePlay {
     private boolean isTurnAvailable;
     private boolean isFilled;
 
-    public GamePlay(Context context, Desk desk, Saver saver){
+    public GamePlay(Context context, Desk desk, Saver saver, int levelNumb){
         mContext = context.getApplicationContext();
         mSaver = saver;
-//        mLevel = new Level(Saver.readCurrentLevel(mContext));
-        mLevel = LevelLoader.loadLevel(Saver.readCurrentLevel(mContext));
+        mLevel = LevelLoader.loadLevel(levelNumb);
         mLevelNumb = mLevel.getLevelNumb();
+
+        if (getLevelNumb() == Saver.readMaxLevel(mContext)){
+            mLevel.setGamerCount(Saver.readMaxLevelAndCount(mContext)[1]);
+        }   else {
+            mLevel.setGamerCount(Saver.readGamerCount(context));
+        }
+
+
+
         mRandomer = new Randomer(mLevel);
         mDesk = desk;
         isGameStarted = Saver.isSaveExists(mContext);
-        mLevel.setGamerCount(Saver.readGamerCount(context));
+
         mRecentRandomFigures = new ArrayList<>();
     }
 
@@ -74,31 +82,31 @@ public class GamePlay {
         return mDesk;
     }
 
-    public Desk createDemoDesk() { // сделать доску с раставленными фигурами и наделать скриншотов для иконки и About,
-        // позже будет удалено
-        mDesk = new Desk(this, new int[]{2,2});
-        SemiCircle semiCircle1 = new SemiCircle(UUID.randomUUID(),
-                ColorsValues.FigureColors.PURPLE, Position.POSITION_FOUR, new Cell(0, 1));
-        SemiCircle semiCircle2 = new SemiCircle(UUID.randomUUID(),
-                ColorsValues.FigureColors.PURPLE, Position.POSITION_THREE, new Cell(1, 0));
-
-        SemiSquare semiSquare1 = new SemiSquare(UUID.randomUUID(),
-                ColorsValues.FigureColors.BORDO, Position.POSITION_ONE, new Cell(0, 0));
-        SemiSquare semiSquare2 = new SemiSquare(UUID.randomUUID(),
-                ColorsValues.FigureColors.BORDO, Position.POSITION_TWO, new Cell(1, 1));
-
-        mDesk.addFigure(semiCircle1);
-        mDesk.addFigure(semiCircle2);
-        mDesk.addFigure(semiSquare1);
-        mDesk.addFigure(semiSquare2);
-
-        mRecentRandomFigures.add(semiCircle1);
-        mRecentRandomFigures.add(semiCircle2);
-        mRecentRandomFigures.add(semiSquare1);
-        mRecentRandomFigures.add(semiSquare2);
-
-        return mDesk;
-    }
+//    public Desk createDemoDesk() { // сделать доску с раставленными фигурами и наделать скриншотов для иконки и About,
+//        // позже будет удалено
+//        mDesk = new Desk(this, new int[]{2,2});
+//        SemiCircle semiCircle1 = new SemiCircle(UUID.randomUUID(),
+//                ColorsValues.FigureColors.PURPLE, Position.POSITION_FOUR, new Cell(0, 1));
+//        SemiCircle semiCircle2 = new SemiCircle(UUID.randomUUID(),
+//                ColorsValues.FigureColors.PURPLE, Position.POSITION_THREE, new Cell(1, 0));
+//
+//        SemiSquare semiSquare1 = new SemiSquare(UUID.randomUUID(),
+//                ColorsValues.FigureColors.BORDO, Position.POSITION_ONE, new Cell(0, 0));
+//        SemiSquare semiSquare2 = new SemiSquare(UUID.randomUUID(),
+//                ColorsValues.FigureColors.BORDO, Position.POSITION_TWO, new Cell(1, 1));
+//
+//        mDesk.addFigure(semiCircle1);
+//        mDesk.addFigure(semiCircle2);
+//        mDesk.addFigure(semiSquare1);
+//        mDesk.addFigure(semiSquare2);
+//
+//        mRecentRandomFigures.add(semiCircle1);
+//        mRecentRandomFigures.add(semiCircle2);
+//        mRecentRandomFigures.add(semiSquare1);
+//        mRecentRandomFigures.add(semiSquare2);
+//
+//        return mDesk;
+//    }
 
     public boolean isGameStarted() {
         return isGameStarted;
@@ -129,6 +137,7 @@ public class GamePlay {
             }
 
             if (mLevel.isLevelComplete()){
+                mSaver.writeSaveExists(false);
                 return LEVEL_COMPLETE;
             }
 
@@ -145,8 +154,8 @@ public class GamePlay {
 
     public boolean isGameContinue(){
         if (mDesk.getFreeCells().isEmpty()){
-            mSaver.writeGamerCount(mLevel.getGamerCount());
-            mSaver.writeMaxLevelAndCount(getLevelNumb(), getLevel().getGamerCount());
+//            mSaver.writeGamerCount(mLevel.getGamerCount());
+            mSaver.writeSaveExists(false);
             return false;
         }   else
             return true;
@@ -201,6 +210,10 @@ public class GamePlay {
 
     public Level getLevel(){
         return mLevel;
+    }
+
+    public Desk getDesk(){
+        return mDesk;
     }
 
     public boolean areSemiFiguresAreWhole(Figure figure1, Figure figure2){ // are the both halves the whole figure
@@ -277,7 +290,7 @@ public class GamePlay {
 
     private void setGameStarted(){
         isGameStarted = true;
-        Saver.writeIsSaveExists(mContext, isGameStarted);
+//        Saver.writeIsSaveExists(mContext, isGameStarted);
     }
 
     private Figure getRandomFigure(){
@@ -316,7 +329,7 @@ public class GamePlay {
     public void increaseLevelNumb(){
         if (!LevelsValues.isEndlessMode(mLevelNumb)){
             mLevelNumb += 1;
-            mSaver.writeMaxLevelAndCount(mLevelNumb, 0);
+//            mSaver.resetMaxLevelCountIfRequired();
         }   else {
             mLevelNumb = LevelsValues.LEVELS_NAMES.length - 1;
         }

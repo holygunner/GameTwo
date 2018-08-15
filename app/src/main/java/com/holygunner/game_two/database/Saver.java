@@ -10,6 +10,7 @@ import com.holygunner.game_two.figures.Figure;
 import com.holygunner.game_two.figures.FigureFactory;
 import com.holygunner.game_two.game_mechanics.*;
 import com.holygunner.game_two.database.FigureDbSchema.FigureTable;
+import com.holygunner.game_two.values.LevelsValues;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ public class Saver {
     private GameManager mGameManager;
     private SQLiteDatabase mDatabase;
 
+    public static final String IS_OPEN_SAVE_KEY = "is open save";
     public static final String IS_GAME_STARTED_KEY = "is_game_started_key";
     public static final String GAMER_COUNT_KEY = "gamer_count_key";
     public static final String IS_TURN_BUTTON_CLICKABLE_KEY = "is_turn_button_clickable_key";
@@ -26,6 +28,7 @@ public class Saver {
     public static final String MAX_SCORE_KEY = "max_score_key";
     public static final String MAX_LEVEL_KEY = "max_level";
     public static final String MAX_LEVEL_COUNT_KEY = "max_level_count";
+    public static final String IS_SAVE_EXISTS = "is_save_exists";
 
     public Saver (GameManager gameManager, Context context){
         mContext = context.getApplicationContext();
@@ -33,27 +36,94 @@ public class Saver {
         mDatabase = new FigureBaseHelper(mContext).getWritableDatabase();
     }
 
-    public void addFigure(Figure figure){
+    private void addFigure(Figure figure){
         ContentValues values = getContentValues(figure);
         mDatabase.insert(FigureTable.NAME, null, values);
     }
 
-    public void writeMaxLevelAndCount(int levelNumb, int levelCount){ // save max open level and its count
+    public void writeGameProgress(GamePlay gamePlay){ // save max open level and its count
+        int levelNumb = gamePlay.getLevelNumb();
+        int levelCount = gamePlay.getLevel().getGamerCount();
+
         int[] lastSavedScore = readMaxLevelAndCount(mContext);
 
-        if (levelNumb >=lastSavedScore[0]) {
-            PreferenceManager.getDefaultSharedPreferences(mContext)
-                    .edit()
-                    .putInt(MAX_LEVEL_KEY, levelNumb)
-                    .apply();
-        }
+        if (levelNumb >= readMaxLevel(mContext)) {
+            increaseMaxLevel(levelNumb);
+            if ((levelCount >= lastSavedScore[1]) && levelCount < LevelsValues.LEVELS_ROUNDS[levelNumb]) {
+                PreferenceManager.getDefaultSharedPreferences(mContext)
+                        .edit()
+                        .putInt(MAX_LEVEL_COUNT_KEY, levelCount)
+                        .apply();
 
-        if (levelNumb > lastSavedScore[0] && levelCount >= lastSavedScore[1]) {
+                saveToSQLiteDatabase(gamePlay.getDesk());
+                writeSaveExists(true);
+                writeIsTurnButtonClickable(gamePlay.isTurnAvailable());
+            }
+        }
+    }
+
+    public void writeIsTurnButtonClickable(boolean isClickable){
+        PreferenceManager.getDefaultSharedPreferences(mContext)
+                .edit()
+                .putBoolean(IS_TURN_BUTTON_CLICKABLE_KEY, isClickable)
+                .apply();
+    }
+
+    public boolean readIsTurnButtonClickable(){
+        if (isLevelMax(mContext, mGameManager.getGamePlay().getLevelNumb())) {
+            if (!readSaveExists(mContext)) {
+                return true;
+            }
+
+            return PreferenceManager.getDefaultSharedPreferences(mContext)
+                    .getBoolean(IS_TURN_BUTTON_CLICKABLE_KEY, true);
+        }   else {
+            return true;
+        }
+    }
+
+    public boolean increaseMaxLevel(int levelNumb){
+        int maxLevel = readMaxLevel(mContext);
+        if ((levelNumb > maxLevel) && (maxLevel < LevelsValues.LEVELS_NAMES.length - 1)){
             PreferenceManager.getDefaultSharedPreferences(mContext)
                     .edit()
-                    .putInt(MAX_LEVEL_COUNT_KEY, levelCount)
+                    .putInt(MAX_LEVEL_KEY, maxLevel + 1)
+                    .apply();
+            return true;
+        }   else {
+            return false;
+        }
+    }
+
+    public void resetMaxLevelCountIfRequired(){ // if current level is max the max level count will be reset
+        if (mGameManager.getGamePlay().getLevelNumb() >= readMaxLevel(mContext)
+                && mGameManager.getGamePlay().getLevel().getGamerCount() >= readMaxLevelAndCount(mContext)[1]) {
+            resetMaxLevelCount();
+        }
+    }
+
+    public void resetMaxLevelCount(){
+        PreferenceManager.getDefaultSharedPreferences(mContext)
+                .edit()
+                .putInt(MAX_LEVEL_COUNT_KEY, 0)
+                .apply();
+        clearSQLiteDatabase();
+        writeSaveExists(false);
+    }
+
+    public void writeSaveExists(boolean isExists) {
+        if (isLevelMax(mContext, mGameManager.getGamePlay().getLevelNumb())
+                && mGameManager.getGamePlay().getLevel().getGamerCount() >= readMaxLevelAndCount(mContext)[1]) {
+            PreferenceManager.getDefaultSharedPreferences(mContext)
+                    .edit()
+                    .putBoolean(IS_SAVE_EXISTS, isExists)
                     .apply();
         }
+    }
+
+    public static boolean readSaveExists(Context context) {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(IS_SAVE_EXISTS, false);
     }
 
     public static int[] readMaxLevelAndCount(Context context){
@@ -69,22 +139,23 @@ public class Saver {
                 .getInt(MAX_LEVEL_KEY, 0);
     }
 
+    ///////////////
+
+    public static boolean isLevelMax(Context context, int level){
+        if ((level == readMaxLevel(context))){
+            return true;
+        }   else {
+            return false;
+        }
+    }
+
+    ///////////////
+
     public static boolean isSaveExists(Context context){
-        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(IS_GAME_STARTED_KEY, false);
-    }
+        boolean isSaveExists = (readMaxLevelAndCount(context)[1] > 0);
 
-    public static void resetSave(Context context){
-        PreferenceManager.getDefaultSharedPreferences(context)
-                .edit()
-                .putBoolean(IS_GAME_STARTED_KEY, false)
-                .apply();
-    }
-
-    public static void writeIsSaveExists(Context context, boolean isGameStarted){
-        PreferenceManager.getDefaultSharedPreferences(context)
-                .edit()
-                .putBoolean(IS_GAME_STARTED_KEY, isGameStarted)
-                .apply();
+        return isSaveExists;
+//        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(IS_GAME_STARTED_KEY, false);
     }
 
     public void saveToSQLiteDatabase(Desk desk){
@@ -104,21 +175,9 @@ public class Saver {
         }
     }
 
-    public void writeIsTurnButtonClickable(boolean isClickable){
-        PreferenceManager.getDefaultSharedPreferences(mContext)
-                .edit()
-                .putBoolean(IS_TURN_BUTTON_CLICKABLE_KEY, isClickable)
-                .apply();
-    }
-
     public void reset(){
-        resetIsTurnButtonClickable();
+//        resetIsTurnButtonClickable();
         resetGamerCount();
-    }
-
-    public static boolean readIsTurnButtonClickable(Context context){
-        return PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean(IS_TURN_BUTTON_CLICKABLE_KEY, true);
     }
 
     public void writeGamerCount(int gamerCount){
@@ -136,15 +195,6 @@ public class Saver {
 
     public static int readGamerCount(Context context){
         return PreferenceManager.getDefaultSharedPreferences(context).getInt(GAMER_COUNT_KEY, 0);
-    }
-
-    public static int readCurrentLevel(Context context){
-        return PreferenceManager.getDefaultSharedPreferences(context).getInt(CURRENT_LEVEL_KEY, 0);
-    }
-
-    public void writeCurrentLevel(){
-        int currentLevel = mGameManager.getGamePlay().getLevelNumb();
-        writeLevel(mContext, currentLevel);
     }
 
     public Figure[] loadFigures(){
