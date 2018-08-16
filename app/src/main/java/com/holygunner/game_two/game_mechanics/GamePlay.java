@@ -41,7 +41,8 @@ public class GamePlay {
         if (getLevelNumb() == Saver.readMaxLevel(mContext)){
             mLevel.setGamerCount(Saver.readMaxLevelAndCount(mContext)[1]);
         }   else {
-            mLevel.setGamerCount(Saver.readGamerCount(context));
+//            mLevel.setGamerCount(Saver.readGamerCount(context));
+            mLevel.setGamerCount(0);
         }
 
 

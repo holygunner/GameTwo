@@ -131,13 +131,12 @@ public class GameDeskFragment extends Fragment {
     private void updateGamerCount(boolean isReadGamerCount){
         int gamerCount;
         int levelRounds = 0;
-        int levelNumb = mGameManager.getGamePlay().getLevelNumb();
+        int levelNumb = mGameManager.getGamePlay().getLevel().getLevelNumb();
         String levelName = mGameManager.getGamePlay().getLevel().getLevelName();
 
         if (isReadGamerCount){
-            gamerCount = Saver.readGamerCount(getContext());
-//            levelRounds = 0;
-            // getLevelRounds = Saver.readGamerLevel(getContext()); - MAKE THIS METHOD
+//            gamerCount = Saver.readGamerCount(getContext());
+            gamerCount = 0;
         }   else {
             gamerCount = mGameManager.getGamePlay().getLevel().getGamerCount();
             levelRounds = mGameManager.getGamePlay().getLevel().getLevelRounds();
@@ -352,6 +351,7 @@ public class GameDeskFragment extends Fragment {
 
             setImageViewRes(gamePlay.recentPosition, R.drawable.empty_cell);
             imageViewCell.setImageResource(gamePlay.getLastUnitedFigureRes());
+
             fillCells(false, Color.TRANSPARENT);
 
             handler.postDelayed(new Runnable() {

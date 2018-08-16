@@ -26,7 +26,7 @@ public class GameManager {
             Log.i(TAG, "GAME LOAD");
         }   else {
             // create new game
-            mSaver.reset();
+//            mSaver.reset();
             mGamePlay = new GamePlay(mContext, mDesk, mSaver, levelNumb);
             mDesk = mGamePlay.createNewDesk();
 //            mDesk = mGamePlay.createDemoDesk();
@@ -40,29 +40,14 @@ public class GameManager {
 //            return false;
 //        }
 
-//        if (!Saver.isLevelMax(mContext, getGamePlay().getLevelNumb())){ // there is no save
-//            // if the current level is not max
-//            return false;
-//        }
-
-
-
         if (!getGamePlay().isGameContinue()){ // there is no save if a gamer loses, also the last save will delete
-//            mSaver.clearSQLiteDatabase();
-//            Saver.writeIsSaveExists(mContext, false);
             return false;
         }
 
         mSaver.writeGameProgress(mGamePlay);
 
+//        mSaver.writeGamerCount(mGamePlay.getLevel().getGamerCount());
 
-//        mSaver.saveToSQLiteDatabase(mDesk);
-
-
-//        mSaver.writeCurrentLevel();
-        mSaver.writeGamerCount(mGamePlay.getLevel().getGamerCount());
-
-//        mSaver.writeIsTurnButtonClickable(mGamePlay.isTurnAvailable());
 
         Log.i(TAG, "Save is succesful");
         return true;

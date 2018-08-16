@@ -63,10 +63,10 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void updateMaxScore(){
-        int maxScore = Saver.readMaxScore(this);
+        int score = Saver.getScore(getApplicationContext());
 
-        if (maxScore>0){
-            maxScoreTextView.setText(getResources().getString(R.string.your_max_score) + maxScore);
+        if (score > 0){
+            maxScoreTextView.setText(getResources().getString(R.string.your_max_score) + score);
             maxScoreTextView.setVisibility(View.VISIBLE);
         }
     }
