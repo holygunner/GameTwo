@@ -60,12 +60,9 @@ public class GameDeskFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.activity_game, container, false);
         parentLayout = (RelativeLayout) view.findViewById(R.id.parentLayout);
-        //
         initGameManagerIfNotExists();
-//        mGameManager.startOrResumeGame(Saver.isSaveExists(getContext()));
         mGameManager.startOrResumeGame(getActivity().getIntent().getIntExtra(
                 StartGameActivity.OPEN_LEVEL_NUMB_KEY, 0));
-        //
 
         warningTextView = (TextView) view.findViewById(R.id.warningTextView);
         gameOverLayout = (RelativeLayout) view.findViewById(R.id.gameOverLayout);
@@ -79,8 +76,6 @@ public class GameDeskFragment extends Fragment {
         levelNameTextView = (TextView) view.findViewById(R.id.levelNameTextView);
 
         updateGamerCount(true);
-//        boolean isOpenSave = getActivity().getIntent().getBooleanExtra(StartGameActivity.IS_OPEN_SAVE_KEY, false);
-//        Saver.writeIsSaveExists(getActivity(), isOpenSave);
 
         return view;
     }
@@ -89,11 +84,9 @@ public class GameDeskFragment extends Fragment {
     public void onResume(){
         super.onResume();
         initGameManagerIfNotExists();
-//        mGameManager.startOrResumeGame(Saver.isSaveExists(getContext()));
         mGameManager.startOrResumeGame(getActivity().getIntent().getIntExtra(
                 StartGameActivity.OPEN_LEVEL_NUMB_KEY, 0));
         setIsTurnButtonClickable(mGameManager.getSaver().readIsTurnButtonClickable());
-//        setIsTurnButtonVisible(mGameManager.getSaver().readIsTurnButtonClickable());
         updateRecyclerGridDesk();
     }
 
@@ -101,12 +94,7 @@ public class GameDeskFragment extends Fragment {
     public void onPause(){
         super.onPause();
         mGameManager.save();
-
         finishActivity();
-
-//        if (!mGameManager.getGamePlay().isGameContinue() || !mGameManager.getGamePlay().isGameStarted()){
-//            finishActivity();
-//        }
     }
 
     private void initGameManagerIfNotExists(){
@@ -135,7 +123,6 @@ public class GameDeskFragment extends Fragment {
         String levelName = mGameManager.getGamePlay().getLevel().getLevelName();
 
         if (isReadGamerCount){
-//            gamerCount = Saver.readGamerCount(getContext());
             gamerCount = 0;
         }   else {
             gamerCount = mGameManager.getGamePlay().getLevel().getGamerCount();
@@ -158,24 +145,22 @@ public class GameDeskFragment extends Fragment {
         gameOverLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                    mGameManager.getSaver().resetMaxLevelCountIfRequired();
-                    finishActivity();
-                }
+                finishActivity();
+            }
         });
     }
 
     private void goingToNextLevel(){
         mGameManager.getGamePlay().increaseLevelNumb();
-        int indx = mGameManager.getGamePlay().getLevelNumb();
+        int nextLevelNumb = mGameManager.getGamePlay().getLevelNumb();
 
-        String nextLevelStr = new String(LevelsValues.LEVELS_NAMES[indx]);
+        String nextLevelStr = new String(LevelsValues.LEVELS_NAMES[nextLevelNumb]);
         levelNameTextView.setVisibility(View.INVISIBLE);
         prepareViewsForFinish(nextLevelStr);
 
         gameOverLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                mGameManager.getSaver().resetMaxLevelCountIfRequired();
                 Intent intent = new Intent(getActivity(), GameFragmentActivity.class);
                 intent.putExtra(StartGameActivity.OPEN_LEVEL_NUMB_KEY, mGameManager.getGamePlay().getLevelNumb());
                 startActivity(intent);
@@ -198,12 +183,7 @@ public class GameDeskFragment extends Fragment {
     }
 
     private void finishActivity(){
-        if (mGameManager.getGamePlay().getDesk().getFreeCells().size() == 0
-                || !(mGameManager.getGamePlay().getLevel().getGamerCount()
-                < LevelsValues.LEVELS_ROUNDS[mGameManager.getGamePlay().getLevel().getLevelNumb()])) {
-            mGameManager.getSaver().resetMaxLevelCountIfRequired();
-        }
-
+        mGameManager.finish();
         getActivity().finish();
     }
 
@@ -357,7 +337,6 @@ public class GameDeskFragment extends Fragment {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-//                updateRecyclerGridDesk();
                     showRecentRandomFiguresWithDelay();
                 }
             }, delay);
@@ -371,11 +350,8 @@ public class GameDeskFragment extends Fragment {
 
         private void turnFigure(ImageView imageView){
             final long delay = 150;
-
             userActionAvailable = false;
-
             handler = new Handler();
-
             imageView.animate().rotation(90).setDuration(delay).start();
 
             handler.postDelayed(new Runnable() {
@@ -423,7 +399,6 @@ public class GameDeskFragment extends Fragment {
 
         if (!mGameManager.getGamePlay().getRecentRandomFigures().isEmpty()){
             Figure addedRandomFigure = mGameManager.getGamePlay().getRecentRandomFigures().get(0);
-//            mAdapter.notifyItemChanged(mGameManager.getDesk().cellToPosition(addedRandomFigure.mCell)); // не срабатывает выделение, если фигура попадает в слияние
             setImageViewRes(mGameManager.getDesk().cellToPosition(addedRandomFigure.mCell), FigureFactory.getFigureRes(addedRandomFigure));
         }
 

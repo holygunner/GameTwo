@@ -20,7 +20,6 @@ public class Saver {
     private GameManager mGameManager;
     private SQLiteDatabase mDatabase;
 
-    public static final String GAMER_COUNT_KEY = "gamer_count_key";
     public static final String IS_TURN_BUTTON_CLICKABLE_KEY = "is_turn_button_clickable_key";
     public static final String CURRENT_LEVEL_KEY = "current_level";
     public static final String MAX_SCORE_KEY = "max_score_key";
@@ -44,11 +43,6 @@ public class Saver {
         int levelCount = gamePlay.getLevel().getGamerCount();
 
         int[] lastSavedScore = readMaxLevelAndCount(mContext);
-
-//        if (gamePlay.getLevel().getLevelNumb() <= lastSavedScore[0]
-//                && gamePlay.getLevel().getGamerCount() < lastSavedScore[1]){
-//            return;
-//        }
 
         if (levelNumb >= readMaxLevel(mContext)) {
             increaseMaxLevel(levelNumb);
@@ -99,10 +93,14 @@ public class Saver {
         }
     }
 
-    public void resetMaxLevelCountIfRequired(){ // if current level is max the max level count will be reset
-        if (mGameManager.getGamePlay().getLevelNumb() >= readMaxLevel(mContext)
-                && mGameManager.getGamePlay().getLevel().getGamerCount() >= readMaxLevelAndCount(mContext)[1]) {
+    public void resetLevelProgress(){ // if current level is max then max level count will be reset
+        if (mGameManager.getGamePlay().getLevelNumb()
+                >= readMaxLevel(mContext)
+                && mGameManager.getGamePlay().getLevel().getGamerCount()
+                >= readMaxLevelAndCount(mContext)[1]) {
             resetMaxLevelCount();
+            clearSQLiteDatabase();
+            writeSaveExists(false);
         }
     }
 
@@ -111,8 +109,6 @@ public class Saver {
                 .edit()
                 .putInt(MAX_LEVEL_COUNT_KEY, 0)
                 .apply();
-        clearSQLiteDatabase();
-        writeSaveExists(false);
     }
 
     public void writeSaveExists(boolean isExists) {

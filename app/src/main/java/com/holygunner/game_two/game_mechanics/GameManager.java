@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.holygunner.game_two.database.*;
+import com.holygunner.game_two.values.LevelsValues;
 
 public class GameManager {
     private static final String TAG = "Log";
@@ -26,7 +27,6 @@ public class GameManager {
             Log.i(TAG, "GAME LOAD");
         }   else {
             // create new game
-//            mSaver.reset();
             mGamePlay = new GamePlay(mContext, mDesk, mSaver, levelNumb);
             mDesk = mGamePlay.createNewDesk();
 //            mDesk = mGamePlay.createDemoDesk();
@@ -35,22 +35,21 @@ public class GameManager {
     }
 
     public boolean save(){
-//        if (!getGamePlay().isGameStarted()){ // there is no save if the first step or turn is not complete
-//            Saver.writeIsSaveExists(mContext, getGamePlay().isGameStarted());
-//            return false;
-//        }
-
         if (!getGamePlay().isGameContinue()){ // there is no save if a gamer loses, also the last save will delete
             return false;
         }
-
         mSaver.writeGameProgress(mGamePlay);
-
-//        mSaver.writeGamerCount(mGamePlay.getLevel().getGamerCount());
-
 
         Log.i(TAG, "Save is succesful");
         return true;
+    }
+
+    public void finish(){
+        if (mGamePlay.getDesk().isDeskOverload()
+                || !(mGamePlay.getLevel().getGamerCount()
+                < LevelsValues.LEVELS_ROUNDS[mGamePlay.getLevel().getLevelNumb()])) {
+            mSaver.resetLevelProgress();
+        }
     }
 
     public GamePlay getGamePlay(){

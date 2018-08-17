@@ -41,11 +41,8 @@ public class GamePlay {
         if (getLevelNumb() == Saver.readMaxLevel(mContext)){
             mLevel.setGamerCount(Saver.readMaxLevelAndCount(mContext)[1]);
         }   else {
-//            mLevel.setGamerCount(Saver.readGamerCount(context));
             mLevel.setGamerCount(0);
         }
-
-
 
         mRandomer = new Randomer(mLevel);
         mDesk = desk;
@@ -109,10 +106,6 @@ public class GamePlay {
 //        return mDesk;
 //    }
 
-    public boolean isGameStarted() {
-        return isGameStarted;
-    }
-
     public StepResult tryToStep(int position){
         if (!isGameContinue() || mAvailableSteps == null){
             return STEP_UNAVAILABLE;
@@ -143,8 +136,8 @@ public class GamePlay {
             }
 
             if (stepResult != STEP_UNAVAILABLE) {
-                if (isGameStarted() == false){
-                    setGameStarted();
+                if (isGameStarted == false){
+                    isGameStarted = true;
                 }
             }
             isFilled = false;
@@ -192,8 +185,8 @@ public class GamePlay {
             if (figure == null || !isFilled) {
                 return false;
             } else {
-                if (isGameStarted() == false){
-                    setGameStarted();
+                if (isGameStarted == false){
+                    isGameStarted = true;
                 }
 
                 Position turnedPosition = Position.getTurnedPosition(figure.position);
@@ -289,11 +282,6 @@ public class GamePlay {
         return STEP_UNAVAILABLE;
     }
 
-    private void setGameStarted(){
-        isGameStarted = true;
-//        Saver.writeIsSaveExists(mContext, isGameStarted);
-    }
-
     private Figure getRandomFigure(){
         if (!mDesk.getFreeCells().isEmpty()) {
             Figure figure = FigureFactory.getRandomFigure(mDesk.getFreeCells(), mRandomer);
@@ -315,22 +303,13 @@ public class GamePlay {
         }
     }
 
-    public void clearRecentRandomFigures(){
-        mRecentRandomFigures.clear();
-    }
-
     public int getLevelNumb() {
         return mLevelNumb;
     }
 
-//    public void setLevelNumb(int levelNumb) {
-//        mLevelNumb = levelNumb;
-//    }
-
     public void increaseLevelNumb(){
         if (!LevelsValues.isEndlessMode(mLevelNumb)){
             mLevelNumb += 1;
-//            mSaver.resetMaxLevelCountIfRequired();
         }   else {
             mLevelNumb = LevelsValues.LEVELS_NAMES.length - 1;
         }

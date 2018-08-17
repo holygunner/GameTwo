@@ -28,6 +28,14 @@ public class Desk {
         return freeCells;
     }
 
+    public boolean isDeskOverload(){
+        if (getFreeCells().size() == 0){
+            return true;
+        }   else {
+            return false;
+        }
+    }
+
 
     public void addFigure(Figure figure){
         int x = figure.mCell.getX();
