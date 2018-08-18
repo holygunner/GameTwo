@@ -15,10 +15,15 @@ import com.holygunner.game_two.values.LevelsValues;
 import java.util.Arrays;
 
 public class ChooseLevelDialogFragment extends DialogFragment {
+    private String[] levelNames;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        levelNames = getAvailableLevelsNames();
+        if (levelNames.length == 0){
+            levelNames[0] = LevelsValues.LEVELS_NAMES[0];
+        }
     }
 
     @Override
@@ -31,10 +36,10 @@ public class ChooseLevelDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle onSaveInstanceState){
-        String[] levelNames = getAvailableLevelsNames();
-        if (levelNames.length == 0){
-            levelNames[0] = LevelsValues.LEVELS_NAMES[0];
-        }
+//        String[] levelNames = getAvailableLevelsNames();
+//        if (levelNames.length == 0){
+//            levelNames[0] = LevelsValues.LEVELS_NAMES[0];
+//        }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
