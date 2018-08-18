@@ -5,7 +5,7 @@
     <string name="select_level">Select level</string>
     <string name="about">About</string>
     <string name="turn">TURN</string>
-    <string name="your_max_score">Your max score: </string>
+    <string name="your_max_score">Your max score:</string>
     <string name="game_over">GAME OVER!</string>
     <string name="infinity_symbol">∞</string>
     <string name="select_your_level">Select your level:</string>

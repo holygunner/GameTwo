@@ -4,6 +4,7 @@ import com.holygunner.game_two.database.Saver;
 import com.holygunner.game_two.figures.Figure;
 import com.holygunner.game_two.figures.FigureFactory;
 import com.holygunner.game_two.game_mechanics.*;
+import com.holygunner.game_two.sound.SoundPoolWrapper;
 import com.holygunner.game_two.values.ColorsValues;
 import com.holygunner.game_two.values.LevelsValues;
 
@@ -49,6 +50,8 @@ public class GameDeskFragment extends Fragment {
     private boolean userActionAvailable;
     private boolean isTurnButtonClickable;
 
+    private SoundPoolWrapper mSoundPoolWrapper;
+
     public GameDeskFragment(){
     }
 
@@ -56,13 +59,22 @@ public class GameDeskFragment extends Fragment {
         return new GameDeskFragment();
     }
 
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        mSoundPoolWrapper = SoundPoolWrapper.getInstance(getActivity());
+
+        initGameManagerIfNotExists();
+        mGameManager.startOrResumeGame(getActivity().getIntent().getIntExtra(
+                StartGameActivity.OPEN_LEVEL_NUMB_KEY, 0));
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.activity_game, container, false);
         parentLayout = (RelativeLayout) view.findViewById(R.id.parentLayout);
-        initGameManagerIfNotExists();
-        mGameManager.startOrResumeGame(getActivity().getIntent().getIntExtra(
-                StartGameActivity.OPEN_LEVEL_NUMB_KEY, 0));
+//        initGameManagerIfNotExists();
+//        mGameManager.startOrResumeGame(getActivity().getIntent().getIntExtra(
+//                StartGameActivity.OPEN_LEVEL_NUMB_KEY, 0));
 
         warningTextView = (TextView) view.findViewById(R.id.warningTextView);
         gameOverLayout = (RelativeLayout) view.findViewById(R.id.gameOverLayout);
@@ -83,11 +95,12 @@ public class GameDeskFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-        initGameManagerIfNotExists();
-        mGameManager.startOrResumeGame(getActivity().getIntent().getIntExtra(
-                StartGameActivity.OPEN_LEVEL_NUMB_KEY, 0));
+//        initGameManagerIfNotExists();
+//        mGameManager.startOrResumeGame(getActivity().getIntent().getIntExtra(
+//                StartGameActivity.OPEN_LEVEL_NUMB_KEY, 0));
         setIsTurnButtonClickable(mGameManager.getSaver().readIsTurnButtonClickable());
         updateRecyclerGridDesk();
+//        mSoundPoolWrapper = SoundPoolWrapper.getInstance(getActivity());
     }
 
     @Override
@@ -265,6 +278,7 @@ public class GameDeskFragment extends Fragment {
 
                     switch (event.getAction()){
                         case MotionEvent.ACTION_DOWN:
+                            mSoundPoolWrapper.playSound(SoundPoolWrapper.SOUND_ID_1);
                             actionDown(gamePlay);
                             break;
                         case MotionEvent.ACTION_MOVE:
