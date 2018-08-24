@@ -1,8 +1,5 @@
 package com.holygunner.game_two.sound;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
@@ -13,9 +10,17 @@ import com.holygunner.game_two.R;
 public class SoundPoolWrapper {
     private SoundPool mSoundPool;
     private Context mContext;
-    public static final int SOUND_ID_1 = 1;
-    public static final int SOUND_ID_2 = 2;
+    public static final int APPEAR_FIGURE = 1;
+    public static final int LEVEL_COMPLETE = 2;
+    public static final int LEVEL_LOSE = 3;
+    public static final int LEVEL_START = 4;
+    public static final int REPLACE_FIGURE = 5;
+    public static final int PRESS_BUTTON = 6;
+    public static final int SELECT_FIGURE = 7;
+    public static final int TURN_FIGURE = 8;
+    public static final int UNITE_FIGURE = 9;
     private int mStreamId;
+    private final int MAX_STREAM = 4;
 
     private static SoundPoolWrapper instance;
 
@@ -38,13 +43,21 @@ public class SoundPoolWrapper {
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 .build();
         mSoundPool = new SoundPool.Builder()
+                .setMaxStreams(MAX_STREAM)
                 .setAudioAttributes(attributes)
                 .build();
     }
 
     public void load(){
-        mSoundPool.load(mContext, R.raw.test_sound_4, SOUND_ID_1);
-        mSoundPool.load(mContext, R.raw.test_sound_2, SOUND_ID_2);
+        mSoundPool.load(mContext, R.raw.appear_figure, APPEAR_FIGURE);
+        mSoundPool.load(mContext, R.raw.level_complete, LEVEL_COMPLETE);
+        mSoundPool.load(mContext, R.raw.level_lose2, LEVEL_LOSE);
+        mSoundPool.load(mContext, R.raw.level_start, LEVEL_START);
+        mSoundPool.load(mContext, R.raw.move_figure, REPLACE_FIGURE);
+        mSoundPool.load(mContext, R.raw.press_button, PRESS_BUTTON);
+        mSoundPool.load(mContext, R.raw.select_figure, SELECT_FIGURE);
+        mSoundPool.load(mContext, R.raw.turn_figure, TURN_FIGURE);
+        mSoundPool.load(mContext, R.raw.unite_figure, UNITE_FIGURE);
     }
 
     public void playSound(int soundId){
@@ -56,8 +69,8 @@ public class SoundPoolWrapper {
         int priority = 1;
         int no_loop = 0;
         float normal_playback_rate = 1f;
-        mStreamId = mSoundPool.play(soundId, leftVolume, rightVolume, priority, no_loop, // SOUND_ID_1 - id звука
-                normal_playback_rate);
+        mStreamId = mSoundPool.play(soundId, leftVolume, rightVolume, priority,
+                no_loop, normal_playback_rate);
     }
 
     public void release(){

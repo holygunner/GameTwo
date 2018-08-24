@@ -1,10 +1,6 @@
 package com.holygunner.game_two;
 
-import android.content.Context;
 import android.content.Intent;
-import android.media.AudioAttributes;
-import android.media.AudioManager;
-import android.media.SoundPool;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -30,18 +26,17 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View view) {
         Intent intent = new Intent(this, GameFragmentActivity.class);
 
+        mSoundPoolWrapper.playSound(SoundPoolWrapper.PRESS_BUTTON);
+
         switch (view.getId()){
             case R.id.choose_level_button:
-                mSoundPoolWrapper.playSound(SoundPoolWrapper.SOUND_ID_1);
                 showChooseLevelDialog();
                 break;
             case R.id.game_button:
-                mSoundPoolWrapper.playSound(SoundPoolWrapper.SOUND_ID_2);
                 intent.putExtra(OPEN_LEVEL_NUMB_KEY, Saver.readMaxLevel(getApplicationContext()));
                 startActivity(intent);
                 break;
             case R.id.about_button:
-                mSoundPoolWrapper.playSound(SoundPoolWrapper.SOUND_ID_1);
                 showAbout();
                 break;
         }

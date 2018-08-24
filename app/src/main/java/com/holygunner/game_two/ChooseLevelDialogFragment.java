@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.Window;
 
 import com.holygunner.game_two.database.Saver;
+import com.holygunner.game_two.sound.SoundPoolWrapper;
 import com.holygunner.game_two.values.LevelsValues;
 
 import java.util.Arrays;
@@ -58,20 +59,12 @@ public class ChooseLevelDialogFragment extends DialogFragment {
         return builder.create();
     }
 
-
-//    private void runLevel(int which){
-//        Saver.writeIsSaveExists(getContext(), false);
-//        Saver.writeLevel(getContext(), which);
-//        Intent intent = new Intent(getActivity(), GameFragmentActivity.class);
-//        startActivity(intent);
-//    }
-
     private void runLevel(int which){
-//        Saver.writeIsSaveExists(getContext(), false);
         Saver.writeLevel(getContext(), which);
         Intent intent = new Intent(getActivity(), GameFragmentActivity.class);
         intent.putExtra(StartGameActivity.OPEN_LEVEL_NUMB_KEY, which);
         startActivity(intent);
+        SoundPoolWrapper.getInstance(getActivity()).playSound(SoundPoolWrapper.LEVEL_START);
     }
 
     private String[] getAvailableLevelsNames(){

@@ -1,11 +1,9 @@
 package com.holygunner.game_two;
 
-import com.holygunner.game_two.database.Saver;
 import com.holygunner.game_two.figures.Figure;
 import com.holygunner.game_two.figures.FigureFactory;
 import com.holygunner.game_two.game_mechanics.*;
 import com.holygunner.game_two.sound.SoundPoolWrapper;
-import com.holygunner.game_two.values.ColorsValues;
 import com.holygunner.game_two.values.LevelsValues;
 
 import android.animation.Animator;
@@ -72,9 +70,6 @@ public class GameDeskFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.activity_game, container, false);
         parentLayout = (RelativeLayout) view.findViewById(R.id.parentLayout);
-//        initGameManagerIfNotExists();
-//        mGameManager.startOrResumeGame(getActivity().getIntent().getIntExtra(
-//                StartGameActivity.OPEN_LEVEL_NUMB_KEY, 0));
 
         warningTextView = (TextView) view.findViewById(R.id.warningTextView);
         gameOverLayout = (RelativeLayout) view.findViewById(R.id.gameOverLayout);
@@ -95,12 +90,9 @@ public class GameDeskFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-//        initGameManagerIfNotExists();
-//        mGameManager.startOrResumeGame(getActivity().getIntent().getIntExtra(
-//                StartGameActivity.OPEN_LEVEL_NUMB_KEY, 0));
+
         setIsTurnButtonClickable(mGameManager.getSaver().readIsTurnButtonClickable());
         updateRecyclerGridDesk();
-//        mSoundPoolWrapper = SoundPoolWrapper.getInstance(getActivity());
     }
 
     @Override
@@ -155,6 +147,8 @@ public class GameDeskFragment extends Fragment {
         String gameOver = getResources().getString(R.string.game_over);
         prepareViewsForFinish(gameOver);
 
+        mSoundPoolWrapper.playSound(SoundPoolWrapper.LEVEL_LOSE);
+
         gameOverLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -170,6 +164,8 @@ public class GameDeskFragment extends Fragment {
         String nextLevelStr = new String(LevelsValues.LEVELS_NAMES[nextLevelNumb]);
         levelNameTextView.setVisibility(View.INVISIBLE);
         prepareViewsForFinish(nextLevelStr);
+
+        mSoundPoolWrapper.playSound(SoundPoolWrapper.LEVEL_COMPLETE);
 
         gameOverLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -268,28 +264,40 @@ public class GameDeskFragment extends Fragment {
 
             setIsTurnButtonVisible(false);
 
-            mImageViewCell.setOnTouchListener(new View.OnTouchListener() {
+            mImageViewCell.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public boolean onTouch(View v, MotionEvent event) {
+                public void onClick(View v) {
                     if (!userActionAvailable){
-                        return false;
+                        return;
                     }
                     final GamePlay gamePlay = mGameManager.getGamePlay();
+                    actionDown(gamePlay);
 
-                    switch (event.getAction()){
-                        case MotionEvent.ACTION_DOWN:
-                            mSoundPoolWrapper.playSound(SoundPoolWrapper.SOUND_ID_1);
-                            actionDown(gamePlay);
-                            break;
-                        case MotionEvent.ACTION_MOVE:
-                            break;
-                        case MotionEvent.ACTION_UP:
-                            break;
-                        case MotionEvent.ACTION_CANCEL:
-                            break;
-                    }
-                    return true;
                 }
+
+
+//            mImageViewCell.setOnTouchListener(new View.OnTouchListener() {
+//
+//                @Override
+//                public boolean onTouch(View v, MotionEvent event) {
+//                    if (!userActionAvailable){
+//                        return false;
+//                    }
+//                    final GamePlay gamePlay = mGameManager.getGamePlay();
+//
+//                    switch (event.getAction()){
+//                        case MotionEvent.ACTION_DOWN:
+//                            actionDown(gamePlay);
+//                            break;
+//                        case MotionEvent.ACTION_MOVE:
+//                            break;
+//                        case MotionEvent.ACTION_UP:
+//                            break;
+//                        case MotionEvent.ACTION_CANCEL:
+//                            break;
+//                    }
+//                    return true;
+//                }
 
                 private void actionDown(GamePlay gamePlay){
                     StepResult stepResult;
@@ -297,6 +305,8 @@ public class GameDeskFragment extends Fragment {
                     if ((stepResult = gamePlay.tryToStep(position)) != STEP_UNAVAILABLE){
                         setIsTurnButtonClickable(true);
                         setIsTurnButtonVisible(false);
+
+
 
                         if (stepResult == UNITE_FIGURE
                                 || stepResult == DESK_EMPTY
@@ -308,32 +318,41 @@ public class GameDeskFragment extends Fragment {
                                 return;
                             }
                         } else {
-                            replaceCell(position);
+                            replaceFigure(position);
                         }
                     }   else {
                             boolean isFilled = gamePlay.setAvailableCells(position);
                             if (isFilled){
                                 int currentFigureColor = mGameManager.getDesk().getFigure(position).color;
+
+                                mSoundPoolWrapper.playSound(SoundPoolWrapper.SELECT_FIGURE);
+
                                 fillCells(isFilled, currentFigureColor);
 
                                 if (isTurnButtonClickable) {
                                     setIsTurnButtonClickable(true);
                                 }
 
-                                turnFigureButton.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        if (isTurnButtonClickable) {
-                                            if (mGameManager.getGamePlay().turnFigureIfExists(position)) {
-                                                turnFigure(mImageViewCell);
-                                            } else {
-                                            }
-                                        }
-                                    }
-                                });
+                                setTurnFigureButton();
                             }
                         }
 
+                }
+            });
+        }
+
+        private void setTurnFigureButton(){
+            turnFigureButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (isTurnButtonClickable) {
+                        if (mGameManager.getGamePlay().turnFigureIfExists(position)) {
+                            setIsTurnButtonClickable(false);
+                            isTurnButtonClickable = false;
+                            turnFigure(mImageViewCell);
+                        } else {
+                        }
+                    }
                 }
             });
         }
@@ -342,6 +361,8 @@ public class GameDeskFragment extends Fragment {
             userActionAvailable = false;
             final Handler handler = new Handler();
             final long delay = 150;
+
+            mSoundPoolWrapper.playSound(SoundPoolWrapper.UNITE_FIGURE);
 
             setImageViewRes(gamePlay.recentPosition, R.drawable.empty_cell);
             imageViewCell.setImageResource(gamePlay.getLastUnitedFigureRes());
@@ -354,6 +375,7 @@ public class GameDeskFragment extends Fragment {
                     showRecentRandomFiguresWithDelay();
                 }
             }, delay);
+
         }
 
         public void setPosition(int position) {
@@ -365,14 +387,17 @@ public class GameDeskFragment extends Fragment {
         private void turnFigure(ImageView imageView){
             final long delay = 150;
             userActionAvailable = false;
+
+            mSoundPoolWrapper.playSound(SoundPoolWrapper.TURN_FIGURE);
+
             handler = new Handler();
             imageView.animate().rotation(90).setDuration(delay).start();
 
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    setIsTurnButtonClickable(false);
-                    isTurnButtonClickable = false;
+//                    setIsTurnButtonClickable(false);
+//                    isTurnButtonClickable = false;
 
                     updateFillCells();
                     userActionAvailable = true;
@@ -384,7 +409,7 @@ public class GameDeskFragment extends Fragment {
             }, delay);
         }
 
-        private void replaceCell(int currentPosition){
+        private void replaceFigure(int currentPosition){
             if (mRecyclerGridDesk == null){
                 return;
             }
@@ -394,6 +419,8 @@ public class GameDeskFragment extends Fragment {
             if (recentRandFigures.isEmpty()){
                 return;
             }
+
+            mSoundPoolWrapper.playSound(SoundPoolWrapper.REPLACE_FIGURE);
 
             userActionAvailable = false;
             fillCells(false, Color.TRANSPARENT);
@@ -440,6 +467,7 @@ public class GameDeskFragment extends Fragment {
                     }
                 }
             }
+
             setBackgroundColorOnPosition(mGameManager.getGamePlay().recentPosition, currentFigureColor);
         }
 
@@ -471,6 +499,7 @@ public class GameDeskFragment extends Fragment {
                     super.handleMessage(msg);
 
                     if(indx > -1) {
+                        mSoundPoolWrapper.playSound(SoundPoolWrapper.APPEAR_FIGURE);
                         Figure figure = recentRandFigures.get(indx);
                         int position = mGameManager.getDesk().cellToPosition(figure.mCell);
                         mAdapter.notifyItemChanged(position);

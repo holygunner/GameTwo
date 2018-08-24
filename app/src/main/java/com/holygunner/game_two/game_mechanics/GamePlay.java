@@ -294,6 +294,10 @@ public class GamePlay {
     private void addRandomFigure(int howMuchFigures){
         mRecentRandomFigures.clear();
 
+        if (mLevel.isLevelComplete()){
+            return;
+        }
+
         for (int i = 0; i < howMuchFigures; i++){
             Figure figure = getRandomFigure();
 
