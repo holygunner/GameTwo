@@ -267,10 +267,16 @@ public class GameDeskFragment extends Fragment {
             mImageViewCell.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    final GamePlay gamePlay = mGameManager.getGamePlay();
+
+//                    if (!userActionAvailable){
+//                        return;
+//                    }
+
                     if (!userActionAvailable){
                         return;
                     }
-                    final GamePlay gamePlay = mGameManager.getGamePlay();
+
                     actionDown(gamePlay);
 
                 }
@@ -305,8 +311,6 @@ public class GameDeskFragment extends Fragment {
                     if ((stepResult = gamePlay.tryToStep(position)) != STEP_UNAVAILABLE){
                         setIsTurnButtonClickable(true);
                         setIsTurnButtonVisible(false);
-
-
 
                         if (stepResult == UNITE_FIGURE
                                 || stepResult == DESK_EMPTY
@@ -364,7 +368,7 @@ public class GameDeskFragment extends Fragment {
 
             mSoundPoolWrapper.playSound(SoundPoolWrapper.UNITE_FIGURE);
 
-            setImageViewRes(gamePlay.recentPosition, R.drawable.empty_cell);
+            setImageViewRes(gamePlay.getRecentPosition(), R.drawable.empty_cell);
             imageViewCell.setImageResource(gamePlay.getLastUnitedFigureRes());
 
             fillCells(false, Color.TRANSPARENT);
@@ -424,7 +428,7 @@ public class GameDeskFragment extends Fragment {
 
             userActionAvailable = false;
             fillCells(false, Color.TRANSPARENT);
-            setImageViewRes(mGameManager.getGamePlay().recentPosition, R.drawable.empty_cell);
+            setImageViewRes(mGameManager.getGamePlay().getRecentPosition(), R.drawable.empty_cell);
             setImageViewRes(currentPosition, FigureFactory.getFigureRes(mGameManager.getDesk().getFigure(currentPosition)));
             showRecentRandomFiguresWithDelay();
         }
@@ -436,7 +440,7 @@ public class GameDeskFragment extends Fragment {
         }
 
         private void updateFillCells(){
-            Figure recentFigure =  mGameManager.getDesk().getFigure(mGameManager.getGamePlay().recentPosition);
+            Figure recentFigure =  mGameManager.getDesk().getFigure(mGameManager.getGamePlay().getRecentPosition());
 
         if (!mGameManager.getGamePlay().getRecentRandomFigures().isEmpty()){
             Figure addedRandomFigure = mGameManager.getGamePlay().getRecentRandomFigures().get(0);
@@ -468,7 +472,7 @@ public class GameDeskFragment extends Fragment {
                 }
             }
 
-            setBackgroundColorOnPosition(mGameManager.getGamePlay().recentPosition, currentFigureColor);
+            setBackgroundColorOnPosition(mGameManager.getGamePlay().getRecentPosition(), currentFigureColor);
         }
 
         private void setBackgroundColorOnPosition(int position, int color){

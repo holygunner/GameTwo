@@ -26,6 +26,7 @@ public class Saver {
     public static final String MAX_LEVEL_KEY = "max_level";
     public static final String MAX_LEVEL_COUNT_KEY = "max_level_count";
     public static final String IS_SAVE_EXISTS = "is_save_exists";
+    public static final String SOUND_BUTTON_STATE = "sound_button_state";
 
     public Saver (GameManager gameManager, Context context){
         mContext = context.getApplicationContext();
@@ -36,6 +37,22 @@ public class Saver {
     private void addFigure(Figure figure){
         ContentValues values = getContentValues(figure);
         mDatabase.insert(FigureTable.NAME, null, values);
+    }
+
+    public static boolean readSoundButtonState(Context context){
+        return PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(SOUND_BUTTON_STATE, true);
+    }
+
+    public static void writeInvertedSoundButtonState(Context context){
+        boolean state = readSoundButtonState(context);
+
+        state = !state;
+
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putBoolean(SOUND_BUTTON_STATE, state)
+                .apply();
     }
 
     public void writeGameProgress(GamePlay gamePlay){ // save max open level and its count

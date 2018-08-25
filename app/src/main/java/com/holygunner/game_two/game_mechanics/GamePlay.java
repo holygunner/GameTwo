@@ -9,6 +9,8 @@ import com.holygunner.game_two.figures.SemiSquare;
 import com.holygunner.game_two.values.ColorsValues;
 import com.holygunner.game_two.values.LevelsValues;
 import android.content.Context;
+import android.content.Intent;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -16,7 +18,7 @@ import java.util.UUID;
 import static com.holygunner.game_two.game_mechanics.StepResult.*;
 
 public class GamePlay {
-    public Integer recentPosition;
+    private Integer recentPosition;
 
     private Context mContext;
     private Level mLevel;
@@ -155,6 +157,10 @@ public class GamePlay {
             return true;
     }
 
+    public Integer getRecentPosition(){
+        return recentPosition;
+    }
+
 //    public boolean isGameContinue(){ // DEMO FOR SCREENSHOTS, DON'T FORGET TO DELETE
 //        if (mDesk.getFreeCells().isEmpty()){
 ////            mSaver.writeGamerCount(mLevel.getGamerCount());
@@ -173,6 +179,8 @@ public class GamePlay {
         }
         recentPosition = position;
         mAvailableSteps = new AvailableSteps(this, recentPosition, mDesk);
+
+        mAvailableSteps = new AvailableSteps(this, position, mDesk);
 
         return true;
     }
@@ -280,6 +288,10 @@ public class GamePlay {
             }
         }
         return STEP_UNAVAILABLE;
+    }
+
+    public void setRecentPosition(int position){
+        recentPosition = position;
     }
 
     private Figure getRandomFigure(){

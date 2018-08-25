@@ -17,6 +17,7 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
     private Button chooseLevelButton;
     private Button gameButton;
     private Button aboutButton;
+    private Button soundButton;
     private TextView maxScoreTextView;
 
     private SoundPoolWrapper mSoundPoolWrapper;
@@ -36,6 +37,9 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
                 intent.putExtra(OPEN_LEVEL_NUMB_KEY, Saver.readMaxLevel(getApplicationContext()));
                 startActivity(intent);
                 break;
+            case R.id.sound_on_button:
+                setSoundButton();
+                break;
             case R.id.about_button:
                 showAbout();
                 break;
@@ -54,12 +58,30 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
         gameButton.setOnClickListener(this);
         aboutButton = (Button) findViewById(R.id.about_button);
         aboutButton.setOnClickListener(this);
+        soundButton = (Button) findViewById(R.id.sound_on_button);
+        soundButton.setOnClickListener(this);
+        setSoundButtonTitle();
         maxScoreTextView = (TextView) findViewById(R.id.maxScoreTextView);
         updateMaxScore();
         setGameButtonText();
 
         mSoundPoolWrapper = SoundPoolWrapper.getInstance(this);
 
+    }
+
+    private void setSoundButton(){
+        Saver.writeInvertedSoundButtonState(getApplicationContext());
+        setSoundButtonTitle();
+    }
+
+    private void setSoundButtonTitle(){
+        boolean state = Saver.readSoundButtonState(getApplicationContext());
+
+        if (state){
+            soundButton.setText("Sound On");
+        }   else {
+            soundButton.setText("Sound Off");
+        }
     }
 
     private void setChooseLevelButtonVisibility() {
@@ -96,6 +118,7 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
         updateMaxScore();
         setChooseLevelButtonVisibility();
         setGameButtonText();
+        setSoundButtonTitle();
         mSoundPoolWrapper = SoundPoolWrapper.getInstance(this);
     }
 

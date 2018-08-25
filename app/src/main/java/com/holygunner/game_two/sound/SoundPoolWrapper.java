@@ -6,6 +6,7 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 
 import com.holygunner.game_two.R;
+import com.holygunner.game_two.database.Saver;
 
 public class SoundPoolWrapper {
     private SoundPool mSoundPool;
@@ -61,16 +62,28 @@ public class SoundPoolWrapper {
     }
 
     public void playSound(int soundId){
-        AudioManager audioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
-        float curVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        float maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-        float leftVolume = curVolume / maxVolume;
-        float rightVolume = curVolume / maxVolume;
-        int priority = 1;
-        int no_loop = 0;
-        float normal_playback_rate = 1f;
-        mStreamId = mSoundPool.play(soundId, leftVolume, rightVolume, priority,
-                no_loop, normal_playback_rate);
+        if (isSoundOn()) {
+            AudioManager audioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+            float curVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+            float maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+            float leftVolume = curVolume / maxVolume;
+            float rightVolume = curVolume / maxVolume;
+            int priority = 1;
+            int no_loop = 0;
+            float normal_playback_rate = 1f;
+            mStreamId = mSoundPool.play(soundId, leftVolume, rightVolume, priority,
+                    no_loop, normal_playback_rate);
+        }
+    }
+
+    private boolean isSoundOn(){
+        boolean state = Saver.readSoundButtonState(mContext);
+
+        if (state){
+            return true;
+        }   else {
+            return false;
+        }
     }
 
     public void release(){
