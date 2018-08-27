@@ -20,14 +20,13 @@ public class AboutGameDialogFragment extends DialogFragment {
     public void onStart(){
         super.onStart();
         Window window = getDialog().getWindow();
-        window.setBackgroundDrawableResource(R.drawable.gradient_blue_left_rounded_corners);
+        window.setBackgroundDrawableResource(R.drawable.gradient_blue_left_up_corner_rounded_corners);
     }
 
     public Dialog onCreateDialog(Bundle onSavedInstanceState){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder
-//                .setTitle("How to play: ")
                 .setView(R.layout.about_game_view)
                 .setPositiveButton("Got it!", new DialogInterface.OnClickListener() {
                     @Override

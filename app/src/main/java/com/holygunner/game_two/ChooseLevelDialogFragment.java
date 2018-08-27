@@ -6,8 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.app.AlertDialog;
+import android.support.v4.content.ContextCompat;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Window;
+import android.widget.TextView;
 
 import com.holygunner.game_two.database.Saver;
 import com.holygunner.game_two.sound.SoundPoolWrapper;
@@ -43,13 +46,23 @@ public class ChooseLevelDialogFragment extends DialogFragment {
 
 //                builder.setView(inflater.inflate(R.layout.fragment_dialog, null))
                     builder
-                        .setTitle(R.string.select_your_level)
+//                        .setTitle(R.string.select_your_level)
                         .setItems(levelNames, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 runLevel(which);
                             }
                         });
+
+        TextView title = new TextView(getContext());
+// You Can Customise your Title here
+        title.setText(R.string.select_your_level);
+        title.setPaddingRelative(0, 40, 0, 0);
+        title.setGravity(Gravity.CENTER);
+        title.setTextColor(ContextCompat.getColor(getContext(), R.color.grey_text_color));
+        title.setTextSize(20);
+
+        builder.setCustomTitle(title);
 
         return builder.create();
     }
