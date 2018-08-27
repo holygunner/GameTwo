@@ -9,4 +9,8 @@
     <string name="game_over">GAME OVER!</string>
     <string name="infinity_symbol">∞</string>
     <string name="select_your_level">Select your level:</string>
+    <string name="unite_wholes_into_complete_figures">&#160;Unite wholes into complete figures of the same type and color. You are able to remove or spin them clockwise.</string>
+    <string name="but_be_careful">&#160;But be careful, the more wholes can appear with each of your action.</string>
+    <string name="complete_levels_and_don_t_loose">&#160;Complete levels, reach a high score and don\'t loose. Good luck :-)</string>
+    <string name="how_to_play">How to play:</string>
 </resources>

@@ -1,12 +1,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:background="@drawable/gradient_purple"
-              android:id="@+id/activity_start"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:orientation="vertical"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:background="@drawable/gradient_blue_up"
+                android:id="@+id/activity_start"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical"
 
-              tools:context="com.holygunner.game_two.StartGameActivity">
+                tools:context="com.holygunner.game_two.StartGameActivity">
 
     <!-- android:background="@drawable/gradient_blue_up" -->
 
@@ -29,7 +29,7 @@
             android:orientation="vertical">
 
             <Button
-                style="@style/StartActivityButton"
+                style="@style/StartActivityButton2"
                 android:text="@string/select_level"
                 android:id="@+id/choose_level_button"
                 android:layout_centerVertical="true"
@@ -44,7 +44,7 @@
             android:orientation="vertical">
 
             <Button
-                style="@style/StartActivityButton"
+                style="@style/StartActivityButton2"
                 android:id="@+id/game_button"
                 android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"/>
@@ -57,7 +57,7 @@
             android:orientation="vertical">
 
             <Button
-                style="@style/StartActivityButton"
+                style="@style/StartActivityButton2"
                 android:text="Sound On"
                 android:id="@+id/sound_on_button"
                 android:layout_centerVertical="true"
@@ -71,7 +71,7 @@
             android:orientation="vertical">
 
             <Button
-                style="@style/StartActivityButton"
+                style="@style/StartActivityButton2"
                 android:text="@string/about"
                 android:id="@+id/about_button"
                 android:layout_centerVertical="true"

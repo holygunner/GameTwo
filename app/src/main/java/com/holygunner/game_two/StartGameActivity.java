@@ -134,6 +134,8 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void showAbout(){
-        // show game rules here by DialogFragment or another View
+        FragmentManager manager = getSupportFragmentManager();
+        AboutGameDialogFragment aboutGameFragment = new AboutGameDialogFragment();
+        aboutGameFragment.show(manager, "TAG");
     }
 }

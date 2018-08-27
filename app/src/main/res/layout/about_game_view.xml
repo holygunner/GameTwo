@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/about_game_layout"
+              android:orientation="vertical"
+              android:padding="16dp"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content">
+
+    <TextView
+        android:text="@string/how_to_play"
+        android:textStyle="bold"
+        style="@style/AboutGameTextView"
+        android:paddingBottom="16dp"/>
+    <TextView
+        style="@style/AboutGameTextView"
+        android:paddingBottom="16dp"
+        android:text="@string/unite_wholes_into_complete_figures"/>
+    <TextView
+        style="@style/AboutGameTextView"
+        android:paddingBottom="16dp"
+        android:text="@string/but_be_careful"/>
+    <TextView
+        style="@style/AboutGameTextView"
+        android:text="@string/complete_levels_and_don_t_loose"/>
+</LinearLayout>
