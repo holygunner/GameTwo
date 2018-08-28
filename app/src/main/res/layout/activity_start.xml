@@ -1,65 +1,99 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
               android:background="@drawable/gradient_purple"
               android:id="@+id/activity_start"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
               android:orientation="vertical"
-              android:paddingTop="16dp"
+
               tools:context="com.holygunner.game_two.StartGameActivity">
 
     <!-- android:background="@drawable/gradient_blue_up" -->
 
-    <RelativeLayout
+    <LinearLayout
+        android:paddingTop="16dp"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <Button
-            style="@style/StartActivityButton"
-            android:text="@string/select_level"
-            android:id="@+id/choose_level_button"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="@dimen/start_buttons_padding"
+            android:orientation="vertical"/>
 
-    </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
+            <Button
+                style="@style/StartActivityButton"
+                android:text="@string/select_level"
+                android:id="@+id/choose_level_button"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"/>
 
-        <Button
-            style="@style/StartActivityButton"
-            android:id="@+id/game_button"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"/>
-    </RelativeLayout>
+        </RelativeLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-        <Button
-            style="@style/StartActivityButton"
-            android:text="@string/about"
-            android:id="@+id/about_button"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"/>
+            <Button
+                style="@style/StartActivityButton"
+                android:id="@+id/game_button"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
 
-        <TextView
-            android:visibility="invisible"
-            android:textSize="@dimen/start_button_text_size"
-            android:paddingBottom="32dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/maxScoreTextView"/>
-    </RelativeLayout>
-</LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <Button
+                style="@style/StartActivityButton"
+                android:text="@string/sound_on"
+                android:id="@+id/sound_on_button"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <Button
+                style="@style/StartActivityButton"
+                android:text="@string/about"
+                android:id="@+id/about_button"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="@dimen/start_buttons_padding"
+            android:orientation="vertical"/>
+    </LinearLayout>
+
+    <TextView
+        android:hint="@string/your_max_score"
+        android:visibility="visible"
+        android:textSize="@dimen/start_button_text_size"
+        android:paddingBottom="32dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/maxScoreTextView"/>
+
+</RelativeLayout>

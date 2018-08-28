@@ -23,17 +23,15 @@
             android:id="@+id/levelNameTextView"
             android:textColor="@color/grey_text_color"
             android:hint="Level"
-            android:textSize="16dp"
+            android:textSize="16sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"/>
+            android:layout_gravity="center_horizontal"/>
 
         <TextView
             android:id="@+id/gamerCountTextView"
             android:hint=":"
-            android:textSize="32dp"
+            android:textSize="32sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|center_vertical"/>
@@ -78,7 +76,7 @@
             android:visibility="invisible"
             android:text="@string/game_over"
             android:textStyle="bold"
-            android:textSize="48dp"
+            android:textSize="48sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/warningTextView"
@@ -86,5 +84,4 @@
             android:layout_centerHorizontal="true"/>
 
     </RelativeLayout>
-
 </RelativeLayout>

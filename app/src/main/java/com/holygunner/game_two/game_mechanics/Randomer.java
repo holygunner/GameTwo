@@ -25,7 +25,7 @@ public class Randomer {
         initPositions();
     }
 
-    public Position getRandomPositionFirstRealization(){
+    public Position getRandomPosition1stImpl(){
         int length = POSITIONS.length;
         return POSITIONS[mRandom.nextInt(length)];
     }

@@ -20,17 +20,14 @@ public abstract class LevelsValues {
     public static final FigureClassAndColorPair[][] FIGURE_COLORS_PAIR = {
             {new FigureClassAndColorPair(SemiCircle.class, BORDO)},
 
-            {new FigureClassAndColorPair(SemiCircle.class, BORDO),
-                    new FigureClassAndColorPair(SemiSquare.class, PURPLE)},
+            {new FigureClassAndColorPair(SemiSquare.class, PURPLE)},
+
+            {new FigureClassAndColorPair(SemiCircle.class, PURPLE),
+                    new FigureClassAndColorPair(SemiSquare.class, BORDO)},
 
             {new FigureClassAndColorPair(SemiCircle.class, BORDO),
                     new FigureClassAndColorPair(SemiCircle.class, PURPLE),
-                    new FigureClassAndColorPair(SemiSquare.class, PURPLE)},
-
-            {new FigureClassAndColorPair(SemiCircle.class, BORDO),
-                    new FigureClassAndColorPair(SemiCircle.class, PURPLE),
-                    new FigureClassAndColorPair(SemiSquare.class, BORDO),
-                    new FigureClassAndColorPair(SemiSquare.class, PURPLE)},
+                    new FigureClassAndColorPair(SemiSquare.class, BORDO)},
 
             {new FigureClassAndColorPair(SemiCircle.class, BORDO),
                     new FigureClassAndColorPair(SemiCircle.class, PURPLE),

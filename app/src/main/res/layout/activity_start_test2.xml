@@ -5,7 +5,6 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:orientation="vertical"
-
                 tools:context="com.holygunner.game_two.StartGameActivity">
 
     <!-- android:background="@drawable/gradient_blue_up" -->
@@ -16,13 +15,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <RelativeLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="@dimen/start_buttons_padding"
             android:orientation="vertical"/>
 
-        <RelativeLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -32,39 +31,34 @@
                 style="@style/StartActivityButton2"
                 android:text="@string/select_level"
                 android:id="@+id/choose_level_button"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"/>
+                android:layout_gravity="center"/>
 
-        </RelativeLayout>
+        </FrameLayout>
 
-        <RelativeLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="vertical">
-
             <Button
                 style="@style/StartActivityButton2"
                 android:id="@+id/game_button"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"/>
-        </RelativeLayout>
+                android:layout_gravity="center"/>
+        </FrameLayout>
 
-        <RelativeLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:orientation="vertical">
-
             <Button
                 style="@style/StartActivityButton2"
-                android:text="Sound On"
-                android:id="@+id/sound_on_button"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"/>
-        </RelativeLayout>
+                android:text="@string/sound_on"
+                android:layout_gravity="center"
+                android:id="@+id/sound_on_button"/>
+        </FrameLayout>
 
-        <RelativeLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -74,11 +68,10 @@
                 style="@style/StartActivityButton2"
                 android:text="@string/about"
                 android:id="@+id/about_button"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"/>
-        </RelativeLayout>
+                android:layout_gravity="center"/>
+        </FrameLayout>
 
-        <RelativeLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="@dimen/start_buttons_padding"

@@ -50,7 +50,7 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_start_test);
+        setContentView(R.layout.activity_start);
         chooseLevelButton = (Button) findViewById(R.id.choose_level_button);
         setChooseLevelButtonVisibility();
         chooseLevelButton.setOnClickListener(this);
