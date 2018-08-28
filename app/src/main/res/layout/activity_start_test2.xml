@@ -5,7 +5,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:orientation="vertical"
-                tools:context="com.holygunner.game_two.StartGameActivity">
+                tools:context="com.holygunner.halves_into_whole.StartGameActivity">
 
     <!-- android:background="@drawable/gradient_blue_up" -->
 

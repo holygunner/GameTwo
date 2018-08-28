@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.holygunner.game_two">
+          package="com.holygunner.halves_into_whole">
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
 
@@ -14,7 +14,7 @@
             android:screenOrientation="portrait"
             android:parentActivityName=".StartGameActivity"></activity>
 
-        <activity android:name="com.holygunner.game_two.StartGameActivity"
+        <activity android:name="com.holygunner.halves_into_whole.StartGameActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

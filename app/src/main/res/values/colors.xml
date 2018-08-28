@@ -10,4 +10,6 @@
     <color name="start_button_text_color">#010101</color>
     <color name="grey_text_color">#f7f7f7</color>
     <color name="start_button_text_color2">#ffffff</color>
+    <color name="hint_foreground_material_light">#00000000</color>
+    <color name="hint_foreground_material_dark">#00000000</color>
 </resources>
