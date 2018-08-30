@@ -8,6 +8,7 @@ import com.holygunner.halves_into_whole.figures.SemiCircle;
 import com.holygunner.halves_into_whole.figures.SemiSquare;
 import com.holygunner.halves_into_whole.values.ColorsValues;
 import com.holygunner.halves_into_whole.values.LevelsValues;
+import com.holygunner.halves_into_whole.values.GameValues;
 import android.content.Context;
 import android.content.Intent;
 
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.holygunner.halves_into_whole.game_mechanics.StepResult.*;
+import static com.holygunner.halves_into_whole.values.GameValues.*;
 
 public class GamePlay {
     private Integer recentPosition;
@@ -33,6 +35,7 @@ public class GamePlay {
     private boolean isGameStarted;
     private boolean isTurnAvailable;
     private boolean isFilled;
+    private StepResult prevStepResult;
 
     public GamePlay(Context context, Desk desk, Saver saver, int levelNumb){
         mContext = context.getApplicationContext();
@@ -78,7 +81,6 @@ public class GamePlay {
     public Desk createNewDesk() {
         mDesk = new Desk(this, mLevel.getDeskSize());
         addRandomFigure(3);
-
         return mDesk;
     }
 
@@ -113,22 +115,37 @@ public class GamePlay {
             return STEP_UNAVAILABLE;
         }
 
-        if (mAvailableSteps.isPositionOnStep(position) != -1 && isFilled==true) {
+        if (mAvailableSteps.isPositionOnStep(position) != -1 && isFilled) {
             Cell fromWhere = mDesk.positionToCell(recentPosition);
             Cell toWhere = mDesk.positionToCell(position);
 
             StepResult stepResult = makeStep(fromWhere, toWhere);
+
+            if (stepResult != UNITE_FIGURE){
+                prevStepResult = null;
+            }
 
             switch (stepResult){
                 case REPLACE_FIGURE:
                     addRandomFigure(mLevel.getAddForStep());
                     break;
                 case UNITE_FIGURE:
-                    addRandomFigure(mLevel.getAddForUnit());
+                    if (!isCombo()) {
+                        addRandomFigure(mLevel.getAddForUnit());
+                    }   else {
+                        if (mDesk.isOneFigureLeft()){
+                            addRandomFigure(2);
+                        }
+                        stepResult = COMBO;
+
+                    }
+                    prevStepResult = stepResult;
                     break;
                 case DESK_EMPTY:
-                    addRandomFigure(3);
-                    mLevel.addBonus();
+                    mLevel.increaseGamerCount(POINT_FOR_EMPTY_DESK);
+                    if (!mLevel.isLevelComplete()) {
+                        addRandomFigure(3);
+                    }
                     break;
             }
 
@@ -138,10 +155,12 @@ public class GamePlay {
             }
 
             if (stepResult != STEP_UNAVAILABLE) {
-                if (isGameStarted == false){
+
+                if (!isGameStarted){
                     isGameStarted = true;
                 }
             }
+
             isFilled = false;
             return stepResult;
         }   else
@@ -199,6 +218,7 @@ public class GamePlay {
 
                 Position turnedPosition = Position.getTurnedPosition(figure.position);
                 figure.position = turnedPosition;
+                prevStepResult = null;
                 addRandomFigure(mLevel.getAddForTurn());
 
                 mAvailableSteps = new AvailableSteps(this, recentPosition, mDesk);
@@ -277,7 +297,11 @@ public class GamePlay {
 
                 if (areSemiFiguresAreWhole(ourFigure, figure2)){
                     unitedFigureRes = figure2.fullPositionRes;
-                    mLevel.increaseGamerCount();
+                    if (isCombo()){
+                        mLevel.increaseGamerCount(POINT_FOR_COMBO);
+                    }   else {
+                        mLevel.increaseGamerCount(POINT_FOR_UNIT);
+                    }
                     mDesk.uniteSemiFigures(fromWhere, toWhere);
 
                     if (mDesk.isDeskEmpty()){
@@ -290,8 +314,12 @@ public class GamePlay {
         return STEP_UNAVAILABLE;
     }
 
-    public void setRecentPosition(int position){
-        recentPosition = position;
+    private boolean isCombo(){
+        if (prevStepResult != null){
+            return true;
+        }   else {
+            return false;
+        }
     }
 
     private Figure getRandomFigure(){

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.holygunner.halves_into_whole.database.*;
+import com.holygunner.halves_into_whole.figures.Figure;
 import com.holygunner.halves_into_whole.values.LevelsValues;
 
 public class GameManager {

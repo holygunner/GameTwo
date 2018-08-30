@@ -88,7 +88,7 @@ public class SoundPoolWrapper {
 
     public void release(){
         mSoundPool.release();
-        mSoundPool = null;
+//        mSoundPool = null;
         instance = null;
     }
 }

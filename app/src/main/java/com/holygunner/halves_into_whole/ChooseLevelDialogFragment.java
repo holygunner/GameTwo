@@ -55,7 +55,7 @@ public class ChooseLevelDialogFragment extends DialogFragment {
                         });
 
         TextView title = new TextView(getContext());
-// You Can Customise your Title here
+
         title.setText(R.string.select_your_level);
         title.setPaddingRelative(0, 40, 0, 0);
         title.setGravity(Gravity.CENTER);
@@ -81,6 +81,4 @@ public class ChooseLevelDialogFragment extends DialogFragment {
 
         return availableLevelNames;
     }
-
-
 }

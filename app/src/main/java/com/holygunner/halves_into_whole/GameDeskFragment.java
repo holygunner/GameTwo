@@ -1,5 +1,9 @@
 package com.holygunner.halves_into_whole;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.holygunner.halves_into_whole.figures.Figure;
 import com.holygunner.halves_into_whole.figures.FigureFactory;
 import com.holygunner.halves_into_whole.game_mechanics.*;
@@ -18,8 +22,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -35,8 +39,6 @@ public class GameDeskFragment extends Fragment {
     private RecyclerView mRecyclerGridDesk;
     private RecyclerGridAdapter mAdapter;
 
-    private GameManager mGameManager;
-
     private Button turnFigureButton;
     private TextView gamerCountView;
     private TextView levelNameTextView;
@@ -48,7 +50,10 @@ public class GameDeskFragment extends Fragment {
     private boolean userActionAvailable;
     private boolean isTurnButtonClickable;
 
+    private GameManager mGameManager;
     private SoundPoolWrapper mSoundPoolWrapper;
+
+    private InterstitialAd mInterstitialAd;
 
     public GameDeskFragment(){
     }
@@ -61,7 +66,12 @@ public class GameDeskFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mSoundPoolWrapper = SoundPoolWrapper.getInstance(getActivity());
 
-        initGameManagerIfNotExists();
+        // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
+        // my AdMob ID: ca-app-pub-5986847491806907~4171322067
+        MobileAds.initialize(getContext(), "ca-app-pub-3940256099942544~3347511713");
+        setAdsInterstitial();
+
+        initGameManager();
         mGameManager.startOrResumeGame(getActivity().getIntent().getIntExtra(
                 StartGameActivity.OPEN_LEVEL_NUMB_KEY, 0));
     }
@@ -102,7 +112,33 @@ public class GameDeskFragment extends Fragment {
         finishActivity();
     }
 
-    private void initGameManagerIfNotExists(){
+    private void setAdsInterstitial(){
+        mInterstitialAd = new InterstitialAd(getContext());
+        // Sample AdMob app ID: ca-app-pub-3940256099942544/1033173712
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed(){
+                // Load the next interstitial.
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+        });
+    }
+
+    private void showAdsInterstitial(){
+        if (mGameManager.getGamePlay().getLevel().isLevelComplete()
+                || !(mGameManager.getGamePlay().isGameContinue())) {
+            if (mInterstitialAd.isLoaded()) {
+                mInterstitialAd.show();
+            } else {
+                Log.d("TAG", "The interstitial wasn't loaded yet.");
+            }
+        }
+    }
+
+    private void initGameManager(){
         if (mGameManager == null){
             mGameManager = new GameManager(getActivity());
         }
@@ -188,18 +224,33 @@ public class GameDeskFragment extends Fragment {
 
         warningTextView.setText(warningText);
         warningTextView.setVisibility(View.VISIBLE);
-        animateGameOver(warningTextView);
+        animateGameOver(warningTextView,0.0f,150);
+    }
+
+    private void showBonusWarning(String text){
+        long duration = 75;
+        warningTextView.setText(text);
+        warningTextView.setVisibility(View.VISIBLE);
+        animateGameOver(warningTextView,0.0f,duration);
+        animateGameOver(warningTextView,1.0f,duration);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                warningTextView.setVisibility(View.INVISIBLE);
+            }
+        }, duration*2);
     }
 
     private void finishActivity(){
+        showAdsInterstitial();
         mGameManager.finish();
         getActivity().finish();
     }
 
-    private void animateGameOver(final TextView view){
+    private void animateGameOver(final TextView view, float alpha, long duration){
         view.animate()
-                .alpha(0.0f)
-                .setDuration(150)
+                .alpha(alpha)
+                .setDuration(duration)
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -269,41 +320,12 @@ public class GameDeskFragment extends Fragment {
                 public void onClick(View v) {
                     final GamePlay gamePlay = mGameManager.getGamePlay();
 
-//                    if (!userActionAvailable){
-//                        return;
-//                    }
-
                     if (!userActionAvailable){
                         return;
                     }
 
                     actionDown(gamePlay);
-
                 }
-
-
-//            mImageViewCell.setOnTouchListener(new View.OnTouchListener() {
-//
-//                @Override
-//                public boolean onTouch(View v, MotionEvent event) {
-//                    if (!userActionAvailable){
-//                        return false;
-//                    }
-//                    final GamePlay gamePlay = mGameManager.getGamePlay();
-//
-//                    switch (event.getAction()){
-//                        case MotionEvent.ACTION_DOWN:
-//                            actionDown(gamePlay);
-//                            break;
-//                        case MotionEvent.ACTION_MOVE:
-//                            break;
-//                        case MotionEvent.ACTION_UP:
-//                            break;
-//                        case MotionEvent.ACTION_CANCEL:
-//                            break;
-//                    }
-//                    return true;
-//                }
 
                 private void actionDown(GamePlay gamePlay){
                     StepResult stepResult;
@@ -312,31 +334,60 @@ public class GameDeskFragment extends Fragment {
                         setIsTurnButtonClickable(true);
                         setIsTurnButtonVisible(false);
 
-                        if (stepResult == UNITE_FIGURE
-                                || stepResult == DESK_EMPTY
-                                || stepResult == LEVEL_COMPLETE){
-                            showUnitedFigure(mImageViewCell, gamePlay);
-
-                            if (stepResult == LEVEL_COMPLETE){
+                        switch (stepResult){
+                            case UNITE_FIGURE:
+                                showUnitedFigure(mImageViewCell, gamePlay);
+                                break;
+                            case COMBO:
+                                showUnitedFigure(mImageViewCell, gamePlay);
+                                showBonusWarning("COMBO! +5");
+                                break;
+                            case DESK_EMPTY:
+                                showUnitedFigure(mImageViewCell, gamePlay);
+                                showBonusWarning("BONUS! +10");
+                                break;
+                            case LEVEL_COMPLETE:
+                                showUnitedFigure(mImageViewCell, gamePlay);
                                 goingToNextLevel();
                                 return;
-                            }
-                        } else {
-                            replaceFigure(position);
+                            default:
+                                replaceFigure(position);
+                                break;
                         }
+
+
+//                        if (stepResult == UNITE_FIGURE
+//                                || stepResult == COMBO
+//                                || stepResult == DESK_EMPTY
+//                                || stepResult == LEVEL_COMPLETE){
+//                            showUnitedFigure(mImageViewCell, gamePlay);
+//
+//                            if (stepResult == COMBO){
+//                                showBonusWarning("COMBO!");
+//                            }
+//
+//                            if (stepResult == DESK_EMPTY){
+//                                showBonusWarning("+10 BONUS!");
+//                            }
+//
+//                            if (stepResult == LEVEL_COMPLETE){
+//                                goingToNextLevel();
+//                                return;
+//                            }
+//                        } else {
+//                            replaceFigure(position);
+//                        }
                     }   else {
                             boolean isFilled = gamePlay.setAvailableCells(position);
                             if (isFilled){
                                 int currentFigureColor = mGameManager.getDesk().getFigure(position).color;
 
                                 mSoundPoolWrapper.playSound(SoundPoolWrapper.SELECT_FIGURE);
-
                                 fillCells(isFilled, currentFigureColor);
 
                                 if (isTurnButtonClickable) {
                                     setIsTurnButtonClickable(true);
                                 }
-
                                 setTurnFigureButton();
                             }
                         }
@@ -400,8 +451,6 @@ public class GameDeskFragment extends Fragment {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-//                    setIsTurnButtonClickable(false);
-//                    isTurnButtonClickable = false;
 
                     updateFillCells();
                     userActionAvailable = true;

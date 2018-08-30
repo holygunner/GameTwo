@@ -20,7 +20,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() throws Exception {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
-
-        assertEquals("com.holygunner.gametwo", appContext.getPackageName());
+        assertEquals("com.holygunner.halves_into_whole", appContext.getPackageName());
     }
 }

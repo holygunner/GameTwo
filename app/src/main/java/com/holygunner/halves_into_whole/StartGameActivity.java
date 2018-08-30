@@ -4,14 +4,17 @@ import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 
 import com.holygunner.halves_into_whole.database.*;
 import com.holygunner.halves_into_whole.sound.SoundPoolWrapper;
@@ -59,11 +62,9 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
         setContentView(R.layout.activity_start);
 
         // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
+        // my AdMob ID: ca-app-pub-5986847491806907~4171322067
         MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
-
-        mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+        setAdsBanner();
 
         chooseLevelButton = (Button) findViewById(R.id.choose_level_button);
         setChooseLevelButtonVisibility();
@@ -81,10 +82,12 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
 
         mSoundPoolWrapper = SoundPoolWrapper.getInstance(this);
 
-//        AdView adView = new AdView(this);
-//        adView.setAdSize(AdSize.BANNER);
-//        adView.setAdUnitId("ca-app-pub-3940256099942544/6300978111");
+    }
 
+    private void setAdsBanner(){
+        mAdView = (AdView) findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
     }
 
     private void setSoundButton(){

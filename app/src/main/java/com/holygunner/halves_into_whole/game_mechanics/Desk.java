@@ -110,6 +110,14 @@ public class Desk {
         }
     }
 
+    public boolean isOneFigureLeft(){
+        if (freeCells.size() == deskSize - 1){
+            return true;
+        }   else {
+            return false;
+        }
+    }
+
     public int cellToPosition(Cell cell){
         int desk_height = mGamePlay.getLevel().getDeskSize()[0];
         int desk_width = mGamePlay.getLevel().getDeskSize()[1];

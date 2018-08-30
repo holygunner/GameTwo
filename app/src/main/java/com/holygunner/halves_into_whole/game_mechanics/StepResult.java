@@ -5,7 +5,11 @@ public enum StepResult {
     REPLACE_FIGURE ("0"),
     UNITE_FIGURE ("1"),
     DESK_EMPTY ("2"),
-    LEVEL_COMPLETE("3");
+    LEVEL_COMPLETE("3"),
+    COMBO("4"),
+    BONUS ("5");
+
+
 
     private final String mName;
 

@@ -89,12 +89,15 @@ public class Level {
         mGamerCount = gamerCount;
     }
 
-    public void increaseGamerCount(){
-        ++mGamerCount;
-    }
+    public void increaseGamerCount(int howMuch){
+        int sum = mGamerCount + howMuch;
+        int levelRounds = LevelsValues.LEVELS_ROUNDS[mLevelNumb];
 
-    public void addBonus(){
-        mGamerCount += BONUS;
+        if (sum > levelRounds){
+            mGamerCount = levelRounds;
+        }   else {
+            mGamerCount = sum;
+        }
     }
 
     public boolean isLevelComplete(){
