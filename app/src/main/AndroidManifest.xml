@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.holygunner.halves_into_whole">
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="false"
@@ -12,7 +12,7 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar.Custom">
         <activity android:name=".GameFragmentActivity"
             android:screenOrientation="portrait"
-            android:parentActivityName=".StartGameActivity"></activity>
+            android:parentActivityName=".StartGameActivity"/>
 
         <activity android:name="com.holygunner.halves_into_whole.StartGameActivity"
             android:screenOrientation="portrait">
@@ -23,5 +23,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

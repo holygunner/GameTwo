@@ -13,7 +13,9 @@
     <string name="but_be_careful">&#160;But be careful, the more wholes can appear with each of your action unless the game will end.</string>
     <string name="complete_levels_and_don_t_loose">&#160;Complete levels, reach a high score and don\'t loose. Good luck :-)</string>
     <string name="how_to_play">How to play:</string>
-    <string name="sound_on">Sound On</string>
     <string name="my_banner_add_unit_id">ca-app-pub-5986847491806907/6585732416</string>
     <string name="test_banner_add_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="count_delimiter">&#160;:&#160;</string>
+    <string name="sound_on">Sound On</string>
+    <string name="sound_off">Sound Off</string>
 </resources>

@@ -18,13 +18,10 @@ public enum Position {
     }
 
     public static boolean areHalfesOfWhole(Position position1, Position position2){
-        if ((position1 == POSITION_ONE && position2 == POSITION_TWO)
+        return (position1 == POSITION_ONE && position2 == POSITION_TWO)
                 || (position1 == POSITION_TWO && position2 == POSITION_ONE)
                 || (position1 == POSITION_THREE && position2 == POSITION_FOUR)
-                || (position1 == POSITION_FOUR && position2 == POSITION_THREE)){
-            return true;
-        }   else
-            return false;
+                || (position1 == POSITION_FOUR && position2 == POSITION_THREE);
     }
 
     public static Position getPositionFromString(String positionString){

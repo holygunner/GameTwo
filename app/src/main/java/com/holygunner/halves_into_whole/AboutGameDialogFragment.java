@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.view.Window;
 
@@ -20,9 +21,13 @@ public class AboutGameDialogFragment extends DialogFragment {
     public void onStart(){
         super.onStart();
         Window window = getDialog().getWindow();
-        window.setBackgroundDrawableResource(R.drawable.gradient_blue_left_up_corner_rounded_corners);
+        if (window != null) {
+            window.setBackgroundDrawableResource(R.drawable.gradient_blue_left_up_corner_rounded_corners);
+        }
     }
 
+    @Override
+    @NonNull
     public Dialog onCreateDialog(Bundle onSavedInstanceState){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 

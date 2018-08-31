@@ -4,7 +4,6 @@ import com.holygunner.halves_into_whole.figures.FigureClassAndColorPair;
 import com.holygunner.halves_into_whole.values.LevelsValues;
 
 public class Level {
-    public static final int BONUS = 10;
     private int mLevelNumb;
     private int mGamerCount;
     private String mLevelName;
@@ -15,7 +14,7 @@ public class Level {
     private int mAddForUnit; // quantity Of Rand Figures For Empty Turn (0-1)
     private FigureClassAndColorPair[] mFigureClassAndColorPairs; // available figures and their colors on a level
 
-    public Level(){}
+    Level(){}
 
     public int getLevelNumb() {
         return mLevelNumb;
@@ -101,10 +100,6 @@ public class Level {
     }
 
     public boolean isLevelComplete(){
-        if (mGamerCount >= mLevelRounds){
-            return true;
-        }   else {
-            return false;
-        }
+        return mGamerCount >= mLevelRounds;
     }
 }

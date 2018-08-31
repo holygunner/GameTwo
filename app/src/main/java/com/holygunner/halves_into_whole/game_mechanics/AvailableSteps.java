@@ -12,7 +12,7 @@ public class AvailableSteps {
     private GamePlay mGamePlay;
     private Desk mDesk;
 
-    public AvailableSteps(GamePlay gamePlay, int position, Desk desk){
+    AvailableSteps(GamePlay gamePlay, int position, Desk desk){
         mGamePlay = gamePlay;
         mDesk = desk;
         availableToUniteCells = new ArrayList<>();
@@ -45,20 +45,20 @@ public class AvailableSteps {
         return -1;
     }
 
-    public boolean isEmpty(){
-        if (availableToStepCells.isEmpty() && availableToUniteCells.isEmpty()){
-            return false;
-        }   else
-            return true;
-    }
+//    public boolean isEmpty(){
+//        if (availableToStepCells.isEmpty() && availableToUniteCells.isEmpty()){
+//            return false;
+//        }   else
+//            return true;
+//    }
 
     private void init(int position){
         Cell cell = mDesk.positionToCell(position);
 
         Figure figure = mDesk.getFigure(cell);
 
-        for (int y = 0; y<mDesk.deskToMultiArr().length; y++ ){
-            for (int x = 0; x<mDesk.deskToMultiArr()[y].length; x++){
+        for (int y = 0; y < mDesk.deskToMultiArr().length; y++ ){
+            for (int x = 0; x < mDesk.deskToMultiArr()[y].length; x++){
                 int isStepAvailable = mGamePlay.isStepAvailable(figure, new Cell(x, y));
 
                 switch (isStepAvailable){

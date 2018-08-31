@@ -1,10 +1,8 @@
 package com.holygunner.halves_into_whole.game_mechanics;
 
-import com.holygunner.halves_into_whole.database.Saver;
 import com.holygunner.halves_into_whole.values.LevelsValues;
 
 public abstract class LevelLoader {
-
     public static Level loadLevel(int recentLevelNumb){
         Level level = new Level();
         level.setLevelNumb(recentLevelNumb);

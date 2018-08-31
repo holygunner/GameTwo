@@ -8,16 +8,14 @@ import java.util.List;
 
 public class Desk {
     private Figure[][] desk;
-    private int deskWidth;
-    private int deskHeight;
     private int deskSize;
     private List<Cell> freeCells;
     private GamePlay mGamePlay;
 
-    public Desk(GamePlay gamePlay, int[] deskXY){
+    Desk(GamePlay gamePlay, int[] deskXY){
         mGamePlay = gamePlay;
-        deskHeight = deskXY[0];
-        deskWidth = deskXY[1];
+        int deskHeight = deskXY[0];
+        int deskWidth = deskXY[1];
 
         desk = new Figure[deskHeight][deskWidth];
         deskSize = deskHeight*deskWidth;
@@ -29,11 +27,7 @@ public class Desk {
     }
 
     public boolean isDeskOverload(){
-        if (getFreeCells().size() == 0){
-            return true;
-        }   else {
-            return false;
-        }
+        return  (getFreeCells().size() == 0);
     }
 
 
@@ -49,7 +43,7 @@ public class Desk {
         }
     }
 
-    public boolean replaceFigure(Figure figure, Cell toWhere){
+    public void replaceFigure(Figure figure, Cell toWhere){
         int x1 = figure.mCell.getX();
         int y1 = figure.mCell.getY();
 
@@ -61,8 +55,6 @@ public class Desk {
         figure.setCell(new Cell(x2, y2));
         desk[y2][x2] = figure;
         updateFreeCells(x1, y1, x2, y2);
-
-        return true;
     }
 
     public void uniteSemiFigures(Cell fromWhere, Cell toWhere){
@@ -95,42 +87,28 @@ public class Desk {
     }
 
     public boolean isCellEmpty(Cell cell){
-        if (getFigure(cell) == null){
-            return true;
-        }   else {
-            return false;
-        }
+        return  (getFigure(cell) == null);
     }
 
     public boolean isDeskEmpty(){
-        if (freeCells.size() == deskSize){
-            return true;
-        }   else {
-            return false;
-        }
+        return  (freeCells.size() == deskSize);
     }
 
     public boolean isOneFigureLeft(){
-        if (freeCells.size() == deskSize - 1){
-            return true;
-        }   else {
-            return false;
-        }
+        return (freeCells.size() == deskSize - 1);
     }
 
     public int cellToPosition(Cell cell){
-        int desk_height = mGamePlay.getLevel().getDeskSize()[0];
+//        int desk_height = mGamePlay.getLevel().getDeskSize()[0];
         int desk_width = mGamePlay.getLevel().getDeskSize()[1];
         int x = cell.getX();
         int y = cell.getY();
 
-        int position = y*desk_width+x;
-
-        return position;
+        return y*desk_width+x;
     }
 
     public Cell positionToCell(int position){
-        int desk_height = mGamePlay.getLevel().getDeskSize()[0];
+//        int desk_height = mGamePlay.getLevel().getDeskSize()[0];
         int desk_width = mGamePlay.getLevel().getDeskSize()[1];
 
         int y = position/desk_width;

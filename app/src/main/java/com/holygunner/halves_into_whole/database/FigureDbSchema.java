@@ -1,6 +1,6 @@
 package com.holygunner.halves_into_whole.database;
 
-public class FigureDbSchema {
+class FigureDbSchema {
     public static final class FigureTable{
         public static final String NAME = "figures";
 

@@ -9,8 +9,6 @@ public enum StepResult {
     COMBO("4"),
     BONUS ("5");
 
-
-
     private final String mName;
 
     StepResult(String name){

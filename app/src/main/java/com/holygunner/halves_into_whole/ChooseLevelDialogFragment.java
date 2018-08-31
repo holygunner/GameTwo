@@ -4,11 +4,11 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.app.AlertDialog;
 import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Window;
 import android.widget.TextView;
 
@@ -19,15 +19,15 @@ import com.holygunner.halves_into_whole.values.LevelsValues;
 import java.util.Arrays;
 
 public class ChooseLevelDialogFragment extends DialogFragment {
-    private String[] levelNames;
+    private String[] mLevelNames;
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        levelNames = getAvailableLevelsNames();
-        if (levelNames.length == 0){
-            levelNames[0] = LevelsValues.LEVELS_NAMES[0];
-        }
+        mLevelNames = getAvailableLevelsNames();
+//        if (mLevelNames.length == 0){
+//            mLevelNames[0] = LevelsValues.LEVELS_NAMES[0];
+//        }
     }
 
     @Override
@@ -35,24 +35,23 @@ public class ChooseLevelDialogFragment extends DialogFragment {
         super.onStart();
 
         Window window = getDialog().getWindow();
-        window.setBackgroundDrawableResource(R.drawable.gradient_blue_left_rounded_corners);
+        if (window != null) {
+            window.setBackgroundDrawableResource(R.drawable.gradient_blue_left_rounded_corners);
+        }
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle onSavedInstanceState){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-
-//                builder.setView(inflater.inflate(R.layout.fragment_dialog, null))
-                    builder
-//                        .setTitle(R.string.select_your_level)
-                        .setItems(levelNames, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                runLevel(which);
-                            }
-                        });
+        builder
+                .setItems(mLevelNames, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        runLevel(which);
+                    }
+                });
 
         TextView title = new TextView(getContext());
 
@@ -77,8 +76,6 @@ public class ChooseLevelDialogFragment extends DialogFragment {
 
     private String[] getAvailableLevelsNames(){
         int maxLevelNumb = Saver.readMaxLevel(getContext());
-        String[] availableLevelNames = Arrays.copyOfRange(LevelsValues.LEVELS_NAMES, 0, maxLevelNumb + 1);
-
-        return availableLevelNames;
+        return Arrays.copyOfRange(LevelsValues.LEVELS_NAMES, 0, maxLevelNumb + 1);
     }
 }

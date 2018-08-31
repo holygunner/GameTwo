@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.holygunner.halves_into_whole.database.*;
-import com.holygunner.halves_into_whole.figures.Figure;
 import com.holygunner.halves_into_whole.values.LevelsValues;
 
 public class GameManager {
@@ -21,7 +20,7 @@ public class GameManager {
     public void startOrResumeGame(int levelNumb){
         mSaver = new Saver(this, mContext);
 
-        if (Saver.isLevelMax(mContext, levelNumb) && mSaver.readSaveExists(mContext)){
+        if (Saver.isLevelMax(mContext, levelNumb) && Saver.readSaveExists(mContext)){
             // open SQLite DB
             mGamePlay = new GamePlay(mContext, mDesk, mSaver, levelNumb);
             mDesk = mGamePlay.loadDesk(mSaver.loadFigures());

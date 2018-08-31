@@ -1,5 +1,6 @@
 package com.holygunner.halves_into_whole.sound;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
@@ -20,9 +21,8 @@ public class SoundPoolWrapper {
     public static final int SELECT_FIGURE = 7;
     public static final int TURN_FIGURE = 8;
     public static final int UNITE_FIGURE = 9;
-    private int mStreamId;
-    private final int MAX_STREAM = 4;
 
+    @SuppressLint("StaticFieldLeak")
     private static SoundPoolWrapper instance;
 
     public static SoundPoolWrapper getInstance(Context context){
@@ -32,7 +32,7 @@ public class SoundPoolWrapper {
         return instance;
     }
 
-    public SoundPoolWrapper(Context context) {
+    private SoundPoolWrapper(Context context) {
         mContext = context;
         init();
         load();
@@ -43,13 +43,14 @@ public class SoundPoolWrapper {
                 .setUsage(AudioAttributes.USAGE_GAME)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 .build();
+        int MAX_STREAM = 4;
         mSoundPool = new SoundPool.Builder()
                 .setMaxStreams(MAX_STREAM)
                 .setAudioAttributes(attributes)
                 .build();
     }
 
-    public void load(){
+    private void load(){
         mSoundPool.load(mContext, R.raw.appear_figure, APPEAR_FIGURE);
         mSoundPool.load(mContext, R.raw.level_complete, LEVEL_COMPLETE);
         mSoundPool.load(mContext, R.raw.level_lose2, LEVEL_LOSE);
@@ -64,6 +65,7 @@ public class SoundPoolWrapper {
     public void playSound(int soundId){
         if (isSoundOn()) {
             AudioManager audioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+            assert audioManager != null;
             float curVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
             float maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
             float leftVolume = curVolume / maxVolume;
@@ -71,24 +73,17 @@ public class SoundPoolWrapper {
             int priority = 1;
             int no_loop = 0;
             float normal_playback_rate = 1f;
-            mStreamId = mSoundPool.play(soundId, leftVolume, rightVolume, priority,
+            mSoundPool.play(soundId, leftVolume, rightVolume, priority,
                     no_loop, normal_playback_rate);
         }
     }
 
     private boolean isSoundOn(){
-        boolean state = Saver.readSoundButtonState(mContext);
-
-        if (state){
-            return true;
-        }   else {
-            return false;
-        }
+        return Saver.readIsSoundOn(mContext);
     }
 
     public void release(){
         mSoundPool.release();
-//        mSoundPool = null;
         instance = null;
     }
 }

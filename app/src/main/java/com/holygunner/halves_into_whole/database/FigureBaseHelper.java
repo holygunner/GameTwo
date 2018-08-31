@@ -9,7 +9,7 @@ public class FigureBaseHelper extends SQLiteOpenHelper {
     private static final int VERSION = 1;
     private static final String FIGURE_BASE_NAME = "figureBase.db";
 
-    public FigureBaseHelper(Context context) {
+    FigureBaseHelper(Context context) {
         super(context, FIGURE_BASE_NAME, null, VERSION);
     }
 

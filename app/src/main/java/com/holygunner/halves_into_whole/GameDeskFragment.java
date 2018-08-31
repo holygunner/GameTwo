@@ -12,6 +12,7 @@ import com.holygunner.halves_into_whole.values.LevelsValues;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -30,6 +31,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import java.util.List;
 
 import static com.holygunner.halves_into_whole.game_mechanics.StepResult.*;
@@ -54,6 +56,9 @@ public class GameDeskFragment extends Fragment {
     private SoundPoolWrapper mSoundPoolWrapper;
 
     private InterstitialAd mInterstitialAd;
+
+    private Handler mHandler;
+//    private MyHandler mHandler;
 
     public GameDeskFragment(){
     }
@@ -108,7 +113,11 @@ public class GameDeskFragment extends Fragment {
     @Override
     public void onPause(){
         super.onPause();
-        mGameManager.save();
+        boolean isSaved = mGameManager.save();
+        Log.i("TAG", "save is succesful: " + isSaved);
+        if (mHandler != null) {
+            mHandler.removeCallbacksAndMessages(null);
+        }
         finishActivity();
     }
 
@@ -172,10 +181,18 @@ public class GameDeskFragment extends Fragment {
 
         levelNameTextView.setText(levelName);
 
+        String title;
+
         if (!LevelsValues.isEndlessMode(levelNumb)){
-            gamerCountView.setText(gamerCount + " : " + levelRounds);
+            title = gamerCount
+                    + getString(R.string.count_delimiter)
+                    + levelRounds;
+            gamerCountView.setText(title);
         }   else {
-            gamerCountView.setText(gamerCount + " : " + getResources().getString(R.string.infinity_symbol));
+            title = gamerCount
+                    + getString(R.string.count_delimiter)
+                    + getResources().getString(R.string.infinity_symbol);
+            gamerCountView.setText(title);
         }
     }
 
@@ -197,7 +214,7 @@ public class GameDeskFragment extends Fragment {
         mGameManager.getGamePlay().increaseLevelNumb();
         int nextLevelNumb = mGameManager.getGamePlay().getLevelNumb();
 
-        String nextLevelStr = new String(LevelsValues.LEVELS_NAMES[nextLevelNumb]);
+        String nextLevelStr = LevelsValues.LEVELS_NAMES[nextLevelNumb];
         levelNameTextView.setVisibility(View.INVISIBLE);
         prepareViewsForFinish(nextLevelStr);
 
@@ -224,21 +241,25 @@ public class GameDeskFragment extends Fragment {
 
         warningTextView.setText(warningText);
         warningTextView.setVisibility(View.VISIBLE);
-        animateGameOver(warningTextView,0.0f,150);
+        animateWarningTextView(warningTextView,0.0f,150);
     }
 
     private void showBonusWarning(String text){
-        long duration = 75;
+        long duration = 150;
+        float alphaStart = 0.2f;
+        float alphaEnd = 1.0f;
         warningTextView.setText(text);
+        warningTextView.setAlpha(alphaStart);
         warningTextView.setVisibility(View.VISIBLE);
-        animateGameOver(warningTextView,0.0f,duration);
-        animateGameOver(warningTextView,1.0f,duration);
+        animateWarningTextView(warningTextView,alphaEnd,duration);
+//        animateWarningTextView(warningTextView,alphaStart,duration);
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 warningTextView.setVisibility(View.INVISIBLE);
             }
-        }, duration*2);
+        }, duration);
     }
 
     private void finishActivity(){
@@ -247,7 +268,7 @@ public class GameDeskFragment extends Fragment {
         getActivity().finish();
     }
 
-    private void animateGameOver(final TextView view, float alpha, long duration){
+    private void animateWarningTextView(final TextView view, float alpha, long duration){
         view.animate()
                 .alpha(alpha)
                 .setDuration(duration)
@@ -264,7 +285,10 @@ public class GameDeskFragment extends Fragment {
         private List<String> mData;
         private LayoutInflater mLayoutInflater;
 
-        public RecyclerGridAdapter(Context context, List<String> data){
+//        private GameDeskFragment baseFragment;
+
+        RecyclerGridAdapter(Context context, List<String> data){
+//            baseFragment = fragment;
             mLayoutInflater = LayoutInflater.from(context);
             mData = data;
         }
@@ -295,7 +319,6 @@ public class GameDeskFragment extends Fragment {
             if (figure != null){
                 res = FigureFactory.getFigureRes(figure);
                 holder.mImageViewCell.setImageResource(res);
-                return;
             }   else {
                 res = R.drawable.empty_cell;
                 holder.mImageViewCell.setImageResource(res);
@@ -308,8 +331,12 @@ public class GameDeskFragment extends Fragment {
         public ImageView mImageViewCell;
         private int position;
 
-        public GridViewHolder(View itemView) {
+//        private GameDeskFragment baseFragment;
+
+        GridViewHolder(View itemView) {
             super(itemView);
+
+//            baseFragment = fragment;
 
             mImageViewCell = (ImageView) itemView.findViewById(R.id.cell_image_view);
 
@@ -354,36 +381,13 @@ public class GameDeskFragment extends Fragment {
                                 replaceFigure(position);
                                 break;
                         }
-
-
-//                        if (stepResult == UNITE_FIGURE
-//                                || stepResult == COMBO
-//                                || stepResult == DESK_EMPTY
-//                                || stepResult == LEVEL_COMPLETE){
-//                            showUnitedFigure(mImageViewCell, gamePlay);
-//
-//                            if (stepResult == COMBO){
-//                                showBonusWarning("COMBO!");
-//                            }
-//
-//                            if (stepResult == DESK_EMPTY){
-//                                showBonusWarning("+10 BONUS!");
-//                            }
-//
-//                            if (stepResult == LEVEL_COMPLETE){
-//                                goingToNextLevel();
-//                                return;
-//                            }
-//                        } else {
-//                            replaceFigure(position);
-//                        }
                     }   else {
                             boolean isFilled = gamePlay.setAvailableCells(position);
                             if (isFilled){
                                 int currentFigureColor = mGameManager.getDesk().getFigure(position).color;
 
                                 mSoundPoolWrapper.playSound(SoundPoolWrapper.SELECT_FIGURE);
-                                fillCells(isFilled, currentFigureColor);
+                                fillCells(true, currentFigureColor);
 
                                 if (isTurnButtonClickable) {
                                     setIsTurnButtonClickable(true);
@@ -391,7 +395,6 @@ public class GameDeskFragment extends Fragment {
                                 setTurnFigureButton();
                             }
                         }
-
                 }
             });
         }
@@ -405,7 +408,6 @@ public class GameDeskFragment extends Fragment {
                             setIsTurnButtonClickable(false);
                             isTurnButtonClickable = false;
                             turnFigure(mImageViewCell);
-                        } else {
                         }
                     }
                 }
@@ -424,20 +426,18 @@ public class GameDeskFragment extends Fragment {
 
             fillCells(false, Color.TRANSPARENT);
 
+
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     showRecentRandomFiguresWithDelay();
                 }
-            }, delay);
-
+                }, delay);
         }
 
         public void setPosition(int position) {
             this.position = position;
         }
-
-        private Handler handler;
 
         private void turnFigure(ImageView imageView){
             final long delay = 150;
@@ -445,10 +445,9 @@ public class GameDeskFragment extends Fragment {
 
             mSoundPoolWrapper.playSound(SoundPoolWrapper.TURN_FIGURE);
 
-            handler = new Handler();
             imageView.animate().rotation(90).setDuration(delay).start();
 
-            handler.postDelayed(new Runnable() {
+            new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
 
@@ -541,27 +540,33 @@ public class GameDeskFragment extends Fragment {
             return color;
         }
 
+        @SuppressLint("HandlerLeak")
         private void showRecentRandomFiguresWithDelay(){
             final List<Figure> recentRandFigures = mGameManager.getGamePlay().getRecentRandomFigures();
             final long delay = 100;
 
-            Handler mHandler = new Handler(){
+            mHandler = new Handler() {
                 int indx = recentRandFigures.size() - 1;
 
-                public void handleMessage(Message msg){
+                public void handleMessage(Message msg) {
                     super.handleMessage(msg);
 
-                    if(indx > -1) {
+                    if (indx > -1) {
                         mSoundPoolWrapper.playSound(SoundPoolWrapper.APPEAR_FIGURE);
                         Figure figure = recentRandFigures.get(indx);
                         int position = mGameManager.getDesk().cellToPosition(figure.mCell);
                         mAdapter.notifyItemChanged(position);
                     }
-                        --indx;
-                        this.sendEmptyMessageDelayed(0, delay);
+                    --indx;
+                    this.sendEmptyMessageDelayed(0, delay);
                 }
             };
             mHandler.sendEmptyMessage(0);
+
+//            Handler handler = new MyHandler(baseFragment, mGameManager, mAdapter);
+//            handler.handleMessage(null);
+//            handler.sendEmptyMessage(0);
+
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -570,6 +575,42 @@ public class GameDeskFragment extends Fragment {
             }, delay*(recentRandFigures.size()));
         }
     }
+
+//    private static class MyHandler extends Handler { // THIS NOT WORK PROPERLY
+//
+//        private final WeakReference<GameDeskFragment> mFragment;
+//        private GameManager mGameManager;
+//        private SoundPoolWrapper mSoundPoolWrapper;
+//        private RecyclerGridAdapter mAdapter;
+//
+//        final List<Figure> recentRandFigures;
+//        final long delay = 100;
+//
+//        public MyHandler(GameDeskFragment fragment, GameManager gameManager, RecyclerGridAdapter adapter) {
+//            mFragment = new WeakReference<>(fragment);
+//            mGameManager = gameManager;
+//            recentRandFigures = mGameManager.getGamePlay().getRecentRandomFigures();
+//            mAdapter = adapter;
+//            mSoundPoolWrapper = SoundPoolWrapper.getInstance(fragment.getActivity().getBaseContext());
+//        }
+//
+//        @Override
+//        public void handleMessage(Message msg) {
+//            GameDeskFragment fragment = mFragment.get();
+//            if (fragment != null) {
+//                super.handleMessage(msg);
+//                int indx = recentRandFigures.size() - 1;
+//                if (indx > -1) {
+//                    mSoundPoolWrapper.playSound(SoundPoolWrapper.APPEAR_FIGURE);
+//                    Figure figure = recentRandFigures.get(indx);
+//                    int position = mGameManager.getDesk().cellToPosition(figure.mCell);
+//                    mAdapter.notifyItemChanged(position);
+//                }
+//                --indx;
+//                this.sendEmptyMessageDelayed(0, delay);
+//            }
+//        }
+//    }
 
     private void setIsTurnButtonClickable(boolean isClickable){
         mGameManager.getGamePlay().setTurnAvailable(isClickable);

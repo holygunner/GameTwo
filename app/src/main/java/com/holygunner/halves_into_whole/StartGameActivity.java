@@ -4,17 +4,14 @@ import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.InterstitialAd;
 
 import com.holygunner.halves_into_whole.database.*;
 import com.holygunner.halves_into_whole.sound.SoundPoolWrapper;
@@ -23,11 +20,8 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
     public static final String OPEN_LEVEL_NUMB_KEY = "open_level_numb";
     private Button chooseLevelButton;
     private Button gameButton;
-    private Button aboutButton;
     private Button soundButton;
     private TextView maxScoreTextView;
-
-    private AdView mAdView;
 
     private SoundPoolWrapper mSoundPoolWrapper;
 
@@ -71,7 +65,7 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
         chooseLevelButton.setOnClickListener(this);
         gameButton = (Button) findViewById(R.id.game_button);
         gameButton.setOnClickListener(this);
-        aboutButton = (Button) findViewById(R.id.about_button);
+        Button aboutButton = (Button) findViewById(R.id.about_button);
         aboutButton.setOnClickListener(this);
         soundButton = (Button) findViewById(R.id.sound_on_button);
         soundButton.setOnClickListener(this);
@@ -79,13 +73,11 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
         maxScoreTextView = (TextView) findViewById(R.id.maxScoreTextView);
         updateMaxScore();
         setGameButtonText();
-
         mSoundPoolWrapper = SoundPoolWrapper.getInstance(this);
-
     }
 
     private void setAdsBanner(){
-        mAdView = (AdView) findViewById(R.id.adView);
+        AdView mAdView = (AdView) findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
     }
@@ -96,12 +88,12 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
     }
 
     private void setSoundButtonTitle(){
-        boolean state = Saver.readSoundButtonState(getApplicationContext());
+        boolean state = Saver.readIsSoundOn(getApplicationContext());
 
         if (state){
-            soundButton.setText("Sound On");
+            soundButton.setText(R.string.sound_on);
         }   else {
-            soundButton.setText("Sound Off");
+            soundButton.setText(R.string.sound_off);
         }
     }
 
@@ -117,7 +109,8 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
         int score = Saver.getScore(getApplicationContext());
 
         if (score > 0){
-            maxScoreTextView.setText(getResources().getString(R.string.your_max_score) + " " + score);
+            String text = getResources().getString(R.string.your_max_score) + " " + score;
+            maxScoreTextView.setText(text);
             maxScoreTextView.setVisibility(View.VISIBLE);
         }
     }

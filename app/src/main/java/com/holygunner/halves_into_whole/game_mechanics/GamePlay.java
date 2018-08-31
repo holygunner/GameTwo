@@ -4,30 +4,23 @@ import com.holygunner.halves_into_whole.database.Saver;
 import com.holygunner.halves_into_whole.figures.Figure;
 import com.holygunner.halves_into_whole.figures.FigureFactory;
 import com.holygunner.halves_into_whole.figures.Position;
-import com.holygunner.halves_into_whole.figures.SemiCircle;
-import com.holygunner.halves_into_whole.figures.SemiSquare;
-import com.holygunner.halves_into_whole.values.ColorsValues;
 import com.holygunner.halves_into_whole.values.LevelsValues;
-import com.holygunner.halves_into_whole.values.GameValues;
+
 import android.content.Context;
-import android.content.Intent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import static com.holygunner.halves_into_whole.game_mechanics.StepResult.*;
 import static com.holygunner.halves_into_whole.values.GameValues.*;
 
 public class GamePlay {
     private Integer recentPosition;
-
-    private Context mContext;
     private Level mLevel;
     private int mLevelNumb;
     private Desk mDesk;
     private AvailableSteps mAvailableSteps;
-    private Randomer mRandomer;
+    private RandomGenerator mRandomGenerator;
     private Saver mSaver;
     private List<Figure> mRecentRandomFigures;
 
@@ -37,21 +30,20 @@ public class GamePlay {
     private boolean isFilled;
     private StepResult prevStepResult;
 
-    public GamePlay(Context context, Desk desk, Saver saver, int levelNumb){
-        mContext = context.getApplicationContext();
+    GamePlay(Context context, Desk desk, Saver saver, int levelNumb){
         mSaver = saver;
         mLevel = LevelLoader.loadLevel(levelNumb);
         mLevelNumb = mLevel.getLevelNumb();
 
-        if (getLevelNumb() == Saver.readMaxLevel(mContext)){
-            mLevel.setGamerCount(Saver.readMaxLevelAndCount(mContext)[1]);
+        if (getLevelNumb() == Saver.readMaxLevel(context)){
+            mLevel.setGamerCount(Saver.readMaxLevelAndCount(context)[1]);
         }   else {
             mLevel.setGamerCount(0);
         }
 
-        mRandomer = new Randomer(mLevel);
+        mRandomGenerator = new RandomGenerator(mLevel);
         mDesk = desk;
-        isGameStarted = Saver.isSaveExists(mContext);
+        isGameStarted = Saver.isSaveExists(context);
 
         mRecentRandomFigures = new ArrayList<>();
     }
@@ -71,8 +63,7 @@ public class GamePlay {
     public Desk loadDesk(Figure[] figures){
         mDesk = new Desk(this, mLevel.getDeskSize());
 
-        for (int i = 0; i < figures.length; ++i){
-            Figure figure = figures[i];
+        for (Figure figure : figures) {
             mDesk.addFigure(figure);
         }
         return mDesk;
@@ -81,10 +72,11 @@ public class GamePlay {
     public Desk createNewDesk() {
         mDesk = new Desk(this, mLevel.getDeskSize());
         addRandomFigure(3);
+//        addRandomFigure(8); // for test
         return mDesk;
     }
 
-//    public Desk createDemoDesk() { // сделать доску с раставленными фигурами и наделать скриншотов для иконки и About,
+//    public Desk createDemoDesk() { // custom desk for creating screenshots to About (1st idea)
 //        // позже будет удалено
 //        mDesk = new Desk(this, new int[]{2,2});
 //        SemiCircle semiCircle1 = new SemiCircle(UUID.randomUUID(),
@@ -111,6 +103,7 @@ public class GamePlay {
 //    }
 
     public StepResult tryToStep(int position){
+        mRecentRandomFigures.clear();
         if (!isGameContinue() || mAvailableSteps == null){
             return STEP_UNAVAILABLE;
         }
@@ -134,10 +127,9 @@ public class GamePlay {
                         addRandomFigure(mLevel.getAddForUnit());
                     }   else {
                         if (mDesk.isOneFigureLeft()){
-                            addRandomFigure(2);
+                            addRandomFigure(1);
                         }
                         stepResult = COMBO;
-
                     }
                     prevStepResult = stepResult;
                     break;
@@ -169,7 +161,6 @@ public class GamePlay {
 
     public boolean isGameContinue(){
         if (mDesk.getFreeCells().isEmpty()){
-//            mSaver.writeGamerCount(mLevel.getGamerCount());
             mSaver.writeSaveExists(false);
             return false;
         }   else
@@ -198,7 +189,6 @@ public class GamePlay {
         }
         recentPosition = position;
         mAvailableSteps = new AvailableSteps(this, recentPosition, mDesk);
-
         mAvailableSteps = new AvailableSteps(this, position, mDesk);
 
         return true;
@@ -212,22 +202,19 @@ public class GamePlay {
             if (figure == null || !isFilled) {
                 return false;
             } else {
-                if (isGameStarted == false){
+                if (!isGameStarted){
                     isGameStarted = true;
                 }
-
-                Position turnedPosition = Position.getTurnedPosition(figure.position);
-                figure.position = turnedPosition;
+                figure.position = Position.getTurnedPosition(figure.position);
                 prevStepResult = null;
                 addRandomFigure(mLevel.getAddForTurn());
-
                 mAvailableSteps = new AvailableSteps(this, recentPosition, mDesk);
                 isFilled = true;
 
                 return true;
             }
         }   else
-        return false;
+            return false;
     }
 
     public Level getLevel(){
@@ -238,10 +225,9 @@ public class GamePlay {
         return mDesk;
     }
 
-    public boolean areSemiFiguresAreWhole(Figure figure1, Figure figure2){ // are the both halves the whole figure
+    private boolean areSemiFiguresAreWhole(Figure figure1, Figure figure2){ // are the both halves the whole figure
         Position position1 = figure1.position;
         Position position2 = figure2.position;
-
         int color1 = figure1.color;
         int color2 = figure2.color;
 
@@ -315,16 +301,12 @@ public class GamePlay {
     }
 
     private boolean isCombo(){
-        if (prevStepResult != null){
-            return true;
-        }   else {
-            return false;
-        }
+        return prevStepResult != null;
     }
 
     private Figure getRandomFigure(){
         if (!mDesk.getFreeCells().isEmpty()) {
-            Figure figure = FigureFactory.getRandomFigure(mDesk.getFreeCells(), mRandomer);
+            Figure figure = FigureFactory.getRandomFigure(mDesk.getFreeCells(), mRandomGenerator);
             mDesk.addFigure(figure);
             return figure;
         }
@@ -332,7 +314,7 @@ public class GamePlay {
     }
 
     private void addRandomFigure(int howMuchFigures){
-        mRecentRandomFigures.clear();
+//        mRecentRandomFigures.clear();
 
         if (mLevel.isLevelComplete()){
             return;

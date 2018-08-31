@@ -5,7 +5,6 @@ import com.holygunner.halves_into_whole.game_mechanics.Cell;
 import java.util.UUID;
 
 public class Figure {
-
     public Position position;
     public int color;
     public int stepLimit = 1; // how many cells the character can move during one step, 1 by default

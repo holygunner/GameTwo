@@ -6,16 +6,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 public abstract class DeskToCellsListConverter {
-
     // Convert 2nd dimension array to List. Required for a correct work with a RecyclerView
     public static List<String> getCellList(Desk desk){
         Figure[][] figureTwoDimensionArr = desk.deskToMultiArr();
         List<String> characterList = new LinkedList<>();
         int p = 0;
 
-        for (int x = 0; x< figureTwoDimensionArr.length; ++x){
-            for (int y = 0; y< figureTwoDimensionArr[x].length; ++y){
-                characterList.add(p++, figureToString(figureTwoDimensionArr[x][y]));
+        for (Figure[] aFigureTwoDimensionArr : figureTwoDimensionArr) {
+            for (Figure anAFigureTwoDimensionArr : aFigureTwoDimensionArr) {
+                characterList.add(p++, figureToString(anAFigureTwoDimensionArr));
             }
         }
         return characterList;

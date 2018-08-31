@@ -2,13 +2,11 @@ package com.holygunner.halves_into_whole.database;
 
 import android.database.Cursor;
 import android.database.CursorWrapper;
-import android.graphics.Color;
 
 import com.holygunner.halves_into_whole.figures.Figure;
 import com.holygunner.halves_into_whole.database.FigureDbSchema.FigureTable;
 import com.holygunner.halves_into_whole.figures.FigureFactory;
 import com.holygunner.halves_into_whole.figures.Position;
-import com.holygunner.halves_into_whole.figures.SemiSquare;
 import com.holygunner.halves_into_whole.game_mechanics.Cell;
 
 import java.util.UUID;
@@ -19,7 +17,7 @@ public class FigureCursorWrapper extends CursorWrapper {
      *
      * @param cursor The underlying cursor to wrap.
      */
-    public FigureCursorWrapper(Cursor cursor) {
+    FigureCursorWrapper(Cursor cursor) {
         super(cursor);
     }
 

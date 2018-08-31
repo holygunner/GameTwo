@@ -2,22 +2,22 @@ package com.holygunner.halves_into_whole.figures;
 
 
 import com.holygunner.halves_into_whole.game_mechanics.Cell;
-import com.holygunner.halves_into_whole.game_mechanics.Randomer;
+import com.holygunner.halves_into_whole.game_mechanics.RandomGenerator;
 
 import java.util.List;
 import java.util.UUID;
 
 public abstract class FigureFactory {
-    public static final String SEMISQUARE = "SemiSquare";
-    public static final String SEMICIRCLE = "SemiCircle";
+    private static final String SEMISQUARE = "SemiSquare";
+    private static final String SEMICIRCLE = "SemiCircle";
 
-    public static Figure getRandomFigure(List<Cell> freeCells, Randomer randomer){
+    public static Figure getRandomFigure(List<Cell> freeCells, RandomGenerator randomGenerator){
         UUID uuid = UUID.randomUUID();
-        FigureClassAndColorPair pair = randomer.getRandomFigureTypeAndColorPair();
+        FigureClassAndColorPair pair = randomGenerator.getRandomFigureTypeAndColorPair();
         Class<?> FigureType = pair.getFigureClass();
         int color = pair.getColor();
-        Position position = randomer.getRandomPosition();
-        Cell cell = randomer.getRandomCell(freeCells);
+        Position position = randomGenerator.getRandomPosition();
+        Cell cell = randomGenerator.getRandomCell(freeCells);
 
         return createFigure(uuid, FigureType, color,
                 position, cell);
@@ -25,8 +25,7 @@ public abstract class FigureFactory {
 
     public static Figure createFigure(UUID uuid, Class figureType, int color,
                                Position position, Cell cell){
-        Figure figure = getInstanceOfChildClass(uuid, figureType, color, position, cell);
-        return figure;
+        return getInstanceOfChildClass(uuid, figureType, color, position, cell);
     }
 
     public static Class<?> getClassOfFigure(String figureType) {

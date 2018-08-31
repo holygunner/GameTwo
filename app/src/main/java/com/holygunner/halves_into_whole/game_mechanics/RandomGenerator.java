@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class Randomer {
+public class RandomGenerator {
 
     private final Position[] POSITIONS = new Position[]{Position.POSITION_ONE, Position.POSITION_TWO,
             Position.POSITION_THREE, Position.POSITION_FOUR};
@@ -19,16 +19,16 @@ public class Randomer {
 
     private Level mLevel;
 
-    public Randomer(Level level){
+    RandomGenerator(Level level){
         mLevel = level;
         mRandom = getRandom();
         initPositions();
     }
 
-    public Position getRandomPosition1stImpl(){
-        int length = POSITIONS.length;
-        return POSITIONS[mRandom.nextInt(length)];
-    }
+//    public Position getRandomPosition1stImpl(){
+//        int length = POSITIONS.length;
+//        return POSITIONS[mRandom.nextInt(length)];
+//    }
 
     public Position getRandomPosition(){ // returned position which is not same by every time
         int size;

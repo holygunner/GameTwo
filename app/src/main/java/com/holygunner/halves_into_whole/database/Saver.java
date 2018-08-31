@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.holygunner.halves_into_whole.figures.Figure;
 import com.holygunner.halves_into_whole.figures.FigureFactory;
@@ -20,13 +21,13 @@ public class Saver {
     private GameManager mGameManager;
     private SQLiteDatabase mDatabase;
 
-    public static final String IS_TURN_BUTTON_CLICKABLE_KEY = "is_turn_button_clickable_key";
-    public static final String CURRENT_LEVEL_KEY = "current_level";
-    public static final String MAX_SCORE_KEY = "max_score_key";
-    public static final String MAX_LEVEL_KEY = "max_level";
-    public static final String MAX_LEVEL_COUNT_KEY = "max_level_count";
-    public static final String IS_SAVE_EXISTS = "is_save_exists";
-    public static final String SOUND_BUTTON_STATE = "sound_button_state";
+    private static final String IS_TURN_BUTTON_CLICKABLE_KEY = "is_turn_button_clickable_key";
+    private static final String CURRENT_LEVEL_KEY = "current_level";
+    private static final String MAX_SCORE_KEY = "max_score_key";
+    private static final String MAX_LEVEL_KEY = "max_level";
+    private static final String MAX_LEVEL_COUNT_KEY = "max_level_count";
+    private static final String IS_SAVE_EXISTS = "is_save_exists";
+    private static final String SOUND_BUTTON_STATE = "sound_button_state";
 
     public Saver (GameManager gameManager, Context context){
         mContext = context.getApplicationContext();
@@ -39,13 +40,13 @@ public class Saver {
         mDatabase.insert(FigureTable.NAME, null, values);
     }
 
-    public static boolean readSoundButtonState(Context context){
+    public static boolean readIsSoundOn(Context context){
         return PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean(SOUND_BUTTON_STATE, true);
     }
 
     public static void writeInvertedSoundButtonState(Context context){
-        boolean state = readSoundButtonState(context);
+        boolean state = readIsSoundOn(context);
 
         state = !state;
 
@@ -62,7 +63,8 @@ public class Saver {
         int[] lastSavedScore = readMaxLevelAndCount(mContext);
 
         if (levelNumb >= readMaxLevel(mContext)) {
-            increaseMaxLevel(levelNumb);
+            boolean isLevelIncreased = increaseMaxLevel(levelNumb);
+            Log.i("TAG", "Level was increased: " + isLevelIncreased);
 //            if ((levelCount >= lastSavedScore[1]) && levelCount < LevelsValues.LEVELS_ROUNDS[levelNumb]) {
                 if ((levelCount >= lastSavedScore[1])) {
                 PreferenceManager.getDefaultSharedPreferences(mContext)
@@ -77,27 +79,31 @@ public class Saver {
         }
     }
 
-    public void writeIsTurnButtonClickable(boolean isClickable){
+    private void writeIsTurnButtonClickable(boolean isClickable){
         PreferenceManager.getDefaultSharedPreferences(mContext)
                 .edit()
                 .putBoolean(IS_TURN_BUTTON_CLICKABLE_KEY, isClickable)
                 .apply();
     }
 
-    public boolean readIsTurnButtonClickable(){
-        if (isLevelMax(mContext, mGameManager.getGamePlay().getLevelNumb())) {
-            if (!readSaveExists(mContext)) {
-                return true;
-            }
+    public boolean readIsTurnButtonClickable() {
+//        if (isLevelMax(mContext, mGameManager.getGamePlay().getLevelNumb())) {
+//            if (!readSaveExists(mContext)) {
+//                return true;
+//            }
+//
+//            return PreferenceManager.getDefaultSharedPreferences(mContext)
+//                    .getBoolean(IS_TURN_BUTTON_CLICKABLE_KEY, true);
+//        }   else {
+//            return true;
+//        }
 
-            return PreferenceManager.getDefaultSharedPreferences(mContext)
-                    .getBoolean(IS_TURN_BUTTON_CLICKABLE_KEY, true);
-        }   else {
-            return true;
-        }
+        return !isLevelMax(mContext, mGameManager.getGamePlay().getLevelNumb())
+                || !readSaveExists(mContext)
+                || PreferenceManager.getDefaultSharedPreferences(mContext).getBoolean(IS_TURN_BUTTON_CLICKABLE_KEY, true);
     }
 
-    public boolean increaseMaxLevel(int levelNumb){
+    private boolean increaseMaxLevel(int levelNumb){
         int maxLevel = readMaxLevel(mContext);
         if ((levelNumb > maxLevel) && (maxLevel < LevelsValues.LEVELS_NAMES.length - 1)){
             PreferenceManager.getDefaultSharedPreferences(mContext)
@@ -121,7 +127,7 @@ public class Saver {
         }
     }
 
-    public void resetMaxLevelCount(){
+    private void resetMaxLevelCount(){
         PreferenceManager.getDefaultSharedPreferences(mContext)
                 .edit()
                 .putInt(MAX_LEVEL_COUNT_KEY, 0)
@@ -157,28 +163,23 @@ public class Saver {
     }
 
     public static boolean isLevelMax(Context context, int level){
-        if ((level == readMaxLevel(context))){
-            return true;
-        }   else {
-            return false;
-        }
+        return (level == readMaxLevel(context));
     }
 
     public static boolean isSaveExists(Context context){
         return (readMaxLevelAndCount(context)[1] > 0);
     }
 
-    public void saveToSQLiteDatabase(Desk desk){
+    private void saveToSQLiteDatabase(Desk desk){
         if (desk.deskToMultiArr() != null){
             Figure arr[][] = desk.deskToMultiArr();
 
             clearSQLiteDatabase();
 
-            for (int x=0; x < arr.length; ++x){
-                for (int y=0; y < arr[x].length; ++y){
-                    if (arr[x][y] != null){
-                        Figure figure = arr[x][y];
-                        addFigure(figure);
+            for (Figure[] anArr : arr) {
+                for (Figure anAnArr : anArr) {
+                    if (anAnArr != null) {
+                        addFigure(anAnArr);
                     }
                 }
             }
@@ -223,7 +224,7 @@ public class Saver {
     public Figure[] loadFigures(){
         List<Figure> figureList = new ArrayList<>();
 
-        FigureCursorWrapper cursor = queryFigures(null, null);
+        FigureCursorWrapper cursor = queryFigures();
 
         try {
             cursor.moveToFirst();
@@ -238,7 +239,7 @@ public class Saver {
         return figureList.toArray(new Figure[figureList.size()]);
     }
 
-    public void clearSQLiteDatabase(){
+    private void clearSQLiteDatabase(){
         mDatabase.execSQL("delete from " + FigureTable.NAME);
     }
 
@@ -262,11 +263,11 @@ public class Saver {
         return values;
     }
 
-    private FigureCursorWrapper queryFigures(String whereClause, String[] whereArgs){
+    private FigureCursorWrapper queryFigures(){
         Cursor cursor = mDatabase.query(FigureTable.NAME,
                 null,
-                whereClause,
-                whereArgs,
+                null,
+                null,
                 null,
                 null,
                 null);
