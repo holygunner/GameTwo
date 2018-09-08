@@ -45,13 +45,6 @@ public class AvailableSteps {
         return -1;
     }
 
-//    public boolean isEmpty(){
-//        if (availableToStepCells.isEmpty() && availableToUniteCells.isEmpty()){
-//            return false;
-//        }   else
-//            return true;
-//    }
-
     private void init(int position){
         Cell cell = mDesk.positionToCell(position);
 

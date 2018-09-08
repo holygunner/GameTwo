@@ -17,18 +17,18 @@ import static com.holygunner.halves_into_whole.values.GameValues.*;
 public class GamePlay {
     private Integer recentPosition;
     private Level mLevel;
-    private int mLevelNumb;
     private Desk mDesk;
     private AvailableSteps mAvailableSteps;
     private RandomGenerator mRandomGenerator;
     private Saver mSaver;
+    private StepResult prevStepResult;
     private List<Figure> mRecentRandomFigures;
 
+    private int mLevelNumb;
     private int unitedFigureRes;
     private boolean isGameStarted;
     private boolean isTurnAvailable;
     private boolean isFilled;
-    private StepResult prevStepResult;
 
     GamePlay(Context context, Desk desk, Saver saver, int levelNumb){
         mSaver = saver;
@@ -72,35 +72,8 @@ public class GamePlay {
     public Desk createNewDesk() {
         mDesk = new Desk(this, mLevel.getDeskSize());
         addRandomFigure(3);
-//        addRandomFigure(8); // for test
         return mDesk;
     }
-
-//    public Desk createDemoDesk() { // custom desk for creating screenshots to About (1st idea)
-//        // позже будет удалено
-//        mDesk = new Desk(this, new int[]{2,2});
-//        SemiCircle semiCircle1 = new SemiCircle(UUID.randomUUID(),
-//                ColorsValues.FigureColors.PURPLE, Position.POSITION_FOUR, new Cell(0, 1));
-//        SemiCircle semiCircle2 = new SemiCircle(UUID.randomUUID(),
-//                ColorsValues.FigureColors.PURPLE, Position.POSITION_THREE, new Cell(1, 0));
-//
-//        SemiSquare semiSquare1 = new SemiSquare(UUID.randomUUID(),
-//                ColorsValues.FigureColors.BORDO, Position.POSITION_ONE, new Cell(0, 0));
-//        SemiSquare semiSquare2 = new SemiSquare(UUID.randomUUID(),
-//                ColorsValues.FigureColors.BORDO, Position.POSITION_TWO, new Cell(1, 1));
-//
-//        mDesk.addFigure(semiCircle1);
-//        mDesk.addFigure(semiCircle2);
-//        mDesk.addFigure(semiSquare1);
-//        mDesk.addFigure(semiSquare2);
-//
-//        mRecentRandomFigures.add(semiCircle1);
-//        mRecentRandomFigures.add(semiCircle2);
-//        mRecentRandomFigures.add(semiSquare1);
-//        mRecentRandomFigures.add(semiSquare2);
-//
-//        return mDesk;
-//    }
 
     public StepResult tryToStep(int position){
         mRecentRandomFigures.clear();
@@ -170,14 +143,6 @@ public class GamePlay {
     public Integer getRecentPosition(){
         return recentPosition;
     }
-
-//    public boolean isGameContinue(){ // DEMO FOR SCREENSHOTS, DON'T FORGET TO DELETE
-//        if (mDesk.getFreeCells().isEmpty()){
-////            mSaver.writeGamerCount(mLevel.getGamerCount());
-//            return true;
-//        }   else
-//            return true;
-//    }
 
     public boolean setAvailableCells(int position){
         if (!isGameContinue()){

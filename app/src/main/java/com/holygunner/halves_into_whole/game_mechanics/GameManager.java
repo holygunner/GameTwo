@@ -29,7 +29,6 @@ public class GameManager {
             // create new game
             mGamePlay = new GamePlay(mContext, mDesk, mSaver, levelNumb);
             mDesk = mGamePlay.createNewDesk();
-//            mDesk = mGamePlay.createDemoDesk();
             Log.i(TAG, "NEW GAME");
         }
     }

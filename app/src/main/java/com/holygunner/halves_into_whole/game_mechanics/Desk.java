@@ -99,7 +99,6 @@ public class Desk {
     }
 
     public int cellToPosition(Cell cell){
-//        int desk_height = mGamePlay.getLevel().getDeskSize()[0];
         int desk_width = mGamePlay.getLevel().getDeskSize()[1];
         int x = cell.getX();
         int y = cell.getY();
@@ -108,9 +107,7 @@ public class Desk {
     }
 
     public Cell positionToCell(int position){
-//        int desk_height = mGamePlay.getLevel().getDeskSize()[0];
         int desk_width = mGamePlay.getLevel().getDeskSize()[1];
-
         int y = position/desk_width;
         int x = position%desk_width;
 

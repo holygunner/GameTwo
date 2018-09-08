@@ -25,9 +25,6 @@ public class ChooseLevelDialogFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         mLevelNames = getAvailableLevelsNames();
-//        if (mLevelNames.length == 0){
-//            mLevelNames[0] = LevelsValues.LEVELS_NAMES[0];
-//        }
     }
 
     @Override

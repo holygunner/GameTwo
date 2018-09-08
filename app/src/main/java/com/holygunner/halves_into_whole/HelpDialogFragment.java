@@ -10,8 +10,7 @@ import android.view.Window;
 
 import com.holygunner.halves_into_whole.sound.SoundPoolWrapper;
 
-public class AboutGameDialogFragment extends DialogFragment {
-
+public class HelpDialogFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle onSavedInstanceState){
         super.onCreate(onSavedInstanceState);
@@ -33,10 +32,10 @@ public class AboutGameDialogFragment extends DialogFragment {
 
         builder
                 .setView(R.layout.about_game_view)
-                .setPositiveButton("Got it!", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.got_it, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        SoundPoolWrapper.getInstance(getContext()).playSound(SoundPoolWrapper.PRESS_BUTTON);
+                        SoundPoolWrapper.getInstance(getContext()).playSound(SoundPoolWrapper.APPEAR_FIGURE);
                     }
                 });
 

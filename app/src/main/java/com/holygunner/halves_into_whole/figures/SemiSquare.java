@@ -6,10 +6,6 @@ import com.holygunner.halves_into_whole.values.ColorsValues.FigureColors;
 
 import java.util.UUID;
 
-/**
- * Created by Holygunner on 01.07.2018.
- */
-
 public class SemiSquare extends Figure {
     private static int resBordoPos1 = R.drawable.semi_square_bordo_p1;
     private static int resBordoPos2 = R.drawable.semi_square_bordo_p2;

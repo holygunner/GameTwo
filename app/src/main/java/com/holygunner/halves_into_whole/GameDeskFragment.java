@@ -58,7 +58,7 @@ public class GameDeskFragment extends Fragment {
     private InterstitialAd mInterstitialAd;
 
     private Handler mHandler;
-//    private MyHandler mHandler;
+    private final long DELAY = 150;
 
     public GameDeskFragment(){
     }
@@ -73,7 +73,7 @@ public class GameDeskFragment extends Fragment {
 
         // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
         // my AdMob ID: ca-app-pub-5986847491806907~4171322067
-        MobileAds.initialize(getContext(), "ca-app-pub-3940256099942544~3347511713");
+        MobileAds.initialize(getContext(), "ca-app-pub-5986847491806907~4171322067");
         setAdsInterstitial();
 
         initGameManager();
@@ -84,18 +84,18 @@ public class GameDeskFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.activity_game, container, false);
-        parentLayout = (RelativeLayout) view.findViewById(R.id.parentLayout);
+        parentLayout = view.findViewById(R.id.parentLayout);
 
-        warningTextView = (TextView) view.findViewById(R.id.warningTextView);
-        gameOverLayout = (RelativeLayout) view.findViewById(R.id.gameOverLayout);
+        warningTextView = view.findViewById(R.id.warningTextView);
+        gameOverLayout = view.findViewById(R.id.gameOverLayout);
 
-        mRecyclerGridDesk = (RecyclerView) view.findViewById(R.id.recycler_grid_game_desk);
+        mRecyclerGridDesk = view.findViewById(R.id.recycler_grid_game_desk);
         mRecyclerGridDesk.setLayoutManager(new GridLayoutManager(getActivity(),
                 mGameManager.getGamePlay().getLevel().getDeskSize()[1]));
 
-        turnFigureButton = (Button) view.findViewById(R.id.turnFigureButton);
-        gamerCountView = (TextView) view.findViewById(R.id.gamerCountTextView);
-        levelNameTextView = (TextView) view.findViewById(R.id.levelNameTextView);
+        turnFigureButton = view.findViewById(R.id.turnFigureButton);
+        gamerCountView = view.findViewById(R.id.gamerCountTextView);
+        levelNameTextView = view.findViewById(R.id.levelNameTextView);
 
         updateGamerCount(true);
 
@@ -124,6 +124,7 @@ public class GameDeskFragment extends Fragment {
     private void setAdsInterstitial(){
         mInterstitialAd = new InterstitialAd(getContext());
         // Sample AdMob app ID: ca-app-pub-3940256099942544/1033173712
+        // my app ID: ca-app-pub-5986847491806907/4143437299
         mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
@@ -131,7 +132,9 @@ public class GameDeskFragment extends Fragment {
             @Override
             public void onAdClosed(){
                 // Load the next interstitial.
-                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+                mInterstitialAd.loadAd(new AdRequest.Builder()
+                        .addTestDevice("77E6E08ABF5409D1A37C98C74EE45A35") // delete before app release
+                        .build());
             }
         });
     }
@@ -252,7 +255,6 @@ public class GameDeskFragment extends Fragment {
         warningTextView.setAlpha(alphaStart);
         warningTextView.setVisibility(View.VISIBLE);
         animateWarningTextView(warningTextView,alphaEnd,duration);
-//        animateWarningTextView(warningTextView,alphaStart,duration);
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -281,14 +283,10 @@ public class GameDeskFragment extends Fragment {
     }
 
     private class RecyclerGridAdapter extends RecyclerView.Adapter<GridViewHolder> {
-
         private List<String> mData;
         private LayoutInflater mLayoutInflater;
 
-//        private GameDeskFragment baseFragment;
-
         RecyclerGridAdapter(Context context, List<String> data){
-//            baseFragment = fragment;
             mLayoutInflater = LayoutInflater.from(context);
             mData = data;
         }
@@ -327,19 +325,12 @@ public class GameDeskFragment extends Fragment {
     }
 
     private class GridViewHolder extends RecyclerView.ViewHolder{
-
         public ImageView mImageViewCell;
         private int position;
 
-//        private GameDeskFragment baseFragment;
-
         GridViewHolder(View itemView) {
             super(itemView);
-
-//            baseFragment = fragment;
-
-            mImageViewCell = (ImageView) itemView.findViewById(R.id.cell_image_view);
-
+            mImageViewCell = itemView.findViewById(R.id.cell_image_view);
             setIsTurnButtonVisible(false);
 
             mImageViewCell.setOnClickListener(new View.OnClickListener() {
@@ -350,7 +341,6 @@ public class GameDeskFragment extends Fragment {
                     if (!userActionAvailable){
                         return;
                     }
-
                     actionDown(gamePlay);
                 }
 
@@ -416,23 +406,20 @@ public class GameDeskFragment extends Fragment {
 
         private void showUnitedFigure(ImageView imageViewCell, GamePlay gamePlay){
             userActionAvailable = false;
-            final Handler handler = new Handler();
-            final long delay = 150;
+            final Handler HANDLER = new Handler();
 
             mSoundPoolWrapper.playSound(SoundPoolWrapper.UNITE_FIGURE);
-
             setImageViewRes(gamePlay.getRecentPosition(), R.drawable.empty_cell);
             imageViewCell.setImageResource(gamePlay.getLastUnitedFigureRes());
 
             fillCells(false, Color.TRANSPARENT);
 
-
-            handler.postDelayed(new Runnable() {
+            HANDLER.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     showRecentRandomFiguresWithDelay();
                 }
-                }, delay);
+                }, DELAY);
         }
 
         public void setPosition(int position) {
@@ -440,12 +427,11 @@ public class GameDeskFragment extends Fragment {
         }
 
         private void turnFigure(ImageView imageView){
-            final long delay = 150;
             userActionAvailable = false;
 
             mSoundPoolWrapper.playSound(SoundPoolWrapper.TURN_FIGURE);
 
-            imageView.animate().rotation(90).setDuration(delay).start();
+            imageView.animate().rotation(90).setDuration(DELAY).start();
 
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -458,7 +444,7 @@ public class GameDeskFragment extends Fragment {
                         updateRecyclerGridDesk();
                     }
                 }
-            }, delay);
+            }, DELAY);
         }
 
         private void replaceFigure(int currentPosition){
@@ -473,7 +459,6 @@ public class GameDeskFragment extends Fragment {
             }
 
             mSoundPoolWrapper.playSound(SoundPoolWrapper.REPLACE_FIGURE);
-
             userActionAvailable = false;
             fillCells(false, Color.TRANSPARENT);
             setImageViewRes(mGameManager.getGamePlay().getRecentPosition(), R.drawable.empty_cell);
@@ -519,7 +504,6 @@ public class GameDeskFragment extends Fragment {
                     }
                 }
             }
-
             setBackgroundColorOnPosition(mGameManager.getGamePlay().getRecentPosition(), currentFigureColor);
         }
 
@@ -542,75 +526,35 @@ public class GameDeskFragment extends Fragment {
 
         @SuppressLint("HandlerLeak")
         private void showRecentRandomFiguresWithDelay(){
-            final List<Figure> recentRandFigures = mGameManager.getGamePlay().getRecentRandomFigures();
-            final long delay = 100;
+            final List<Figure> RECENT_RAND_FIGURES = mGameManager.getGamePlay().getRecentRandomFigures();
+            final long DELAY = 100;
 
             mHandler = new Handler() {
-                int indx = recentRandFigures.size() - 1;
+                int indx = RECENT_RAND_FIGURES.size() - 1;
 
                 public void handleMessage(Message msg) {
                     super.handleMessage(msg);
 
                     if (indx > -1) {
                         mSoundPoolWrapper.playSound(SoundPoolWrapper.APPEAR_FIGURE);
-                        Figure figure = recentRandFigures.get(indx);
+                        Figure figure = RECENT_RAND_FIGURES.get(indx);
                         int position = mGameManager.getDesk().cellToPosition(figure.mCell);
                         mAdapter.notifyItemChanged(position);
                     }
                     --indx;
-                    this.sendEmptyMessageDelayed(0, delay);
+                    this.sendEmptyMessageDelayed(0, DELAY);
                 }
             };
             mHandler.sendEmptyMessage(0);
-
-//            Handler handler = new MyHandler(baseFragment, mGameManager, mAdapter);
-//            handler.handleMessage(null);
-//            handler.sendEmptyMessage(0);
 
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     updateRecyclerGridDesk();
                 }
-            }, delay*(recentRandFigures.size()));
+            }, DELAY*(RECENT_RAND_FIGURES.size()));
         }
     }
-
-//    private static class MyHandler extends Handler { // THIS NOT WORK PROPERLY
-//
-//        private final WeakReference<GameDeskFragment> mFragment;
-//        private GameManager mGameManager;
-//        private SoundPoolWrapper mSoundPoolWrapper;
-//        private RecyclerGridAdapter mAdapter;
-//
-//        final List<Figure> recentRandFigures;
-//        final long delay = 100;
-//
-//        public MyHandler(GameDeskFragment fragment, GameManager gameManager, RecyclerGridAdapter adapter) {
-//            mFragment = new WeakReference<>(fragment);
-//            mGameManager = gameManager;
-//            recentRandFigures = mGameManager.getGamePlay().getRecentRandomFigures();
-//            mAdapter = adapter;
-//            mSoundPoolWrapper = SoundPoolWrapper.getInstance(fragment.getActivity().getBaseContext());
-//        }
-//
-//        @Override
-//        public void handleMessage(Message msg) {
-//            GameDeskFragment fragment = mFragment.get();
-//            if (fragment != null) {
-//                super.handleMessage(msg);
-//                int indx = recentRandFigures.size() - 1;
-//                if (indx > -1) {
-//                    mSoundPoolWrapper.playSound(SoundPoolWrapper.APPEAR_FIGURE);
-//                    Figure figure = recentRandFigures.get(indx);
-//                    int position = mGameManager.getDesk().cellToPosition(figure.mCell);
-//                    mAdapter.notifyItemChanged(position);
-//                }
-//                --indx;
-//                this.sendEmptyMessageDelayed(0, delay);
-//            }
-//        }
-//    }
 
     private void setIsTurnButtonClickable(boolean isClickable){
         mGameManager.getGamePlay().setTurnAvailable(isClickable);

@@ -18,13 +18,13 @@ import com.holygunner.halves_into_whole.sound.SoundPoolWrapper;
 
 public class StartGameActivity extends AppCompatActivity implements View.OnClickListener {
     public static final String OPEN_LEVEL_NUMB_KEY = "open_level_numb";
+    private static final String LOG = "TAG";
     private Button chooseLevelButton;
     private Button gameButton;
     private Button soundButton;
     private TextView maxScoreTextView;
-
     private SoundPoolWrapper mSoundPoolWrapper;
-
+    private AdView mAdView;
 
     @Override
     public void onClick(View view) {
@@ -60,25 +60,28 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
         MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
         setAdsBanner();
 
-        chooseLevelButton = (Button) findViewById(R.id.choose_level_button);
+        chooseLevelButton = findViewById(R.id.choose_level_button);
         setChooseLevelButtonVisibility();
         chooseLevelButton.setOnClickListener(this);
-        gameButton = (Button) findViewById(R.id.game_button);
+        gameButton = findViewById(R.id.game_button);
         gameButton.setOnClickListener(this);
-        Button aboutButton = (Button) findViewById(R.id.about_button);
+        Button aboutButton = findViewById(R.id.about_button);
         aboutButton.setOnClickListener(this);
-        soundButton = (Button) findViewById(R.id.sound_on_button);
+        soundButton = findViewById(R.id.sound_on_button);
         soundButton.setOnClickListener(this);
         setSoundButtonTitle();
-        maxScoreTextView = (TextView) findViewById(R.id.maxScoreTextView);
+        maxScoreTextView = findViewById(R.id.maxScoreTextView);
         updateMaxScore();
         setGameButtonText();
         mSoundPoolWrapper = SoundPoolWrapper.getInstance(this);
     }
 
     private void setAdsBanner(){
-        AdView mAdView = (AdView) findViewById(R.id.adView);
-        AdRequest adRequest = new AdRequest.Builder().build();
+        // Test Device ID: 77E6E08ABF5409D1A37C98C74EE45A35
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice("77E6E08ABF5409D1A37C98C74EE45A35") // delete before app release
+                .build();
         mAdView.loadAd(adRequest);
     }
 
@@ -129,6 +132,7 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onResume(){
         super.onResume();
+        mAdView.resume();
         updateMaxScore();
         setChooseLevelButtonVisibility();
         setGameButtonText();
@@ -136,20 +140,28 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
         mSoundPoolWrapper = SoundPoolWrapper.getInstance(this);
     }
 
+    @Override
     protected void onDestroy(){
         super.onDestroy();
+        mAdView.destroy();
         mSoundPoolWrapper.release();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mAdView.pause();
     }
 
     private void showChooseLevelDialog(){
         FragmentManager manager = getSupportFragmentManager();
         ChooseLevelDialogFragment dialogFragment = new ChooseLevelDialogFragment();
-        dialogFragment.show(manager, "TAG");
+        dialogFragment.show(manager, LOG);
     }
 
     private void showAbout(){
         FragmentManager manager = getSupportFragmentManager();
-        AboutGameDialogFragment aboutGameFragment = new AboutGameDialogFragment();
-        aboutGameFragment.show(manager, "TAG");
+        HelpDialogFragment aboutGameFragment = new HelpDialogFragment();
+        aboutGameFragment.show(manager, LOG);
     }
 }

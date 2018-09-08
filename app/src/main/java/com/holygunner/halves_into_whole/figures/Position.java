@@ -1,9 +1,5 @@
 package com.holygunner.halves_into_whole.figures;
 
-/**
- * Created by Holygunner on 01.07.2018.
- */
-
 public enum Position {
     POSITION_ONE ("CornerUpLeft"),
     POSITION_TWO ("CornerDownRight"),

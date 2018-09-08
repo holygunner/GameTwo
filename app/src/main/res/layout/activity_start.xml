@@ -22,6 +22,7 @@
             android:layout_weight="@dimen/start_buttons_padding"
             android:padding="16dp"
             android:orientation="vertical">
+
             <com.google.android.gms.ads.AdView
                 xmlns:ads="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/adView"
@@ -81,7 +82,7 @@
 
             <Button
                 style="@style/StartActivityButton"
-                android:text="@string/about"
+                android:text="@string/help"
                 android:id="@+id/about_button"
                 android:layout_gravity="center"/>
         </FrameLayout>

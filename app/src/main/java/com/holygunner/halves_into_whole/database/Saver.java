@@ -65,7 +65,6 @@ public class Saver {
         if (levelNumb >= readMaxLevel(mContext)) {
             boolean isLevelIncreased = increaseMaxLevel(levelNumb);
             Log.i("TAG", "Level was increased: " + isLevelIncreased);
-//            if ((levelCount >= lastSavedScore[1]) && levelCount < LevelsValues.LEVELS_ROUNDS[levelNumb]) {
                 if ((levelCount >= lastSavedScore[1])) {
                 PreferenceManager.getDefaultSharedPreferences(mContext)
                         .edit()
@@ -87,17 +86,6 @@ public class Saver {
     }
 
     public boolean readIsTurnButtonClickable() {
-//        if (isLevelMax(mContext, mGameManager.getGamePlay().getLevelNumb())) {
-//            if (!readSaveExists(mContext)) {
-//                return true;
-//            }
-//
-//            return PreferenceManager.getDefaultSharedPreferences(mContext)
-//                    .getBoolean(IS_TURN_BUTTON_CLICKABLE_KEY, true);
-//        }   else {
-//            return true;
-//        }
-
         return !isLevelMax(mContext, mGameManager.getGamePlay().getLevelNumb())
                 || !readSaveExists(mContext)
                 || PreferenceManager.getDefaultSharedPreferences(mContext).getBoolean(IS_TURN_BUTTON_CLICKABLE_KEY, true);
@@ -185,7 +173,6 @@ public class Saver {
             }
         }
     }
-
 
     public static int getScore(Context context){
         int score = 0;

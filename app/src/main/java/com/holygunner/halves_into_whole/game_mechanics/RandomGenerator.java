@@ -25,11 +25,6 @@ public class RandomGenerator {
         initPositions();
     }
 
-//    public Position getRandomPosition1stImpl(){
-//        int length = POSITIONS.length;
-//        return POSITIONS[mRandom.nextInt(length)];
-//    }
-
     public Position getRandomPosition(){ // returned position which is not same by every time
         int size;
         int index;
