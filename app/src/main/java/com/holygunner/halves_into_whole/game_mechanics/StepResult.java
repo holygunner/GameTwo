@@ -9,14 +9,14 @@ public enum StepResult {
     COMBO("4"),
     BONUS ("5");
 
-    private final String mName;
+    private final String NAME;
 
     StepResult(String name){
-        mName = name;
+        NAME = name;
     }
 
     @Override
     public String toString(){
-        return this.mName;
+        return this.NAME;
     }
 }

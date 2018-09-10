@@ -8,7 +8,7 @@ public class Figure {
     public Position position;
     public int color;
     public int stepLimit = 1; // how many cells the character can move during one step, 1 by default
-    public Cell mCell;
+    public Cell cell;
     public int fullPositionRes;
     private UUID mUUID;
 
@@ -23,7 +23,7 @@ public class Figure {
     public void setFullPositionRes(){}
 
     public void setCell(Cell cell){
-        mCell = cell;
+        this.cell = cell;
     }
 
     public String toString(){
@@ -43,7 +43,7 @@ public class Figure {
     }
 
     public Cell getCell(){
-        return mCell;
+        return cell;
     }
 
     public int getStepLimit(){

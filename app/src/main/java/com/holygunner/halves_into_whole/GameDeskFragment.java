@@ -19,6 +19,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
@@ -33,6 +35,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Objects;
 
 import static com.holygunner.halves_into_whole.game_mechanics.StepResult.*;
 
@@ -40,17 +43,15 @@ public class GameDeskFragment extends Fragment {
 
     private RecyclerView mRecyclerGridDesk;
     private RecyclerGridAdapter mAdapter;
+    private Button mTurnFigureButton;
+    private TextView mGamerCountView;
+    private TextView mLevelNameTextView;
+    private RelativeLayout mParentLayout;
+    private RelativeLayout mGameOverLayout;
+    private TextView mWarningTextView;
 
-    private Button turnFigureButton;
-    private TextView gamerCountView;
-    private TextView levelNameTextView;
-
-    private RelativeLayout parentLayout;
-    private RelativeLayout gameOverLayout;
-    private TextView warningTextView;
-
-    private boolean userActionAvailable;
-    private boolean isTurnButtonClickable;
+    private boolean mUserActionAvailable;
+    private boolean mIsTurnButtonClickable;
 
     private GameManager mGameManager;
     private SoundPoolWrapper mSoundPoolWrapper;
@@ -77,25 +78,25 @@ public class GameDeskFragment extends Fragment {
         setAdsInterstitial();
 
         initGameManager();
-        mGameManager.startOrResumeGame(getActivity().getIntent().getIntExtra(
+        mGameManager.startOrResumeGame(Objects.requireNonNull(getActivity()).getIntent().getIntExtra(
                 StartGameActivity.OPEN_LEVEL_NUMB_KEY, 0));
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.activity_game, container, false);
-        parentLayout = view.findViewById(R.id.parentLayout);
+        mParentLayout = view.findViewById(R.id.parentLayout);
 
-        warningTextView = view.findViewById(R.id.warningTextView);
-        gameOverLayout = view.findViewById(R.id.gameOverLayout);
+        mWarningTextView = view.findViewById(R.id.warningTextView);
+        mGameOverLayout = view.findViewById(R.id.gameOverLayout);
 
         mRecyclerGridDesk = view.findViewById(R.id.recycler_grid_game_desk);
         mRecyclerGridDesk.setLayoutManager(new GridLayoutManager(getActivity(),
                 mGameManager.getGamePlay().getLevel().getDeskSize()[1]));
 
-        turnFigureButton = view.findViewById(R.id.turnFigureButton);
-        gamerCountView = view.findViewById(R.id.gamerCountTextView);
-        levelNameTextView = view.findViewById(R.id.levelNameTextView);
+        mTurnFigureButton = view.findViewById(R.id.turnFigureButton);
+        mGamerCountView = view.findViewById(R.id.gamerCountTextView);
+        mLevelNameTextView = view.findViewById(R.id.levelNameTextView);
 
         updateGamerCount(true);
 
@@ -122,7 +123,7 @@ public class GameDeskFragment extends Fragment {
     }
 
     private void setAdsInterstitial(){
-        mInterstitialAd = new InterstitialAd(getContext());
+        mInterstitialAd = new InterstitialAd(Objects.requireNonNull(getContext()));
         // Sample AdMob app ID: ca-app-pub-3940256099942544/1033173712
         // my app ID: ca-app-pub-5986847491806907/4143437299
         mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
@@ -162,9 +163,9 @@ public class GameDeskFragment extends Fragment {
         mRecyclerGridDesk.setAdapter(mAdapter);
 
         updateGamerCount(false);
-        userActionAvailable = true;
+        mUserActionAvailable = true;
         if (!mGameManager.getGamePlay().isGameContinue()){
-            userActionAvailable = false;
+            mUserActionAvailable = false;
             gameOver();
         }
     }
@@ -182,20 +183,20 @@ public class GameDeskFragment extends Fragment {
             levelRounds = mGameManager.getGamePlay().getLevel().getLevelRounds();
         }
 
-        levelNameTextView.setText(levelName);
+        mLevelNameTextView.setText(levelName);
 
         String title;
 
-        if (!LevelsValues.isEndlessMode(levelNumb)){
+        if (LevelsValues.isEndlessMode(levelNumb)){
             title = gamerCount
                     + getString(R.string.count_delimiter)
                     + levelRounds;
-            gamerCountView.setText(title);
+            mGamerCountView.setText(title);
         }   else {
             title = gamerCount
                     + getString(R.string.count_delimiter)
                     + getResources().getString(R.string.infinity_symbol);
-            gamerCountView.setText(title);
+            mGamerCountView.setText(title);
         }
     }
 
@@ -205,7 +206,7 @@ public class GameDeskFragment extends Fragment {
 
         mSoundPoolWrapper.playSound(SoundPoolWrapper.LEVEL_LOSE);
 
-        gameOverLayout.setOnClickListener(new View.OnClickListener() {
+        mGameOverLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finishActivity();
@@ -218,12 +219,12 @@ public class GameDeskFragment extends Fragment {
         int nextLevelNumb = mGameManager.getGamePlay().getLevelNumb();
 
         String nextLevelStr = LevelsValues.LEVELS_NAMES[nextLevelNumb];
-        levelNameTextView.setVisibility(View.INVISIBLE);
+        mLevelNameTextView.setVisibility(View.INVISIBLE);
         prepareViewsForFinish(nextLevelStr);
 
         mSoundPoolWrapper.playSound(SoundPoolWrapper.LEVEL_COMPLETE);
 
-        gameOverLayout.setOnClickListener(new View.OnClickListener() {
+        mGameOverLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), GameFragmentActivity.class);
@@ -235,31 +236,32 @@ public class GameDeskFragment extends Fragment {
     }
 
     private void prepareViewsForFinish(String warningText){
-        parentLayout.setAlpha(0.4f);
+        mParentLayout.setAlpha(0.4f);
 
-        for (int i = 0; i < parentLayout.getChildCount(); i++) {
-            View child = parentLayout.getChildAt(i);
+        for (int i = 0; i < mParentLayout.getChildCount(); i++) {
+            View child = mParentLayout.getChildAt(i);
             child.setEnabled(false);
         }
 
-        warningTextView.setText(warningText);
-        warningTextView.setVisibility(View.VISIBLE);
-        animateWarningTextView(warningTextView,0.0f,150);
+        mWarningTextView.setText(warningText);
+        mWarningTextView.setVisibility(View.VISIBLE);
+        animateWarningTextView(mWarningTextView,0.0f,150);
     }
 
     private void showBonusWarning(String text){
         long duration = 150;
         float alphaStart = 0.2f;
         float alphaEnd = 1.0f;
-        warningTextView.setText(text);
-        warningTextView.setAlpha(alphaStart);
-        warningTextView.setVisibility(View.VISIBLE);
-        animateWarningTextView(warningTextView,alphaEnd,duration);
+        mWarningTextView.setText(text);
+        mWarningTextView.setAlpha(alphaStart);
+        mWarningTextView.setVisibility(View.VISIBLE);
+        mSoundPoolWrapper.playSound(SoundPoolWrapper.COMBO);
+        animateWarningTextView(mWarningTextView,alphaEnd,duration);
 
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                warningTextView.setVisibility(View.INVISIBLE);
+                mWarningTextView.setVisibility(View.INVISIBLE);
             }
         }, duration);
     }
@@ -267,7 +269,7 @@ public class GameDeskFragment extends Fragment {
     private void finishActivity(){
         showAdsInterstitial();
         mGameManager.finish();
-        getActivity().finish();
+        Objects.requireNonNull(getActivity()).finish();
     }
 
     private void animateWarningTextView(final TextView view, float alpha, long duration){
@@ -291,14 +293,15 @@ public class GameDeskFragment extends Fragment {
             mData = data;
         }
 
+        @NonNull
         @Override
-        public GridViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public GridViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = mLayoutInflater.inflate(R.layout.list_item_cell, parent, false);
             return new GridViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(GridViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull GridViewHolder holder, int position) {
             setImage(position, holder);
             holder.setPosition(position);
         }
@@ -338,7 +341,7 @@ public class GameDeskFragment extends Fragment {
                 public void onClick(View v) {
                     final GamePlay gamePlay = mGameManager.getGamePlay();
 
-                    if (!userActionAvailable){
+                    if (!mUserActionAvailable){
                         return;
                     }
                     actionDown(gamePlay);
@@ -379,7 +382,7 @@ public class GameDeskFragment extends Fragment {
                                 mSoundPoolWrapper.playSound(SoundPoolWrapper.SELECT_FIGURE);
                                 fillCells(true, currentFigureColor);
 
-                                if (isTurnButtonClickable) {
+                                if (mIsTurnButtonClickable) {
                                     setIsTurnButtonClickable(true);
                                 }
                                 setTurnFigureButton();
@@ -390,13 +393,13 @@ public class GameDeskFragment extends Fragment {
         }
 
         private void setTurnFigureButton(){
-            turnFigureButton.setOnClickListener(new View.OnClickListener() {
+            mTurnFigureButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (isTurnButtonClickable) {
+                    if (mIsTurnButtonClickable) {
                         if (mGameManager.getGamePlay().turnFigureIfExists(position)) {
                             setIsTurnButtonClickable(false);
-                            isTurnButtonClickable = false;
+                            mIsTurnButtonClickable = false;
                             turnFigure(mImageViewCell);
                         }
                     }
@@ -405,7 +408,7 @@ public class GameDeskFragment extends Fragment {
         }
 
         private void showUnitedFigure(ImageView imageViewCell, GamePlay gamePlay){
-            userActionAvailable = false;
+            mUserActionAvailable = false;
             final Handler HANDLER = new Handler();
 
             mSoundPoolWrapper.playSound(SoundPoolWrapper.UNITE_FIGURE);
@@ -427,7 +430,7 @@ public class GameDeskFragment extends Fragment {
         }
 
         private void turnFigure(ImageView imageView){
-            userActionAvailable = false;
+            mUserActionAvailable = false;
 
             mSoundPoolWrapper.playSound(SoundPoolWrapper.TURN_FIGURE);
 
@@ -438,7 +441,7 @@ public class GameDeskFragment extends Fragment {
                 public void run() {
 
                     updateFillCells();
-                    userActionAvailable = true;
+                    mUserActionAvailable = true;
 
                     if (!mGameManager.getGamePlay().isGameContinue()){
                         updateRecyclerGridDesk();
@@ -459,7 +462,7 @@ public class GameDeskFragment extends Fragment {
             }
 
             mSoundPoolWrapper.playSound(SoundPoolWrapper.REPLACE_FIGURE);
-            userActionAvailable = false;
+            mUserActionAvailable = false;
             fillCells(false, Color.TRANSPARENT);
             setImageViewRes(mGameManager.getGamePlay().getRecentPosition(), R.drawable.empty_cell);
             setImageViewRes(currentPosition, FigureFactory.getFigureRes(mGameManager.getDesk().getFigure(currentPosition)));
@@ -468,7 +471,7 @@ public class GameDeskFragment extends Fragment {
 
         private void setImageViewRes(int position, int res){
             GridViewHolder holder = (GridViewHolder) mRecyclerGridDesk.findViewHolderForAdapterPosition(position);
-            ImageView imageView = (ImageView) holder.mImageViewCell.findViewById(R.id.cell_image_view);
+            ImageView imageView = holder.mImageViewCell.findViewById(R.id.cell_image_view);
             imageView.setImageResource(res);
         }
 
@@ -477,17 +480,18 @@ public class GameDeskFragment extends Fragment {
 
         if (!mGameManager.getGamePlay().getRecentRandomFigures().isEmpty()){
             Figure addedRandomFigure = mGameManager.getGamePlay().getRecentRandomFigures().get(0);
-            setImageViewRes(mGameManager.getDesk().cellToPosition(addedRandomFigure.mCell), FigureFactory.getFigureRes(addedRandomFigure));
+            setImageViewRes(mGameManager.getDesk().cellToPosition(addedRandomFigure.cell), FigureFactory.getFigureRes(addedRandomFigure));
         }
 
             int currentFigureColor = recentFigure.color;
             fillCells(true, currentFigureColor);
         }
 
-        private void fillCells(boolean isFill, int currentFigureColor){
+        private void fillCells(boolean isFill, int currFigureColor){
             int color = getCellsColor(isFill);
             Desk desk = mGameManager.getDesk();
             AvailableSteps availableSteps = mGameManager.getGamePlay().getAvailableSteps();
+            int currFigureColorAlpha = adjustAlpha(currFigureColor);
 
             for (int y = 0; y<desk.deskToMultiArr().length; y++){
                 for (int x = 0; x<desk.deskToMultiArr()[y].length; x++){
@@ -498,13 +502,23 @@ public class GameDeskFragment extends Fragment {
                         setBackgroundColorOnPosition(position, color);
                     }   else
                     if (availableSteps.getAvailableToUniteCells().contains(cell)) {
-                        setBackgroundColorOnPosition(position, currentFigureColor);
+                        setBackgroundColorOnPosition(position, currFigureColorAlpha);
                     }   else {
                         setBackgroundColorOnPosition(position, Color.TRANSPARENT);
                     }
                 }
             }
-            setBackgroundColorOnPosition(mGameManager.getGamePlay().getRecentPosition(), currentFigureColor);
+            setBackgroundColorOnPosition(mGameManager.getGamePlay().getRecentPosition(), currFigureColor);
+        }
+
+        @ColorInt
+        private int adjustAlpha(@ColorInt int color) {
+            float factor = 0.8f;
+            int alpha = Math.round(Color.alpha(color) * factor);
+            int red = Color.red(color);
+            int green = Color.green(color);
+            int blue = Color.blue(color);
+            return Color.argb(alpha, red, green, blue);
         }
 
         private void setBackgroundColorOnPosition(int position, int color){
@@ -515,7 +529,7 @@ public class GameDeskFragment extends Fragment {
             int color;
 
             if (isFillColor) {
-                color = ContextCompat.getColor(getContext(), R.color.currentFigureFill);
+                color = ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.currentFigureFill);
                 mGameManager.getGamePlay().setIsFilled(true);
             }   else {
                 color = Color.TRANSPARENT;
@@ -538,7 +552,7 @@ public class GameDeskFragment extends Fragment {
                     if (indx > -1) {
                         mSoundPoolWrapper.playSound(SoundPoolWrapper.APPEAR_FIGURE);
                         Figure figure = RECENT_RAND_FIGURES.get(indx);
-                        int position = mGameManager.getDesk().cellToPosition(figure.mCell);
+                        int position = mGameManager.getDesk().cellToPosition(figure.cell);
                         mAdapter.notifyItemChanged(position);
                     }
                     --indx;
@@ -558,15 +572,15 @@ public class GameDeskFragment extends Fragment {
 
     private void setIsTurnButtonClickable(boolean isClickable){
         mGameManager.getGamePlay().setTurnAvailable(isClickable);
-        isTurnButtonClickable = isClickable;
+        mIsTurnButtonClickable = isClickable;
         setIsTurnButtonVisible(isClickable);
     }
 
     private void setIsTurnButtonVisible(boolean isVisible){
         if (isVisible){
-            turnFigureButton.setVisibility(View.VISIBLE);
+            mTurnFigureButton.setVisibility(View.VISIBLE);
         }   else {
-            turnFigureButton.setVisibility(View.INVISIBLE);
+            mTurnFigureButton.setVisibility(View.INVISIBLE);
         }
     }
 }

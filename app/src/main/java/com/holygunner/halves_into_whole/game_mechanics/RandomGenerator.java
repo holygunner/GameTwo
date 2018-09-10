@@ -9,14 +9,10 @@ import java.util.List;
 import java.util.Random;
 
 public class RandomGenerator {
-
     private final Position[] POSITIONS = new Position[]{Position.POSITION_ONE, Position.POSITION_TWO,
             Position.POSITION_THREE, Position.POSITION_FOUR};
-
-    private List<Position> positions;
-
+    private List<Position> mPositions;
     private Random mRandom;
-
     private Level mLevel;
 
     RandomGenerator(Level level){
@@ -30,14 +26,14 @@ public class RandomGenerator {
         int index;
         Position position;
 
-        if (positions.isEmpty()){
+        if (mPositions.isEmpty()){
             initPositions();
         }
 
-        size = positions.size();
+        size = mPositions.size();
         index = mRandom.nextInt(size);
-        position = positions.get(index);
-        positions.remove(index);
+        position = mPositions.get(index);
+        mPositions.remove(index);
 
         return position;
     }
@@ -55,7 +51,7 @@ public class RandomGenerator {
     }
 
     private void initPositions(){
-        positions = new ArrayList<>(Arrays.asList(POSITIONS));
+        mPositions = new ArrayList<>(Arrays.asList(POSITIONS));
     }
 
     private static Random getRandom(){

@@ -15,20 +15,20 @@ import static com.holygunner.halves_into_whole.game_mechanics.StepResult.*;
 import static com.holygunner.halves_into_whole.values.GameValues.*;
 
 public class GamePlay {
-    private Integer recentPosition;
+    private Integer mRecentPosition;
     private Level mLevel;
     private Desk mDesk;
     private AvailableSteps mAvailableSteps;
     private RandomGenerator mRandomGenerator;
     private Saver mSaver;
-    private StepResult prevStepResult;
+    private StepResult mPrevStepResult;
     private List<Figure> mRecentRandomFigures;
 
     private int mLevelNumb;
-    private int unitedFigureRes;
-    private boolean isGameStarted;
-    private boolean isTurnAvailable;
-    private boolean isFilled;
+    private int mUnitedFigureRes;
+    private boolean mIsGameStarted;
+    private boolean mIsTurnAvailable;
+    private boolean mIsFilled;
 
     GamePlay(Context context, Desk desk, Saver saver, int levelNumb){
         mSaver = saver;
@@ -43,13 +43,13 @@ public class GamePlay {
 
         mRandomGenerator = new RandomGenerator(mLevel);
         mDesk = desk;
-        isGameStarted = Saver.isSaveExists(context);
+        mIsGameStarted = Saver.isSaveExists(context);
 
         mRecentRandomFigures = new ArrayList<>();
     }
 
     public void setIsFilled(boolean isFilled){
-        this.isFilled = isFilled;
+        this.mIsFilled = isFilled;
     }
 
     public AvailableSteps getAvailableSteps(){
@@ -81,14 +81,14 @@ public class GamePlay {
             return STEP_UNAVAILABLE;
         }
 
-        if (mAvailableSteps.isPositionOnStep(position) != -1 && isFilled) {
-            Cell fromWhere = mDesk.positionToCell(recentPosition);
+        if (mAvailableSteps.isPositionOnStep(position) != -1 && mIsFilled) {
+            Cell fromWhere = mDesk.positionToCell(mRecentPosition);
             Cell toWhere = mDesk.positionToCell(position);
 
             StepResult stepResult = makeStep(fromWhere, toWhere);
 
             if (stepResult != UNITE_FIGURE){
-                prevStepResult = null;
+                mPrevStepResult = null;
             }
 
             switch (stepResult){
@@ -104,7 +104,7 @@ public class GamePlay {
                         }
                         stepResult = COMBO;
                     }
-                    prevStepResult = stepResult;
+                    mPrevStepResult = stepResult;
                     break;
                 case DESK_EMPTY:
                     mLevel.increaseGamerCount(POINT_FOR_EMPTY_DESK);
@@ -121,12 +121,12 @@ public class GamePlay {
 
             if (stepResult != STEP_UNAVAILABLE) {
 
-                if (!isGameStarted){
-                    isGameStarted = true;
+                if (!mIsGameStarted){
+                    mIsGameStarted = true;
                 }
             }
 
-            isFilled = false;
+            mIsFilled = false;
             return stepResult;
         }   else
             return STEP_UNAVAILABLE;
@@ -141,7 +141,7 @@ public class GamePlay {
     }
 
     public Integer getRecentPosition(){
-        return recentPosition;
+        return mRecentPosition;
     }
 
     public boolean setAvailableCells(int position){
@@ -152,8 +152,8 @@ public class GamePlay {
         if (mDesk.isCellEmpty(mDesk.positionToCell(position))){
             return false;
         }
-        recentPosition = position;
-        mAvailableSteps = new AvailableSteps(this, recentPosition, mDesk);
+        mRecentPosition = position;
+        mAvailableSteps = new AvailableSteps(this, mRecentPosition, mDesk);
         mAvailableSteps = new AvailableSteps(this, position, mDesk);
 
         return true;
@@ -164,17 +164,17 @@ public class GamePlay {
             Cell cell = mDesk.positionToCell(position);
             Figure figure = mDesk.getFigure(cell);
 
-            if (figure == null || !isFilled) {
+            if (figure == null || !mIsFilled) {
                 return false;
             } else {
-                if (!isGameStarted){
-                    isGameStarted = true;
+                if (!mIsGameStarted){
+                    mIsGameStarted = true;
                 }
                 figure.position = Position.getTurnedPosition(figure.position);
-                prevStepResult = null;
+                mPrevStepResult = null;
                 addRandomFigure(mLevel.getAddForTurn());
-                mAvailableSteps = new AvailableSteps(this, recentPosition, mDesk);
-                isFilled = true;
+                mAvailableSteps = new AvailableSteps(this, mRecentPosition, mDesk);
+                mIsFilled = true;
 
                 return true;
             }
@@ -203,8 +203,8 @@ public class GamePlay {
     public int isStepAvailable(Figure figure, Cell toWhere){
         int isStepAvailable = -1;
 
-        int x0 = figure.mCell.getX();
-        int y0 = figure.mCell.getY();
+        int x0 = figure.cell.getX();
+        int y0 = figure.cell.getY();
 
         int xSpace = Math.abs(toWhere.getX() - x0);
         int ySpace = Math.abs(toWhere.getY() - y0);
@@ -224,15 +224,15 @@ public class GamePlay {
     }
 
     public int getLastUnitedFigureRes(){
-        return unitedFigureRes;
+        return mUnitedFigureRes;
     }
 
     public boolean isTurnAvailable() {
-        return isTurnAvailable;
+        return mIsTurnAvailable;
     }
 
     public void setTurnAvailable(boolean turnAvailable) {
-        isTurnAvailable = turnAvailable;
+        mIsTurnAvailable = turnAvailable;
     }
 
     private StepResult makeStep(Cell fromWhere, Cell toWhere){
@@ -247,7 +247,7 @@ public class GamePlay {
                 Figure figure2 = mDesk.getFigure(toWhere);
 
                 if (areSemiFiguresAreWhole(ourFigure, figure2)){
-                    unitedFigureRes = figure2.fullPositionRes;
+                    mUnitedFigureRes = figure2.fullPositionRes;
                     if (isCombo()){
                         mLevel.increaseGamerCount(POINT_FOR_COMBO);
                     }   else {
@@ -266,7 +266,7 @@ public class GamePlay {
     }
 
     private boolean isCombo(){
-        return prevStepResult != null;
+        return mPrevStepResult != null;
     }
 
     private Figure getRandomFigure(){
@@ -299,7 +299,7 @@ public class GamePlay {
     }
 
     public void increaseLevelNumb(){
-        if (!LevelsValues.isEndlessMode(mLevelNumb)){
+        if (LevelsValues.isEndlessMode(mLevelNumb)){
             mLevelNumb += 1;
         }   else {
             mLevelNumb = LevelsValues.LEVELS_NAMES.length - 1;

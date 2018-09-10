@@ -1,20 +1,20 @@
 package com.holygunner.halves_into_whole.game_mechanics;
 
 public class Cell {
-    private int x;
-    private int y;
+    private int mX;
+    private int mY;
 
     public Cell (int x, int y){
-        this.x = x;
-        this.y = y;
+        this.mX = x;
+        this.mY = y;
     }
 
     public int getX(){
-        return x;
+        return mX;
     }
 
     public int getY(){
-        return y;
+        return mY;
     }
 
     @Override
@@ -28,11 +28,11 @@ public class Cell {
 
         Cell checkedCell = (Cell) obj;
 
-        return this.x == checkedCell.x && this.y == checkedCell.y;
+        return this.mX == checkedCell.mX && this.mY == checkedCell.mY;
     }
 
     @Override
     public int hashCode(){
-        return (x*17)+(y*37);
+        return (mX *17)+(mY *37);
     }
 }

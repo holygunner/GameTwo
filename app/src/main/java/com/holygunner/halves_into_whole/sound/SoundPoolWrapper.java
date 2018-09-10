@@ -21,15 +21,16 @@ public class SoundPoolWrapper {
     public static final int SELECT_FIGURE = 7;
     public static final int TURN_FIGURE = 8;
     public static final int UNITE_FIGURE = 9;
+    public static final int COMBO = 10;
 
     @SuppressLint("StaticFieldLeak")
-    private static SoundPoolWrapper instance;
+    private static SoundPoolWrapper sInstance;
 
     public static SoundPoolWrapper getInstance(Context context){
-        if (instance == null){
-            instance = new SoundPoolWrapper(context);
+        if (sInstance == null){
+            sInstance = new SoundPoolWrapper(context);
         }
-        return instance;
+        return sInstance;
     }
 
     private SoundPoolWrapper(Context context) {
@@ -60,6 +61,7 @@ public class SoundPoolWrapper {
         mSoundPool.load(mContext, R.raw.select_figure, SELECT_FIGURE);
         mSoundPool.load(mContext, R.raw.turn_figure, TURN_FIGURE);
         mSoundPool.load(mContext, R.raw.unite_figure, UNITE_FIGURE);
+        mSoundPool.load(mContext, R.raw.combo, COMBO);
     }
 
     public void playSound(int soundId){
@@ -84,6 +86,6 @@ public class SoundPoolWrapper {
 
     public void release(){
         mSoundPool.release();
-        instance = null;
+        sInstance = null;
     }
 }

@@ -4,8 +4,10 @@ import com.holygunner.halves_into_whole.figures.FigureClassAndColorPair;
 import com.holygunner.halves_into_whole.figures.SemiCircle;
 import com.holygunner.halves_into_whole.figures.*;
 
+import static com.holygunner.halves_into_whole.values.ColorsValues.FigureColors.AQUAMARINE;
 import static com.holygunner.halves_into_whole.values.ColorsValues.FigureColors.BORDO;
 import static com.holygunner.halves_into_whole.values.ColorsValues.FigureColors.PURPLE;
+import static com.holygunner.halves_into_whole.values.ColorsValues.FigureColors.SALMON;
 
 public abstract class LevelsValues {
     public static final String[] LEVELS_NAMES = {"Level 1", "Level 2", "Level 3", "Level 4", "Endless Mode"};
@@ -18,7 +20,10 @@ public abstract class LevelsValues {
     public static final int[] ADDS_FOR_UNIT = {1, 1, 1, 1, 1}; // max value is 1
 
     public static final FigureClassAndColorPair[][] FIGURE_COLORS_PAIR = {
-            {new FigureClassAndColorPair(SemiCircle.class, BORDO)},
+//            {new FigureClassAndColorPair(SemiCircle.class, BORDO)},
+            {new FigureClassAndColorPair(SemiStar.class, BORDO),
+                    new FigureClassAndColorPair(SemiCircle.class, SALMON),
+                    new FigureClassAndColorPair(SemiStar.class, AQUAMARINE)},
 
             {new FigureClassAndColorPair(SemiSquare.class, PURPLE),
                     new FigureClassAndColorPair(SemiCircle.class, BORDO)},
@@ -38,10 +43,6 @@ public abstract class LevelsValues {
     };
 
     public static boolean isEndlessMode(int levelNumb){
-        if (levelNumb >= LevelsValues.LEVELS_NAMES.length - 1){
-            return true;
-        }   else {
-            return false;
-        }
+        return levelNumb < LevelsValues.LEVELS_NAMES.length - 1;
     }
 }

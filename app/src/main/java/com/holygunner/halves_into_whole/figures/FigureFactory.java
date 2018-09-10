@@ -10,6 +10,7 @@ import java.util.UUID;
 public abstract class FigureFactory {
     private static final String SEMISQUARE = "SemiSquare";
     private static final String SEMICIRCLE = "SemiCircle";
+    private static final String SEMISTAR = "SemiStar";
 
     public static Figure getRandomFigure(List<Cell> freeCells, RandomGenerator randomGenerator){
         UUID uuid = UUID.randomUUID();
@@ -33,6 +34,8 @@ public abstract class FigureFactory {
             return SemiSquare.class;
         if (figureType.equals(SEMICIRCLE))
             return SemiCircle.class;
+        if (figureType.equals(SEMISTAR))
+            return SemiStar.class;
         else
             return null;
     }
@@ -45,6 +48,8 @@ public abstract class FigureFactory {
             return SemiSquare.getRes(color, position);
         if (figure instanceof SemiCircle)
             return SemiCircle.getRes(color, position);
+        if (figure instanceof SemiStar)
+            return SemiStar.getRes(color, position);
         else
             return 0;
     }
@@ -54,6 +59,8 @@ public abstract class FigureFactory {
             return SEMISQUARE;
         if (figure instanceof SemiCircle)
             return SEMICIRCLE;
+        if (figure instanceof SemiStar)
+            return SEMISTAR;
         else
             return null;
     }
@@ -64,6 +71,8 @@ public abstract class FigureFactory {
             return new SemiSquare(uuid, color, position, cell);
         if (figureClass == SemiCircle.class)
             return new SemiCircle(uuid, color, position, cell);
+        if (figureClass == SemiStar.class)
+            return new SemiStar(uuid, color, position, cell);
         else
             return new Figure(uuid);
     }

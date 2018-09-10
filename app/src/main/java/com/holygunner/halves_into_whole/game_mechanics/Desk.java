@@ -7,9 +7,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Desk {
-    private Figure[][] desk;
-    private int deskSize;
-    private List<Cell> freeCells;
+    private Figure[][] mDesk;
+    private int mDeskSize;
+    private List<Cell> mFreeCells;
     private GamePlay mGamePlay;
 
     Desk(GamePlay gamePlay, int[] deskXY){
@@ -17,13 +17,13 @@ public class Desk {
         int deskHeight = deskXY[0];
         int deskWidth = deskXY[1];
 
-        desk = new Figure[deskHeight][deskWidth];
-        deskSize = deskHeight*deskWidth;
+        mDesk = new Figure[deskHeight][deskWidth];
+        mDeskSize = deskHeight*deskWidth;
         initFreeCells();
     }
 
     public List<Cell> getFreeCells(){
-        return freeCells;
+        return mFreeCells;
     }
 
     public boolean isDeskOverload(){
@@ -32,28 +32,28 @@ public class Desk {
 
 
     public void addFigure(Figure figure){
-        int x = figure.mCell.getX();
-        int y = figure.mCell.getY();
+        int x = figure.cell.getX();
+        int y = figure.cell.getY();
 
         figure.setCell(new Cell(x, y));
 
-        if (desk[y][x] == null){
-            desk[y][x] = figure;
+        if (mDesk[y][x] == null){
+            mDesk[y][x] = figure;
             deleteFromFreeCells(x, y);
         }
     }
 
     public void replaceFigure(Figure figure, Cell toWhere){
-        int x1 = figure.mCell.getX();
-        int y1 = figure.mCell.getY();
+        int x1 = figure.cell.getX();
+        int y1 = figure.cell.getY();
 
-        desk[y1][x1] = null;
+        mDesk[y1][x1] = null;
 
         int x2 = toWhere.getX();
         int y2 = toWhere.getY();
 
         figure.setCell(new Cell(x2, y2));
-        desk[y2][x2] = figure;
+        mDesk[y2][x2] = figure;
         updateFreeCells(x1, y1, x2, y2);
     }
 
@@ -64,15 +64,15 @@ public class Desk {
         int x2 = toWhere.getX();
         int y2 = toWhere.getY();
 
-        desk[y1][x1] = null;
-        desk[y2][x2] = null;
+        mDesk[y1][x1] = null;
+        mDesk[y2][x2] = null;
 
         addFreeCell(x1, y1);
         addFreeCell(x2, y2);
     }
 
     public Figure[][] deskToMultiArr(){
-        return desk;
+        return mDesk;
     }
 
     public Figure getFigure(int position){
@@ -83,7 +83,7 @@ public class Desk {
     public Figure getFigure(Cell cell){
         int x = cell.getX();
         int y = cell.getY();
-        return this.desk[y][x];
+        return this.mDesk[y][x];
     }
 
     public boolean isCellEmpty(Cell cell){
@@ -91,11 +91,11 @@ public class Desk {
     }
 
     public boolean isDeskEmpty(){
-        return  (freeCells.size() == deskSize);
+        return  (mFreeCells.size() == mDeskSize);
     }
 
     public boolean isOneFigureLeft(){
-        return (freeCells.size() == deskSize - 1);
+        return (mFreeCells.size() == mDeskSize - 1);
     }
 
     public int cellToPosition(Cell cell){
@@ -115,17 +115,17 @@ public class Desk {
     }
 
     private void initFreeCells(){
-        freeCells = new LinkedList<>();
+        mFreeCells = new LinkedList<>();
 
-        for (int y = 0; y<desk.length; y++ ){
-            for (int x = 0; x<desk[y].length; x++){
-                freeCells.add(new Cell(x, y));
+        for (int y = 0; y< mDesk.length; y++ ){
+            for (int x = 0; x< mDesk[y].length; x++){
+                mFreeCells.add(new Cell(x, y));
             }
         }
     }
 
     private void deleteFromFreeCells(int x, int y){
-        for (Iterator<Cell> iterator = freeCells.iterator(); iterator.hasNext();) {
+        for (Iterator<Cell> iterator = mFreeCells.iterator(); iterator.hasNext();) {
             Cell cell =  iterator.next();
             if (cell.getX() == x && cell.getY() == y) {
                 iterator.remove();
@@ -139,6 +139,6 @@ public class Desk {
     }
 
     private void addFreeCell(int x , int y){
-        freeCells.add(new Cell(x, y));
+        mFreeCells.add(new Cell(x, y));
     }
 }

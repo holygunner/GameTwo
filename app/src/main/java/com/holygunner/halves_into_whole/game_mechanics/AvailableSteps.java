@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AvailableSteps {
-    private List<Cell> availableToStepCells;
-    private List<Cell> availableToUniteCells;
+    private List<Cell> mAvailableToStepCells;
+    private List<Cell> mAvailableToUniteCells;
 
     private GamePlay mGamePlay;
     private Desk mDesk;
@@ -15,29 +15,29 @@ public class AvailableSteps {
     AvailableSteps(GamePlay gamePlay, int position, Desk desk){
         mGamePlay = gamePlay;
         mDesk = desk;
-        availableToUniteCells = new ArrayList<>();
-        availableToStepCells = new ArrayList<>();
+        mAvailableToUniteCells = new ArrayList<>();
+        mAvailableToStepCells = new ArrayList<>();
         init(position);
     }
 
     public List<Cell> getAvailableToStepCells(){
-        return availableToStepCells;
+        return mAvailableToStepCells;
     }
 
     public List<Cell> getAvailableToUniteCells(){
-        return availableToUniteCells;
+        return mAvailableToUniteCells;
     }
 
     public int isPositionOnStep(int position){ // is Figure removed to given position
         Cell chosenCell = mDesk.positionToCell(position);
 
-        for (Cell cell: availableToUniteCells){
+        for (Cell cell: mAvailableToUniteCells){
             if (chosenCell.equals(cell)){
                 return 1;
             }
         }
 
-        for (Cell cell: availableToStepCells){
+        for (Cell cell: mAvailableToStepCells){
             if (chosenCell.equals(cell)){
                 return 0;
             }
@@ -56,10 +56,10 @@ public class AvailableSteps {
 
                 switch (isStepAvailable){
                     case 1:
-                        availableToUniteCells.add(new Cell(x, y));
+                        mAvailableToUniteCells.add(new Cell(x, y));
                         break;
                     case 0:
-                        availableToStepCells.add(new Cell(x, y));
+                        mAvailableToStepCells.add(new Cell(x, y));
                         break;
                     case -1:
                         break;

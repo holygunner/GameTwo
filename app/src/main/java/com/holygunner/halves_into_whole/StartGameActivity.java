@@ -19,10 +19,10 @@ import com.holygunner.halves_into_whole.sound.SoundPoolWrapper;
 public class StartGameActivity extends AppCompatActivity implements View.OnClickListener {
     public static final String OPEN_LEVEL_NUMB_KEY = "open_level_numb";
     private static final String LOG = "TAG";
-    private Button chooseLevelButton;
-    private Button gameButton;
-    private Button soundButton;
-    private TextView maxScoreTextView;
+    private Button mChooseLevelButton;
+    private Button mGameButton;
+    private Button mSoundButton;
+    private TextView mMaxScoreTextView;
     private SoundPoolWrapper mSoundPoolWrapper;
     private AdView mAdView;
 
@@ -60,17 +60,17 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
         MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
         setAdsBanner();
 
-        chooseLevelButton = findViewById(R.id.choose_level_button);
+        mChooseLevelButton = findViewById(R.id.choose_level_button);
         setChooseLevelButtonVisibility();
-        chooseLevelButton.setOnClickListener(this);
-        gameButton = findViewById(R.id.game_button);
-        gameButton.setOnClickListener(this);
+        mChooseLevelButton.setOnClickListener(this);
+        mGameButton = findViewById(R.id.game_button);
+        mGameButton.setOnClickListener(this);
         Button aboutButton = findViewById(R.id.about_button);
         aboutButton.setOnClickListener(this);
-        soundButton = findViewById(R.id.sound_on_button);
-        soundButton.setOnClickListener(this);
+        mSoundButton = findViewById(R.id.sound_on_button);
+        mSoundButton.setOnClickListener(this);
         setSoundButtonTitle();
-        maxScoreTextView = findViewById(R.id.maxScoreTextView);
+        mMaxScoreTextView = findViewById(R.id.maxScoreTextView);
         updateMaxScore();
         setGameButtonText();
         mSoundPoolWrapper = SoundPoolWrapper.getInstance(this);
@@ -94,17 +94,17 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
         boolean state = Saver.readIsSoundOn(getApplicationContext());
 
         if (state){
-            soundButton.setText(R.string.sound_on);
+            mSoundButton.setText(R.string.sound_on);
         }   else {
-            soundButton.setText(R.string.sound_off);
+            mSoundButton.setText(R.string.sound_off);
         }
     }
 
     private void setChooseLevelButtonVisibility() {
         if (Saver.readMaxLevel(getApplicationContext()) > 0) {
-            chooseLevelButton.setVisibility(View.VISIBLE);
+            mChooseLevelButton.setVisibility(View.VISIBLE);
         }   else {
-            chooseLevelButton.setVisibility(View.INVISIBLE);
+            mChooseLevelButton.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -113,8 +113,8 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
 
         if (score > 0){
             String text = getResources().getString(R.string.your_max_score) + " " + score;
-            maxScoreTextView.setText(text);
-            maxScoreTextView.setVisibility(View.VISIBLE);
+            mMaxScoreTextView.setText(text);
+            mMaxScoreTextView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -123,9 +123,9 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
         boolean isSaveExists = Saver.readSaveExists(getApplicationContext());
 
         if (isSaveExists){
-            gameButton.setText(R.string.resume_game);
+            mGameButton.setText(R.string.resume_game);
         }   else {
-            gameButton.setText(R.string.new_game);
+            mGameButton.setText(R.string.new_game);
         }
     }
 

@@ -45,7 +45,7 @@ public class FigureCursorWrapper extends CursorWrapper {
 
         figure.color = color;
         figure.position = position;
-        figure.mCell = mCell;
+        figure.cell = mCell;
         figure.stepLimit = stepLimit;
 
         return figure;

@@ -8,9 +8,9 @@ import java.util.UUID;
 
 import static com.holygunner.halves_into_whole.R.drawable.*;
 
-public class SemiSquare extends Figure {
+public class SemiStar extends Figure {
 
-    SemiSquare(UUID uuid, int color, Position position, Cell cell) {
+    SemiStar(UUID uuid, int color, Position position, Cell cell) {
         super(uuid);
         super.color = color;
         super.position = position;
@@ -23,19 +23,19 @@ public class SemiSquare extends Figure {
         int color = super.color;
 
         if (color == FigureColors.BORDO){
-            super.fullPositionRes = full_square_bordo;
+            super.fullPositionRes = full_star_bordo;
         }   else
         if (color == FigureColors.PURPLE){
-            super.fullPositionRes = full_square_purple;
+            super.fullPositionRes = full_star_purple;
         }   else
         if (color == FigureColors.SALMON){
-            super.fullPositionRes = full_square_salmon;
+            super.fullPositionRes = full_star_salmon;
         }   else
         if (color == FigureColors.AQUAMARINE){
-            super.fullPositionRes = full_square_aquamarine;
+            super.fullPositionRes = full_star_aquamarine;
         }   else
         if (color == FigureColors.YELLOW){
-            super.fullPositionRes = full_square_yellow;
+            super.fullPositionRes = full_star_yellow;
         }
     }
 
@@ -45,76 +45,76 @@ public class SemiSquare extends Figure {
         if (color == ColorsValues.FigureColors.BORDO) {
             switch (position) {
                 case POSITION_ONE:
-                    res = semi_square_bordo_p1;
+                    res = semi_star_bordo_p1;
                     break;
                 case POSITION_TWO:
-                    res = semi_square_bordo_p2;
+                    res = semi_star_bordo_p2;
                     break;
                 case POSITION_THREE:
-                    res = semi_square_bordo_p3;
+                    res = semi_star_bordo_p3;
                     break;
                 case POSITION_FOUR:
-                    res = semi_square_bordo_p4;
+                    res = semi_star_bordo_p4;
                     break;
             }
         } else if (color == ColorsValues.FigureColors.PURPLE) {
             switch (position) {
                 case POSITION_ONE:
-                    res = semi_square_purple_p1;
+                    res = semi_star_purple_p1;
                     break;
                 case POSITION_TWO:
-                    res = semi_square_purple_p2;
+                    res = semi_star_purple_p2;
                     break;
                 case POSITION_THREE:
-                    res = semi_square_purple_p3;
+                    res = semi_star_purple_p3;
                     break;
                 case POSITION_FOUR:
-                    res = semi_square_purple_p4;
+                    res = semi_star_purple_p4;
                     break;
             }
         }   else if (color == FigureColors.SALMON) {
             switch (position) {
                 case POSITION_ONE:
-                    res = semi_square_salmon_p1;
+                    res = semi_star_salmon_p1;
                     break;
                 case POSITION_TWO:
-                    res = semi_square_salmon_p2;
+                    res = semi_star_salmon_p2;
                     break;
                 case POSITION_THREE:
-                    res = semi_square_salmon_p3;
+                    res = semi_star_salmon_p3;
                     break;
                 case POSITION_FOUR:
-                    res = semi_square_salmon_p4;
+                    res = semi_star_salmon_p4;
                     break;
             }
         }   else if (color == FigureColors.AQUAMARINE) {
             switch (position) {
                 case POSITION_ONE:
-                    res = semi_square_aquamarine_p1;
+                    res = semi_star_aquamarine_p1;
                     break;
                 case POSITION_TWO:
-                    res = semi_square_aquamarine_p2;
+                    res = semi_star_aquamarine_p2;
                     break;
                 case POSITION_THREE:
-                    res = semi_square_aquamarine_p3;
+                    res = semi_star_aquamarine_p3;
                     break;
                 case POSITION_FOUR:
-                    res = semi_square_aquamarine_p4;
+                    res = semi_star_aquamarine_p4;
                     break;
             }
         }   else if (color == FigureColors.YELLOW) {
             switch (position) {
                 case POSITION_ONE:
-                    res = semi_square_yellow_p1;
+                    res = semi_star_yellow_p1;
                     break;
                 case POSITION_TWO:
-                    res = semi_square_yellow_p2;
+                    res = semi_star_yellow_p2;
                     break;
                 case POSITION_THREE:
-                    res = semi_square_yellow_p3;
+                    res = semi_star_yellow_p3;
                     break;
                 case POSITION_FOUR:
-                    res = semi_square_yellow_p4;
+                    res = semi_star_yellow_p4;
                     break;
             }
         }
