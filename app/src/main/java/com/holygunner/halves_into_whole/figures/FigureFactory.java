@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.UUID;
 
 public abstract class FigureFactory {
-    private static final String SEMISQUARE = "SemiSquare";
-    private static final String SEMICIRCLE = "SemiCircle";
-    private static final String SEMISTAR = "SemiStar";
+    private static final String SEMI_SQUARE = "SemiSquare";
+    private static final String SEMI_CIRCLE = "SemiCircle";
+    private static final String SEMI_STAR = "SemiStar";
 
     public static Figure getRandomFigure(List<Cell> freeCells, RandomGenerator randomGenerator){
         UUID uuid = UUID.randomUUID();
@@ -30,11 +30,11 @@ public abstract class FigureFactory {
     }
 
     public static Class<?> getClassOfFigure(String figureType) {
-        if (figureType.equals(SEMISQUARE))
+        if (figureType.equals(SEMI_SQUARE))
             return SemiSquare.class;
-        if (figureType.equals(SEMICIRCLE))
+        if (figureType.equals(SEMI_CIRCLE))
             return SemiCircle.class;
-        if (figureType.equals(SEMISTAR))
+        if (figureType.equals(SEMI_STAR))
             return SemiStar.class;
         else
             return null;
@@ -56,11 +56,11 @@ public abstract class FigureFactory {
 
     public static String figureTypeToString(Figure figure) {
         if (figure instanceof SemiSquare)
-            return SEMISQUARE;
+            return SEMI_SQUARE;
         if (figure instanceof SemiCircle)
-            return SEMICIRCLE;
+            return SEMI_CIRCLE;
         if (figure instanceof SemiStar)
-            return SEMISTAR;
+            return SEMI_STAR;
         else
             return null;
     }

@@ -10,10 +10,10 @@
     <string name="infinity_symbol" translatable="false">∞</string>
     <string name="select_your_level">Select your level:</string>
     <string name="unite_wholes_into_complete_figures">&#160;Unite halves into complete figures of the same type and color.
-        You are able to remove or spin them clockwise once per step.</string>
+        You are able to remove or spin them clockwise once per step.
+        Also there are available combos with the units one after another.</string>
     <string name="but_be_careful">&#160;But be careful,
-        the more halves can appear depending on the level
-        with each of your step or turn unless the game will end.</string>
+        the more halves can appear with each of your step or turn depending on the level, unless the game will end.</string>
     <string name="complete_levels_and_don_t_loose">&#160;Complete levels, reach a high score and don\'t loose. Good luck :-)</string>
     <string name="how_to_play">How to play:</string>
     <string name="my_banner_add_unit_id" translatable="false">ca-app-pub-5986847491806907/6585732416</string>
@@ -24,6 +24,7 @@
     <string name="got_it">Got it!</string>
     <string name="combo">COMBO! +5</string>
     <string name="bonus">BONUS! +10</string>
+    <string name="figure_image">figure image</string>
     <string-array name="levels_names">
         <item>Level 1</item>
         <item>Level 2</item>
@@ -32,5 +33,14 @@
         <item>Level 5</item>
         <item>Level 6</item>
         <item>Endless Mode</item>
+    </string-array>
+    <string-array name="levels_names_with_descriptions">
+        <item>Level 1: 3x3, +1 figure per step</item>
+        <item>Level 2: 3x3, +2 figures</item>
+        <item>Level 3: 3x3, +2 figures</item>
+        <item>Level 4: 3x4, +3 figures</item>
+        <item>Level 5: 4x4, +3 figures</item>
+        <item>Level 6: 4x5, +4 figures</item>
+        <item>Endless Mode: 5x5, +4 figures</item>
     </string-array>
 </resources>

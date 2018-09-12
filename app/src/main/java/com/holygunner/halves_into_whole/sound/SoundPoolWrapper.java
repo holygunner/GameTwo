@@ -54,7 +54,7 @@ public class SoundPoolWrapper {
     private void load(){
         mSoundPool.load(mContext, R.raw.appear_figure, APPEAR_FIGURE);
         mSoundPool.load(mContext, R.raw.level_complete, LEVEL_COMPLETE);
-        mSoundPool.load(mContext, R.raw.level_lose2, LEVEL_LOSE);
+        mSoundPool.load(mContext, R.raw.level_lose, LEVEL_LOSE);
         mSoundPool.load(mContext, R.raw.level_start, LEVEL_START);
         mSoundPool.load(mContext, R.raw.move_figure, REPLACE_FIGURE);
         mSoundPool.load(mContext, R.raw.press_button, PRESS_BUTTON);

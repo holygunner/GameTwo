@@ -30,10 +30,7 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onClick(View view) {
         Intent intent = new Intent(this, GameFragmentActivity.class);
-
-        if (view.getId() != R.id.game_button) {
-            mSoundPoolWrapper.playSound(SoundPoolWrapper.PRESS_BUTTON);
-        }
+        mSoundPoolWrapper.playSound(SoundPoolWrapper.PRESS_BUTTON);
 
         switch (view.getId()){
             case R.id.choose_level_button:
@@ -41,8 +38,6 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
                 break;
             case R.id.game_button:
                 intent.putExtra(OPEN_LEVEL_NUMB_KEY, Saver.readMaxLevel(getApplicationContext()));
-//                mSoundPoolWrapper.playSound(SoundPoolWrapper.LEVEL_START);
-                mSoundPoolWrapper.playSound(SoundPoolWrapper.PRESS_BUTTON);
                 startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
                 break;
             case R.id.sound_on_button:
@@ -62,7 +57,7 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
 
         // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
         // my AdMob ID: ca-app-pub-5986847491806907~4171322067
-        MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713");
+        MobileAds.initialize(this, "ca-app-pub-5986847491806907~4171322067");
         setAdsBanner();
 
         mChooseLevelButton = findViewById(R.id.choose_level_button);
@@ -84,10 +79,10 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
     @Override
     protected void onResume(){
         super.onResume();
+        setGameButtonText();
         mAdView.resume();
         updateMaxScore();
         setChooseLevelButtonVisibility();
-        setGameButtonText();
         setSoundButtonTitle();
         mSoundPoolWrapper = SoundPoolWrapper.getInstance(this);
     }
@@ -109,7 +104,6 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
         // Test Device ID: 77E6E08ABF5409D1A37C98C74EE45A35
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice("77E6E08ABF5409D1A37C98C74EE45A35") // delete before app release
                 .build();
         mAdView.loadAd(adRequest);
     }

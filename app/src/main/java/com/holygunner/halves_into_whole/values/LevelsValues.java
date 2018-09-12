@@ -12,13 +12,12 @@ import com.holygunner.halves_into_whole.figures.*;
 import static com.holygunner.halves_into_whole.values.ColorsValues.FigureColors.*;
 
 public abstract class LevelsValues {
-    public static final int[] LEVEL_NUMB = {0, 1, 2, 3, 4, 5, 6};
-//    public static final int[] LEVELS_ROUNDS = {50, 75, 100, 125, 150, 175, 10000000};
-    public static final int[] LEVELS_ROUNDS = {50, 50, 50, 50, 50, 50, 10000000};
+    public static final int[] LEVELS_ROUNDS = {100, 120, 140, 160, 180, 200, 10000000};
+//public static final int[] LEVELS_ROUNDS = {2, 2, 2, 2, 2, 2, 10000000};
     public static final int[][] DESKS_SIZES
             = {{3, 3}, {3, 3}, {3, 3}, {4, 3}, {4, 4}, {5, 4}, {5, 5}}; // DESKS_SIZES[0] is height, DESKS_SIZES[1] is width
     public static final int[] ADDS_FOR_STEP = {1, 2, 2, 3, 3, 4, 4};
-    public static final int[] ADDS_FOR_TURN = {1, 1, 1, 1, 1, 1, 1}; // optimal value is 1
+    public static final int[] ADDS_FOR_TURN = {0, 1, 1, 1, 1, 1, 1}; // optimal value is 1
     public static final int[] ADDS_FOR_UNIT = {1, 1, 1, 1, 1, 1, 1}; // optimal value is 1
 
     public static final FigureClassAndColorPair[][] FIGURE_COLORS_PAIR = {
@@ -27,15 +26,15 @@ public abstract class LevelsValues {
             {new FigureClassAndColorPair(SemiCircle.class, PURPLE), // 2nd
                     new FigureClassAndColorPair(SemiSquare.class, BORDO)},
 
-            {new FigureClassAndColorPair(SemiSquare.class, GREEN), // 3rd
+            {new FigureClassAndColorPair(SemiCircle.class, GREEN), // 3rd
                     new FigureClassAndColorPair(SemiSquare.class, PURPLE),
-                    new FigureClassAndColorPair(SemiSquare.class, SALMON)},
+                    new FigureClassAndColorPair(SemiStar.class, SALMON)},
 
             {new FigureClassAndColorPair(SemiCircle.class, GREEN), // 4th
                     new FigureClassAndColorPair(SemiSquare.class, SALMON),
-                    new FigureClassAndColorPair(SemiStar.class, BORDO)},
+                    new FigureClassAndColorPair(SemiStar.class, PURPLE)},
 
-            {new FigureClassAndColorPair(SemiStar.class, PURPLE), // 5th
+            {new FigureClassAndColorPair(SemiStar.class, BORDO), // 5th
                     new FigureClassAndColorPair(SemiSquare.class, SALMON),
                     new FigureClassAndColorPair(SemiCircle.class, LILAC),
                     new FigureClassAndColorPair(SemiCircle.class, GREEN)},
@@ -49,14 +48,13 @@ public abstract class LevelsValues {
             {new FigureClassAndColorPair(SemiCircle.class, BORDO), // 7th
                     new FigureClassAndColorPair(SemiCircle.class, PURPLE),
                     new FigureClassAndColorPair(SemiSquare.class, BORDO),
-                    new FigureClassAndColorPair(SemiSquare.class, PURPLE),
+                    new FigureClassAndColorPair(SemiSquare.class, LILAC),
                     new FigureClassAndColorPair(SemiSquare.class, GREEN),
-                    new FigureClassAndColorPair(SemiStar.class, BORDO),
                     new FigureClassAndColorPair(SemiStar.class, SALMON)}
     };
 
     public static boolean isEndlessMode(int levelNumb){
-        return levelNumb < LevelsValues.LEVEL_NUMB.length - 1;
+        return levelNumb < LevelsValues.LEVELS_ROUNDS.length - 1;
     }
 
     @NonNull
@@ -69,6 +67,6 @@ public abstract class LevelsValues {
     @NonNull
     public static String[] getLevelsNames(Context context){
         Resources res = context.getResources();
-        return res.getStringArray(R.array.levels_names);
+        return res.getStringArray(R.array.levels_names_with_descriptions);
     }
 }

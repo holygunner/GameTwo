@@ -196,7 +196,7 @@ public class GamePlay {
         int color1 = figure1.color;
         int color2 = figure2.color;
 
-        return Position.areHalfesOfWhole(position1, position2) && (color1 == color2)
+        return Position.areHalvesOfWhole(position1, position2) && (color1 == color2)
                 && figure1.getClass() == figure2.getClass();
     }
 
@@ -300,7 +300,7 @@ public class GamePlay {
         if (LevelsValues.isEndlessMode(mLevelNumb)){
             mLevelNumb += 1;
         }   else {
-            mLevelNumb = LevelsValues.LEVEL_NUMB.length - 1;
+            mLevelNumb = LevelsValues.LEVELS_ROUNDS.length - 1;
         }
     }
 }

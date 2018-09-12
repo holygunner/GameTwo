@@ -13,7 +13,7 @@ public enum Position {
         NAME = name;
     }
 
-    public static boolean areHalfesOfWhole(Position position1, Position position2){
+    public static boolean areHalvesOfWhole(Position position1, Position position2){
         return (position1 == POSITION_ONE && position2 == POSITION_TWO)
                 || (position1 == POSITION_TWO && position2 == POSITION_ONE)
                 || (position1 == POSITION_THREE && position2 == POSITION_FOUR)

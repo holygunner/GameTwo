@@ -1,5 +1,6 @@
 package com.holygunner.halves_into_whole.database;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -93,7 +94,7 @@ public class Saver {
 
     private boolean increaseMaxLevel(int levelNumb){
         int maxLevel = readMaxLevel(mContext);
-        if ((levelNumb > maxLevel) && (maxLevel < LevelsValues.LEVEL_NUMB.length - 1)){
+        if ((levelNumb > maxLevel) && (maxLevel < LevelsValues.LEVELS_ROUNDS.length - 1)){
             PreferenceManager.getDefaultSharedPreferences(mContext)
                     .edit()
                     .putInt(MAX_LEVEL_KEY, maxLevel + 1)
@@ -211,16 +212,12 @@ public class Saver {
     public Figure[] loadFigures(){
         List<Figure> figureList = new ArrayList<>();
 
-        FigureCursorWrapper cursor = queryFigures();
-
-        try {
+        try (FigureCursorWrapper cursor = queryFigures()) {
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 figureList.add(cursor.getFigure());
                 cursor.moveToNext();
             }
-        }   finally {
-            cursor.close();
         }
 
         return figureList.toArray(new Figure[figureList.size()]);
@@ -251,7 +248,7 @@ public class Saver {
     }
 
     private FigureCursorWrapper queryFigures(){
-        Cursor cursor = mDatabase.query(FigureTable.NAME,
+        @SuppressLint("Recycle") Cursor cursor = mDatabase.query(FigureTable.NAME,
                 null,
                 null,
                 null,

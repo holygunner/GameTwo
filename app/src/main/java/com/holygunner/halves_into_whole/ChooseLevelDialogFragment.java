@@ -1,6 +1,5 @@
 package com.holygunner.halves_into_whole;
 
-import android.app.ActivityOptions;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -43,7 +42,6 @@ public class ChooseLevelDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle onSavedInstanceState){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
         builder
                 .setItems(mLevelNames, new DialogInterface.OnClickListener() {
                     @Override
@@ -58,9 +56,7 @@ public class ChooseLevelDialogFragment extends DialogFragment {
         title.setGravity(Gravity.CENTER);
         title.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.grey_text_color));
         title.setTextSize(20);
-
         builder.setCustomTitle(title);
-
         return builder.create();
     }
 

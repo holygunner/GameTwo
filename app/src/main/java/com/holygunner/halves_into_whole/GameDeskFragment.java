@@ -125,7 +125,7 @@ public class GameDeskFragment extends Fragment {
         mInterstitialAd = new InterstitialAd(Objects.requireNonNull(getContext()));
         // Sample AdMob app ID: ca-app-pub-3940256099942544/1033173712
         // my app ID: ca-app-pub-5986847491806907/4143437299
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.setAdUnitId("ca-app-pub-5986847491806907/4143437299");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
         mInterstitialAd.setAdListener(new AdListener() {
@@ -133,7 +133,6 @@ public class GameDeskFragment extends Fragment {
             public void onAdClosed(){
                 // Load the next interstitial.
                 mInterstitialAd.loadAd(new AdRequest.Builder()
-                        .addTestDevice("77E6E08ABF5409D1A37C98C74EE45A35") // delete before app release
                         .build());
             }
         });
@@ -542,18 +541,18 @@ public class GameDeskFragment extends Fragment {
             final long DELAY = 100;
 
             mHandler = new Handler() {
-                int indx = RECENT_RAND_FIGURES.size() - 1;
+                int index = RECENT_RAND_FIGURES.size() - 1;
 
                 public void handleMessage(Message msg) {
                     super.handleMessage(msg);
 
-                    if (indx > -1) {
+                    if (index > -1) {
                         mSoundPoolWrapper.playSound(SoundPoolWrapper.APPEAR_FIGURE);
-                        Figure figure = RECENT_RAND_FIGURES.get(indx);
+                        Figure figure = RECENT_RAND_FIGURES.get(index);
                         int position = mGameManager.getDesk().cellToPosition(figure.cell);
                         mAdapter.notifyItemChanged(position);
                     }
-                    --indx;
+                    --index;
                     this.sendEmptyMessageDelayed(0, DELAY);
                 }
             };
