@@ -31,11 +31,11 @@ public class SemiStar extends Figure {
         if (color == FigureColors.SALMON){
             super.fullPositionRes = full_star_salmon;
         }   else
-        if (color == FigureColors.AQUAMARINE){
-            super.fullPositionRes = full_star_aquamarine;
+        if (color == FigureColors.LILAC){
+            super.fullPositionRes = full_star_lilac;
         }   else
-        if (color == FigureColors.YELLOW){
-            super.fullPositionRes = full_star_yellow;
+        if (color == FigureColors.GREEN){
+            super.fullPositionRes = full_star_green;
         }
     }
 
@@ -87,34 +87,34 @@ public class SemiStar extends Figure {
                     res = semi_star_salmon_p4;
                     break;
             }
-        }   else if (color == FigureColors.AQUAMARINE) {
+        }   else if (color == FigureColors.LILAC) {
             switch (position) {
                 case POSITION_ONE:
-                    res = semi_star_aquamarine_p1;
+                    res = semi_star_lilac_p1;
                     break;
                 case POSITION_TWO:
-                    res = semi_star_aquamarine_p2;
+                    res = semi_star_lilac_p2;
                     break;
                 case POSITION_THREE:
-                    res = semi_star_aquamarine_p3;
+                    res = semi_star_lilac_p3;
                     break;
                 case POSITION_FOUR:
-                    res = semi_star_aquamarine_p4;
+                    res = semi_star_lilac_p4;
                     break;
             }
-        }   else if (color == FigureColors.YELLOW) {
+        }   else if (color == FigureColors.GREEN) {
             switch (position) {
                 case POSITION_ONE:
-                    res = semi_star_yellow_p1;
+                    res = semi_star_green_p1;
                     break;
                 case POSITION_TWO:
-                    res = semi_star_yellow_p2;
+                    res = semi_star_green_p2;
                     break;
                 case POSITION_THREE:
-                    res = semi_star_yellow_p3;
+                    res = semi_star_green_p3;
                     break;
                 case POSITION_FOUR:
-                    res = semi_star_yellow_p4;
+                    res = semi_star_green_p4;
                     break;
             }
         }

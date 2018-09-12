@@ -58,6 +58,7 @@
             <Button
                 style="@style/StartActivityButton"
                 android:id="@+id/game_button"
+                android:transitionName="activity_transition"
                 android:layout_gravity="center"/>
         </FrameLayout>
 

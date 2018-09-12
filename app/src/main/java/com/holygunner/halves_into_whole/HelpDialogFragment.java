@@ -29,7 +29,6 @@ public class HelpDialogFragment extends DialogFragment {
     @NonNull
     public Dialog onCreateDialog(Bundle onSavedInstanceState){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
         builder
                 .setView(R.layout.about_game_view)
                 .setPositiveButton(R.string.got_it, new DialogInterface.OnClickListener() {

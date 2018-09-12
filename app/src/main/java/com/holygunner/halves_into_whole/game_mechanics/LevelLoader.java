@@ -1,17 +1,19 @@
 package com.holygunner.halves_into_whole.game_mechanics;
 
+import android.content.Context;
+
 import com.holygunner.halves_into_whole.values.LevelsValues;
 
 public abstract class LevelLoader {
-    public static Level loadLevel(int recentLevelNumb){
+    public static Level loadLevel(Context context, int recentLevelNumb){
         Level level = new Level();
         level.setLevelNumb(recentLevelNumb);
-        setValues(level, recentLevelNumb);
+        setValues(context, level, recentLevelNumb);
         return level;
     }
 
-    private static void setValues(Level level, int levelNumb){
-        level.setLevelName(LevelsValues.LEVELS_NAMES[levelNumb]);
+    private static void setValues(Context context, Level level, int levelNumb){
+        level.setLevelName(LevelsValues.getLevelName(context, levelNumb));
         level.setLevelRounds(LevelsValues.LEVELS_ROUNDS[levelNumb]);
         level.setDeskSize(LevelsValues.DESKS_SIZES[levelNumb]);
         level.setAddForStep(LevelsValues.ADDS_FOR_STEP[levelNumb]);

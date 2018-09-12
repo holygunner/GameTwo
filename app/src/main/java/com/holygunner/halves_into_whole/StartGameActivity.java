@@ -1,5 +1,6 @@
 package com.holygunner.halves_into_whole;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -30,7 +31,9 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
     public void onClick(View view) {
         Intent intent = new Intent(this, GameFragmentActivity.class);
 
-        mSoundPoolWrapper.playSound(SoundPoolWrapper.PRESS_BUTTON);
+        if (view.getId() != R.id.game_button) {
+            mSoundPoolWrapper.playSound(SoundPoolWrapper.PRESS_BUTTON);
+        }
 
         switch (view.getId()){
             case R.id.choose_level_button:
@@ -38,7 +41,9 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
                 break;
             case R.id.game_button:
                 intent.putExtra(OPEN_LEVEL_NUMB_KEY, Saver.readMaxLevel(getApplicationContext()));
-                startActivity(intent);
+//                mSoundPoolWrapper.playSound(SoundPoolWrapper.LEVEL_START);
+                mSoundPoolWrapper.playSound(SoundPoolWrapper.PRESS_BUTTON);
+                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
                 break;
             case R.id.sound_on_button:
                 setSoundButton();
@@ -74,6 +79,30 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
         updateMaxScore();
         setGameButtonText();
         mSoundPoolWrapper = SoundPoolWrapper.getInstance(this);
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+        mAdView.resume();
+        updateMaxScore();
+        setChooseLevelButtonVisibility();
+        setGameButtonText();
+        setSoundButtonTitle();
+        mSoundPoolWrapper = SoundPoolWrapper.getInstance(this);
+    }
+
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        mAdView.destroy();
+        mSoundPoolWrapper.release();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mAdView.pause();
     }
 
     private void setAdsBanner(){
@@ -127,30 +156,6 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
         }   else {
             mGameButton.setText(R.string.new_game);
         }
-    }
-
-    @Override
-    protected void onResume(){
-        super.onResume();
-        mAdView.resume();
-        updateMaxScore();
-        setChooseLevelButtonVisibility();
-        setGameButtonText();
-        setSoundButtonTitle();
-        mSoundPoolWrapper = SoundPoolWrapper.getInstance(this);
-    }
-
-    @Override
-    protected void onDestroy(){
-        super.onDestroy();
-        mAdView.destroy();
-        mSoundPoolWrapper.release();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mAdView.pause();
     }
 
     private void showChooseLevelDialog(){

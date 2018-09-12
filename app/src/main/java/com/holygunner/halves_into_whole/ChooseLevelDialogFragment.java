@@ -1,5 +1,6 @@
 package com.holygunner.halves_into_whole;
 
+import android.app.ActivityOptions;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import com.holygunner.halves_into_whole.sound.SoundPoolWrapper;
 import com.holygunner.halves_into_whole.values.LevelsValues;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class ChooseLevelDialogFragment extends DialogFragment {
     private String[] mLevelNames;
@@ -51,11 +53,10 @@ public class ChooseLevelDialogFragment extends DialogFragment {
                 });
 
         TextView title = new TextView(getContext());
-
         title.setText(R.string.select_your_level);
         title.setPaddingRelative(0, 40, 0, 0);
         title.setGravity(Gravity.CENTER);
-        title.setTextColor(ContextCompat.getColor(getContext(), R.color.grey_text_color));
+        title.setTextColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.grey_text_color));
         title.setTextSize(20);
 
         builder.setCustomTitle(title);
@@ -65,14 +66,14 @@ public class ChooseLevelDialogFragment extends DialogFragment {
 
     private void runLevel(int which){
         Saver.writeLevel(getContext(), which);
+        SoundPoolWrapper.getInstance(getActivity()).playSound(SoundPoolWrapper.LEVEL_START);
         Intent intent = new Intent(getActivity(), GameFragmentActivity.class);
         intent.putExtra(StartGameActivity.OPEN_LEVEL_NUMB_KEY, which);
-        startActivity(intent);
-        SoundPoolWrapper.getInstance(getActivity()).playSound(SoundPoolWrapper.LEVEL_START);
+        startActivity(intent, null);
     }
 
     private String[] getAvailableLevelsNames(){
         int maxLevelNumb = Saver.readMaxLevel(getContext());
-        return Arrays.copyOfRange(LevelsValues.LEVELS_NAMES, 0, maxLevelNumb + 1);
+        return Arrays.copyOfRange(LevelsValues.getLevelsNames(Objects.requireNonNull(getContext())), 0, maxLevelNumb + 1);
     }
 }

@@ -106,7 +106,6 @@ public class GameDeskFragment extends Fragment {
     @Override
     public void onResume(){
         super.onResume();
-
         setIsTurnButtonClickable(mGameManager.getSaver().readIsTurnButtonClickable());
         updateRecyclerGridDesk();
     }
@@ -217,8 +216,7 @@ public class GameDeskFragment extends Fragment {
     private void goingToNextLevel(){
         mGameManager.getGamePlay().increaseLevelNumb();
         int nextLevelNumb = mGameManager.getGamePlay().getLevelNumb();
-
-        String nextLevelStr = LevelsValues.LEVELS_NAMES[nextLevelNumb];
+        String nextLevelStr = LevelsValues.getLevelName(Objects.requireNonNull(getContext()), nextLevelNumb);
         mLevelNameTextView.setVisibility(View.INVISIBLE);
         prepareViewsForFinish(nextLevelStr);
 
@@ -360,11 +358,11 @@ public class GameDeskFragment extends Fragment {
                                 break;
                             case COMBO:
                                 showUnitedFigure(mImageViewCell, gamePlay);
-                                showBonusWarning("COMBO! +5");
+                                showBonusWarning(getString(R.string.combo));
                                 break;
                             case DESK_EMPTY:
                                 showUnitedFigure(mImageViewCell, gamePlay);
-                                showBonusWarning("BONUS! +10");
+                                showBonusWarning(getString(R.string.bonus));
                                 break;
                             case LEVEL_COMPLETE:
                                 showUnitedFigure(mImageViewCell, gamePlay);
@@ -375,21 +373,25 @@ public class GameDeskFragment extends Fragment {
                                 break;
                         }
                     }   else {
-                            boolean isFilled = gamePlay.setAvailableCells(position);
-                            if (isFilled){
-                                int currentFigureColor = mGameManager.getDesk().getFigure(position).color;
+                        boolean isFilled = gamePlay.setAvailableCells(position);
+                        if (isFilled){
+                            int currentFigureColor = mGameManager.getDesk().getFigure(position).color;
 
-                                mSoundPoolWrapper.playSound(SoundPoolWrapper.SELECT_FIGURE);
-                                fillCells(true, currentFigureColor);
+                            mSoundPoolWrapper.playSound(SoundPoolWrapper.SELECT_FIGURE);
+                            fillCells(true, currentFigureColor);
 
-                                if (mIsTurnButtonClickable) {
-                                    setIsTurnButtonClickable(true);
-                                }
-                                setTurnFigureButton();
+                            if (mIsTurnButtonClickable) {
+                                setIsTurnButtonClickable(true);
                             }
+                            setTurnFigureButton();
                         }
+                    }
                 }
             });
+        }
+
+        public void setPosition(int position) {
+            this.position = position;
         }
 
         private void setTurnFigureButton(){
@@ -423,10 +425,6 @@ public class GameDeskFragment extends Fragment {
                     showRecentRandomFiguresWithDelay();
                 }
                 }, DELAY);
-        }
-
-        public void setPosition(int position) {
-            this.position = position;
         }
 
         private void turnFigure(ImageView imageView){

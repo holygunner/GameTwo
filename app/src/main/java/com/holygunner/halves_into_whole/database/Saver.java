@@ -93,7 +93,7 @@ public class Saver {
 
     private boolean increaseMaxLevel(int levelNumb){
         int maxLevel = readMaxLevel(mContext);
-        if ((levelNumb > maxLevel) && (maxLevel < LevelsValues.LEVELS_NAMES.length - 1)){
+        if ((levelNumb > maxLevel) && (maxLevel < LevelsValues.LEVEL_NUMB.length - 1)){
             PreferenceManager.getDefaultSharedPreferences(mContext)
                     .edit()
                     .putInt(MAX_LEVEL_KEY, maxLevel + 1)

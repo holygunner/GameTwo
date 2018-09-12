@@ -32,7 +32,7 @@ public class GamePlay {
 
     GamePlay(Context context, Desk desk, Saver saver, int levelNumb){
         mSaver = saver;
-        mLevel = LevelLoader.loadLevel(levelNumb);
+        mLevel = LevelLoader.loadLevel(context, levelNumb);
         mLevelNumb = mLevel.getLevelNumb();
 
         if (getLevelNumb() == Saver.readMaxLevel(context)){
@@ -279,8 +279,6 @@ public class GamePlay {
     }
 
     private void addRandomFigure(int howMuchFigures){
-//        mRecentRandomFigures.clear();
-
         if (mLevel.isLevelComplete()){
             return;
         }
@@ -302,7 +300,7 @@ public class GamePlay {
         if (LevelsValues.isEndlessMode(mLevelNumb)){
             mLevelNumb += 1;
         }   else {
-            mLevelNumb = LevelsValues.LEVELS_NAMES.length - 1;
+            mLevelNumb = LevelsValues.LEVEL_NUMB.length - 1;
         }
     }
 }

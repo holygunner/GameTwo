@@ -14,14 +14,28 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar.Custom">
         <activity android:name=".GameFragmentActivity"
             android:screenOrientation="portrait"
-            android:parentActivityName=".StartGameActivity"/>
+                  android:parentActivityName=".StartGameActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="http"
+                      android:host="www.example.com"
+                      android:pathPrefix="/gizmos"/>
+            </intent-filter>
+        </activity>
 
         <activity android:name="com.holygunner.halves_into_whole.StartGameActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            <intent-filter>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="http"
+                      android:host="www.example.com"
+                      android:pathPrefix="/gizmos"/>
             </intent-filter>
         </activity>
 
