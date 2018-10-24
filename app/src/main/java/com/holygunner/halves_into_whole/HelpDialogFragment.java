@@ -6,11 +6,14 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.view.View;
 import android.view.Window;
+import android.widget.TextView;
 
 import com.holygunner.halves_into_whole.sound.SoundPoolWrapper;
 
 public class HelpDialogFragment extends DialogFragment {
+
     @Override
     public void onCreate(Bundle onSavedInstanceState){
         super.onCreate(onSavedInstanceState);

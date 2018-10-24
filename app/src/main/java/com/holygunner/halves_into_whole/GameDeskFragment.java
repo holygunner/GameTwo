@@ -1,9 +1,5 @@
 package com.holygunner.halves_into_whole;
 
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.ads.MobileAds;
 import com.holygunner.halves_into_whole.figures.Figure;
 import com.holygunner.halves_into_whole.figures.FigureFactory;
 import com.holygunner.halves_into_whole.game_mechanics.*;
@@ -56,8 +52,6 @@ public class GameDeskFragment extends Fragment {
     private GameManager mGameManager;
     private SoundPoolWrapper mSoundPoolWrapper;
 
-    private InterstitialAd mInterstitialAd;
-
     private Handler mHandler;
     private final long DELAY = 150;
 
@@ -71,11 +65,6 @@ public class GameDeskFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         mSoundPoolWrapper = SoundPoolWrapper.getInstance(getActivity());
-
-        // Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
-        // my AdMob ID: ca-app-pub-5986847491806907~4171322067
-        MobileAds.initialize(getContext(), "ca-app-pub-5986847491806907~4171322067");
-        setAdsInterstitial();
 
         initGameManager();
         mGameManager.startOrResumeGame(Objects.requireNonNull(getActivity()).getIntent().getIntExtra(
@@ -119,34 +108,6 @@ public class GameDeskFragment extends Fragment {
             mHandler.removeCallbacksAndMessages(null);
         }
         finishActivity();
-    }
-
-    private void setAdsInterstitial(){
-        mInterstitialAd = new InterstitialAd(Objects.requireNonNull(getContext()));
-        // Sample AdMob app ID: ca-app-pub-3940256099942544/1033173712
-        // my app ID: ca-app-pub-5986847491806907/4143437299
-        mInterstitialAd.setAdUnitId("ca-app-pub-5986847491806907/4143437299");
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
-
-        mInterstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdClosed(){
-                // Load the next interstitial.
-                mInterstitialAd.loadAd(new AdRequest.Builder()
-                        .build());
-            }
-        });
-    }
-
-    private void showAdsInterstitial(){
-        if (mGameManager.getGamePlay().getLevel().isLevelComplete()
-                || !(mGameManager.getGamePlay().isGameContinue())) {
-            if (mInterstitialAd.isLoaded()) {
-                mInterstitialAd.show();
-            } else {
-                Log.d("TAG", "The interstitial wasn't loaded yet.");
-            }
-        }
     }
 
     private void initGameManager(){
@@ -264,7 +225,6 @@ public class GameDeskFragment extends Fragment {
     }
 
     private void finishActivity(){
-        showAdsInterstitial();
         mGameManager.finish();
         Objects.requireNonNull(getActivity()).finish();
     }
