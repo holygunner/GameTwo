@@ -13,9 +13,9 @@ import static com.holygunner.halves_into_whole.values.ColorsValues.FigureColors.
 
 public abstract class LevelsValues {
     public static final int[] LEVELS_ROUNDS = {100, 120, 140, 160, 180, 200, 10000000};
-//public static final int[] LEVELS_ROUNDS = {2, 2, 2, 2, 2, 2, 10000000};
+    // DESKS_SIZES[0] is height, DESKS_SIZES[1] is width
     public static final int[][] DESKS_SIZES
-            = {{3, 3}, {3, 3}, {3, 3}, {4, 3}, {4, 4}, {5, 4}, {5, 5}}; // DESKS_SIZES[0] is height, DESKS_SIZES[1] is width
+            = {{3, 3}, {3, 3}, {3, 3}, {4, 3}, {4, 4}, {5, 4}, {5, 5}};
     public static final int[] ADDS_FOR_STEP = {1, 2, 2, 3, 3, 4, 4};
     public static final int[] ADDS_FOR_TURN = {0, 1, 1, 1, 1, 1, 1}; // optimal value is 1
     public static final int[] ADDS_FOR_UNIT = {1, 1, 1, 1, 1, 1, 1}; // optimal value is 1

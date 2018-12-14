@@ -5,6 +5,7 @@
              android:orientation="vertical"
              android:layout_width="fill_parent"
              android:layout_height="fill_parent">
+
     <RelativeLayout
         android:id="@+id/parentLayout"
         android:layout_width="match_parent"
@@ -58,32 +59,33 @@
             android:layout_width="60dp"
             android:layout_height="50dp"
             android:layout_gravity="center"/>
+
     </FrameLayout>
 
     </RelativeLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/gameOverLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center_vertical|center_horizontal"
         android:animateLayoutChanges="true">
 
         <TextView
             android:textColor="@color/grey_text_color"
             android:shadowColor="@color/text_shadow"
+            android:textAlignment="center"
             android:shadowDx="1"
             android:shadowDy="1"
             android:shadowRadius="2"
-            android:visibility="invisible"
+            android:visibility="gone"
             android:text="@string/game_over"
-            android:gravity="center"
             android:textStyle="bold"
             android:textSize="48sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/warningTextView"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"/>
+            android:id="@+id/warningTextView"/>
 
-    </RelativeLayout>
+    </LinearLayout>
+
 </RelativeLayout>

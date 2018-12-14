@@ -2,8 +2,8 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:background="@drawable/gradient_purple"
               android:id="@+id/activity_start"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
               android:orientation="vertical"
               tools:context="com.holygunner.halves_into_whole.StartGameActivity">
 
@@ -103,4 +103,5 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:id="@+id/maxScoreTextView"/>
+
 </RelativeLayout>

@@ -62,7 +62,7 @@ public class ChooseLevelDialogFragment extends DialogFragment {
 
     private void runLevel(int which){
         Saver.writeLevel(getContext(), which);
-        SoundPoolWrapper.getInstance(getActivity()).playSound(SoundPoolWrapper.LEVEL_START);
+        SoundPoolWrapper.getInstance(getActivity()).playSound(getContext(), SoundPoolWrapper.LEVEL_START);
         Intent intent = new Intent(getActivity(), GameFragmentActivity.class);
         intent.putExtra(StartGameActivity.OPEN_LEVEL_NUMB_KEY, which);
         startActivity(intent, null);

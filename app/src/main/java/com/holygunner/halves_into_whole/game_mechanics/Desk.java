@@ -22,16 +22,16 @@ public class Desk {
         initFreeCells();
     }
 
-    public List<Cell> getFreeCells(){
+    List<Cell> getFreeCells(){
         return mFreeCells;
     }
 
-    public boolean isDeskOverload(){
+    boolean isDeskOverload(){
         return  (getFreeCells().size() == 0);
     }
 
 
-    public void addFigure(Figure figure){
+    void addFigure(Figure figure){
         int x = figure.cell.getX();
         int y = figure.cell.getY();
 
@@ -43,7 +43,7 @@ public class Desk {
         }
     }
 
-    public void replaceFigure(Figure figure, Cell toWhere){
+    void replaceFigure(Figure figure, Cell toWhere){
         int x1 = figure.cell.getX();
         int y1 = figure.cell.getY();
 
@@ -57,7 +57,7 @@ public class Desk {
         updateFreeCells(x1, y1, x2, y2);
     }
 
-    public void uniteSemiFigures(Cell fromWhere, Cell toWhere){
+    void uniteSemiFigures(Cell fromWhere, Cell toWhere){
         int x1 = fromWhere.getX();
         int y1 = fromWhere.getY();
 
@@ -86,15 +86,15 @@ public class Desk {
         return this.mDesk[y][x];
     }
 
-    public boolean isCellEmpty(Cell cell){
+    boolean isCellEmpty(Cell cell){
         return  (getFigure(cell) == null);
     }
 
-    public boolean isDeskEmpty(){
+    boolean isDeskEmpty(){
         return  (mFreeCells.size() == mDeskSize);
     }
 
-    public boolean isOneFigureLeft(){
+    boolean isOneFigureLeft(){
         return (mFreeCells.size() == mDeskSize - 1);
     }
 

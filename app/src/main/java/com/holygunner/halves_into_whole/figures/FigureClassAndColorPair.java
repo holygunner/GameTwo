@@ -9,7 +9,7 @@ public class FigureClassAndColorPair { // available figures and their colors on 
         mColor = color;
     }
 
-    public Class<?> getFigureClass() {
+    Class<?> getFigureClass() {
         return mFigureType;
     }
 

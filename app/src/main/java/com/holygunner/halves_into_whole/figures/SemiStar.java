@@ -4,6 +4,8 @@ import com.holygunner.halves_into_whole.game_mechanics.Cell;
 import com.holygunner.halves_into_whole.values.ColorsValues;
 import com.holygunner.halves_into_whole.values.ColorsValues.FigureColors;
 
+import org.jetbrains.annotations.Contract;
+
 import java.util.UUID;
 
 import static com.holygunner.halves_into_whole.R.drawable.*;
@@ -39,7 +41,8 @@ public class SemiStar extends Figure {
         }
     }
 
-    public static int getRes(int color, Position position) {
+    @Contract(pure = true)
+    static int getRes(int color, Position position) {
         int res = 0;
 
         if (color == ColorsValues.FigureColors.BORDO) {

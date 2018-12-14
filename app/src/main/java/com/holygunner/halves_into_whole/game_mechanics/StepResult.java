@@ -1,5 +1,7 @@
 package com.holygunner.halves_into_whole.game_mechanics;
 
+import org.jetbrains.annotations.Contract;
+
 public enum StepResult {
     STEP_UNAVAILABLE ("-1"),
     REPLACE_FIGURE ("0"),
@@ -15,6 +17,7 @@ public enum StepResult {
         NAME = name;
     }
 
+    @Contract(pure = true)
     @Override
     public String toString(){
         return this.NAME;

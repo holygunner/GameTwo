@@ -30,7 +30,7 @@ public class StartGameActivity extends AppCompatActivity implements View.OnClick
     @Override
     public void onClick(View view) {
         Intent intent = new Intent(this, GameFragmentActivity.class);
-        mSoundPoolWrapper.playSound(SoundPoolWrapper.PRESS_BUTTON);
+        mSoundPoolWrapper.playSound(this, SoundPoolWrapper.PRESS_BUTTON);
 
         switch (view.getId()){
             case R.id.choose_level_button:

@@ -4,8 +4,8 @@ import android.content.Context;
 
 import com.holygunner.halves_into_whole.values.LevelsValues;
 
-public abstract class LevelLoader {
-    public static Level loadLevel(Context context, int recentLevelNumb){
+abstract class LevelLoader {
+    static Level loadLevel(Context context, int recentLevelNumb){
         Level level = new Level();
         level.setLevelNumb(recentLevelNumb);
         setValues(context, level, recentLevelNumb);

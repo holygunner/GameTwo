@@ -1,8 +1,13 @@
 package com.holygunner.halves_into_whole.figures;
 
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.holygunner.halves_into_whole.game_mechanics.Cell;
 import com.holygunner.halves_into_whole.game_mechanics.RandomGenerator;
+
+import org.jetbrains.annotations.Contract;
 
 import java.util.List;
 import java.util.UUID;
@@ -12,7 +17,9 @@ public abstract class FigureFactory {
     private static final String SEMI_CIRCLE = "SemiCircle";
     private static final String SEMI_STAR = "SemiStar";
 
-    public static Figure getRandomFigure(List<Cell> freeCells, RandomGenerator randomGenerator){
+    @NonNull
+    public static Figure getRandomFigure(List<Cell> freeCells,
+                                         @NonNull RandomGenerator randomGenerator){
         UUID uuid = UUID.randomUUID();
         FigureClassAndColorPair pair = randomGenerator.getRandomFigureTypeAndColorPair();
         Class<?> FigureType = pair.getFigureClass();
@@ -24,12 +31,14 @@ public abstract class FigureFactory {
                 position, cell);
     }
 
+    @NonNull
     public static Figure createFigure(UUID uuid, Class figureType, int color,
-                               Position position, Cell cell){
+                                      Position position, Cell cell){
         return getInstanceOfChildClass(uuid, figureType, color, position, cell);
     }
 
-    public static Class<?> getClassOfFigure(String figureType) {
+    @Nullable
+    public static Class<?> getClassOfFigure(@NonNull String figureType) {
         if (figureType.equals(SEMI_SQUARE))
             return SemiSquare.class;
         if (figureType.equals(SEMI_CIRCLE))
@@ -54,6 +63,8 @@ public abstract class FigureFactory {
             return 0;
     }
 
+    @Nullable
+    @Contract(pure = true)
     public static String figureTypeToString(Figure figure) {
         if (figure instanceof SemiSquare)
             return SEMI_SQUARE;
@@ -65,8 +76,9 @@ public abstract class FigureFactory {
             return null;
     }
 
+    @NonNull
     private static Figure getInstanceOfChildClass(UUID uuid, Class figureClass, int color,
-                                           Position position, Cell cell){
+                                                  Position position, Cell cell){
         if (figureClass == SemiSquare.class)
             return new SemiSquare(uuid, color, position, cell);
         if (figureClass == SemiCircle.class)

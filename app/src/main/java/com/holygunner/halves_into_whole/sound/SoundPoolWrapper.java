@@ -1,6 +1,5 @@
 package com.holygunner.halves_into_whole.sound;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
@@ -11,7 +10,6 @@ import com.holygunner.halves_into_whole.database.Saver;
 
 public class SoundPoolWrapper {
     private SoundPool mSoundPool;
-    private Context mContext;
     public static final int APPEAR_FIGURE = 1;
     public static final int LEVEL_COMPLETE = 2;
     public static final int LEVEL_LOSE = 3;
@@ -23,7 +21,6 @@ public class SoundPoolWrapper {
     public static final int UNITE_FIGURE = 9;
     public static final int COMBO = 10;
 
-    @SuppressLint("StaticFieldLeak")
     private static SoundPoolWrapper sInstance;
 
     public static SoundPoolWrapper getInstance(Context context){
@@ -34,9 +31,8 @@ public class SoundPoolWrapper {
     }
 
     private SoundPoolWrapper(Context context) {
-        mContext = context;
         init();
-        load();
+        load(context);
     }
 
     private void init(){
@@ -51,22 +47,22 @@ public class SoundPoolWrapper {
                 .build();
     }
 
-    private void load(){
-        mSoundPool.load(mContext, R.raw.appear_figure, APPEAR_FIGURE);
-        mSoundPool.load(mContext, R.raw.level_complete, LEVEL_COMPLETE);
-        mSoundPool.load(mContext, R.raw.level_lose, LEVEL_LOSE);
-        mSoundPool.load(mContext, R.raw.level_start, LEVEL_START);
-        mSoundPool.load(mContext, R.raw.move_figure, REPLACE_FIGURE);
-        mSoundPool.load(mContext, R.raw.press_button, PRESS_BUTTON);
-        mSoundPool.load(mContext, R.raw.select_figure, SELECT_FIGURE);
-        mSoundPool.load(mContext, R.raw.turn_figure, TURN_FIGURE);
-        mSoundPool.load(mContext, R.raw.unite_figure, UNITE_FIGURE);
-        mSoundPool.load(mContext, R.raw.combo, COMBO);
+    private void load(Context context){
+        mSoundPool.load(context, R.raw.appear_figure, APPEAR_FIGURE);
+        mSoundPool.load(context, R.raw.level_complete, LEVEL_COMPLETE);
+        mSoundPool.load(context, R.raw.level_lose, LEVEL_LOSE);
+        mSoundPool.load(context, R.raw.level_start, LEVEL_START);
+        mSoundPool.load(context, R.raw.move_figure, REPLACE_FIGURE);
+        mSoundPool.load(context, R.raw.press_button, PRESS_BUTTON);
+        mSoundPool.load(context, R.raw.select_figure, SELECT_FIGURE);
+        mSoundPool.load(context, R.raw.turn_figure, TURN_FIGURE);
+        mSoundPool.load(context, R.raw.unite_figure, UNITE_FIGURE);
+        mSoundPool.load(context, R.raw.combo, COMBO);
     }
 
-    public void playSound(int soundId){
-        if (isSoundOn()) {
-            AudioManager audioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+    public void playSound(Context context, int soundId){
+        if (isSoundOn(context)) {
+            AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
             assert audioManager != null;
             float curVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
             float maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
@@ -80,8 +76,8 @@ public class SoundPoolWrapper {
         }
     }
 
-    private boolean isSoundOn(){
-        return Saver.readIsSoundOn(mContext);
+    private boolean isSoundOn(Context context){
+        return Saver.readIsSoundOn(context);
     }
 
     public void release(){

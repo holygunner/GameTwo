@@ -8,7 +8,6 @@ import com.holygunner.halves_into_whole.values.LevelsValues;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -30,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,8 +42,8 @@ public class GameDeskFragment extends Fragment {
     private Button mTurnFigureButton;
     private TextView mGamerCountView;
     private TextView mLevelNameTextView;
-    private RelativeLayout mParentLayout;
-    private RelativeLayout mGameOverLayout;
+    private ViewGroup mParentLayout;
+    private ViewGroup mGameOverLayout;
     private TextView mWarningTextView;
 
     private boolean mUserActionAvailable;
@@ -52,12 +52,13 @@ public class GameDeskFragment extends Fragment {
     private GameManager mGameManager;
     private SoundPoolWrapper mSoundPoolWrapper;
 
-    private Handler mHandler;
-    private final long DELAY = 150;
+    private static final long TURN_FIGURE_DELAY = 150;
+    private static final long APPEAR_NEW_FIGURE_DELAY = 100;
 
     public GameDeskFragment(){
     }
 
+    @NonNull
     public static GameDeskFragment newInstance(){
         return new GameDeskFragment();
     }
@@ -67,12 +68,13 @@ public class GameDeskFragment extends Fragment {
         mSoundPoolWrapper = SoundPoolWrapper.getInstance(getActivity());
 
         initGameManager();
-        mGameManager.startOrResumeGame(Objects.requireNonNull(getActivity()).getIntent().getIntExtra(
-                StartGameActivity.OPEN_LEVEL_NUMB_KEY, 0));
+        mGameManager.startOrResumeGame(Objects.requireNonNull(getActivity()).getIntent()
+                .getIntExtra(StartGameActivity.OPEN_LEVEL_NUMB_KEY, 0));
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.activity_game, container, false);
         mParentLayout = view.findViewById(R.id.parentLayout);
 
@@ -104,9 +106,6 @@ public class GameDeskFragment extends Fragment {
         super.onPause();
         boolean isSaved = mGameManager.save();
         Log.i("TAG", "save is succesful: " + isSaved);
-        if (mHandler != null) {
-            mHandler.removeCallbacksAndMessages(null);
-        }
         finishActivity();
     }
 
@@ -163,7 +162,7 @@ public class GameDeskFragment extends Fragment {
         String gameOver = getResources().getString(R.string.game_over);
         prepareViewsForFinish(gameOver);
 
-        mSoundPoolWrapper.playSound(SoundPoolWrapper.LEVEL_LOSE);
+        mSoundPoolWrapper.playSound(getContext(), SoundPoolWrapper.LEVEL_LOSE);
 
         mGameOverLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,17 +175,19 @@ public class GameDeskFragment extends Fragment {
     private void goingToNextLevel(){
         mGameManager.getGamePlay().increaseLevelNumb();
         int nextLevelNumb = mGameManager.getGamePlay().getLevelNumb();
-        String nextLevelStr = LevelsValues.getLevelName(Objects.requireNonNull(getContext()), nextLevelNumb);
+        String nextLevelStr = LevelsValues.getLevelName(Objects.requireNonNull(getContext()),
+                nextLevelNumb);
         mLevelNameTextView.setVisibility(View.INVISIBLE);
         prepareViewsForFinish(nextLevelStr);
 
-        mSoundPoolWrapper.playSound(SoundPoolWrapper.LEVEL_COMPLETE);
+        mSoundPoolWrapper.playSound(getContext(), SoundPoolWrapper.LEVEL_COMPLETE);
 
         mGameOverLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), GameFragmentActivity.class);
-                intent.putExtra(StartGameActivity.OPEN_LEVEL_NUMB_KEY, mGameManager.getGamePlay().getLevelNumb());
+                intent.putExtra(StartGameActivity.OPEN_LEVEL_NUMB_KEY,
+                        mGameManager.getGamePlay().getLevelNumb());
                 startActivity(intent);
                 finishActivity();
             }
@@ -213,7 +214,7 @@ public class GameDeskFragment extends Fragment {
         mWarningTextView.setText(text);
         mWarningTextView.setAlpha(alphaStart);
         mWarningTextView.setVisibility(View.VISIBLE);
-        mSoundPoolWrapper.playSound(SoundPoolWrapper.COMBO);
+        mSoundPoolWrapper.playSound(getContext(), SoundPoolWrapper.COMBO);
         animateWarningTextView(mWarningTextView,alphaEnd,duration);
 
         new Handler().postDelayed(new Runnable() {
@@ -285,7 +286,7 @@ public class GameDeskFragment extends Fragment {
     }
 
     private class GridViewHolder extends RecyclerView.ViewHolder{
-        public ImageView mImageViewCell;
+        ImageView mImageViewCell;
         private int position;
 
         GridViewHolder(View itemView) {
@@ -304,7 +305,7 @@ public class GameDeskFragment extends Fragment {
                     actionDown(gamePlay);
                 }
 
-                private void actionDown(GamePlay gamePlay){
+                private void actionDown(@NonNull GamePlay gamePlay){
                     StepResult stepResult;
 
                     if ((stepResult = gamePlay.tryToStep(position)) != STEP_UNAVAILABLE){
@@ -334,9 +335,10 @@ public class GameDeskFragment extends Fragment {
                     }   else {
                         boolean isFilled = gamePlay.setAvailableCells(position);
                         if (isFilled){
-                            int currentFigureColor = mGameManager.getDesk().getFigure(position).color;
+                            int currentFigureColor = mGameManager.getDesk()
+                                    .getFigure(position).color;
 
-                            mSoundPoolWrapper.playSound(SoundPoolWrapper.SELECT_FIGURE);
+                            mSoundPoolWrapper.playSound(getContext(), SoundPoolWrapper.SELECT_FIGURE);
                             fillCells(true, currentFigureColor);
 
                             if (mIsTurnButtonClickable) {
@@ -368,11 +370,12 @@ public class GameDeskFragment extends Fragment {
             });
         }
 
-        private void showUnitedFigure(ImageView imageViewCell, GamePlay gamePlay){
+        private void showUnitedFigure(@NonNull ImageView imageViewCell,
+                                      @NonNull GamePlay gamePlay){
             mUserActionAvailable = false;
             final Handler HANDLER = new Handler();
 
-            mSoundPoolWrapper.playSound(SoundPoolWrapper.UNITE_FIGURE);
+            mSoundPoolWrapper.playSound(getContext(), SoundPoolWrapper.UNITE_FIGURE);
             setImageViewRes(gamePlay.getRecentPosition(), R.drawable.empty_cell);
             imageViewCell.setImageResource(gamePlay.getLastUnitedFigureRes());
 
@@ -383,15 +386,15 @@ public class GameDeskFragment extends Fragment {
                 public void run() {
                     showRecentRandomFiguresWithDelay();
                 }
-                }, DELAY);
+                }, TURN_FIGURE_DELAY);
         }
 
-        private void turnFigure(ImageView imageView){
+        private void turnFigure(@NonNull ImageView imageView){
             mUserActionAvailable = false;
 
-            mSoundPoolWrapper.playSound(SoundPoolWrapper.TURN_FIGURE);
+            mSoundPoolWrapper.playSound(getContext(), SoundPoolWrapper.TURN_FIGURE);
 
-            imageView.animate().rotation(90).setDuration(DELAY).start();
+            imageView.animate().rotation(90).setDuration(TURN_FIGURE_DELAY).start();
 
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -404,7 +407,7 @@ public class GameDeskFragment extends Fragment {
                         updateRecyclerGridDesk();
                     }
                 }
-            }, DELAY);
+            }, TURN_FIGURE_DELAY);
         }
 
         private void replaceFigure(int currentPosition){
@@ -418,26 +421,31 @@ public class GameDeskFragment extends Fragment {
                 return;
             }
 
-            mSoundPoolWrapper.playSound(SoundPoolWrapper.REPLACE_FIGURE);
+            mSoundPoolWrapper.playSound(getContext(), SoundPoolWrapper.REPLACE_FIGURE);
             mUserActionAvailable = false;
             fillCells(false, Color.TRANSPARENT);
             setImageViewRes(mGameManager.getGamePlay().getRecentPosition(), R.drawable.empty_cell);
-            setImageViewRes(currentPosition, FigureFactory.getFigureRes(mGameManager.getDesk().getFigure(currentPosition)));
+            setImageViewRes(currentPosition, FigureFactory.getFigureRes(mGameManager.getDesk()
+                    .getFigure(currentPosition)));
             showRecentRandomFiguresWithDelay();
         }
 
         private void setImageViewRes(int position, int res){
-            GridViewHolder holder = (GridViewHolder) mRecyclerGridDesk.findViewHolderForAdapterPosition(position);
+            GridViewHolder holder
+                    = (GridViewHolder) mRecyclerGridDesk.findViewHolderForAdapterPosition(position);
+            assert holder != null;
             ImageView imageView = holder.mImageViewCell.findViewById(R.id.cell_image_view);
             imageView.setImageResource(res);
         }
 
         private void updateFillCells(){
-            Figure recentFigure =  mGameManager.getDesk().getFigure(mGameManager.getGamePlay().getRecentPosition());
+            Figure recentFigure =  mGameManager.getDesk().getFigure(mGameManager.getGamePlay()
+                    .getRecentPosition());
 
         if (!mGameManager.getGamePlay().getRecentRandomFigures().isEmpty()){
             Figure addedRandomFigure = mGameManager.getGamePlay().getRecentRandomFigures().get(0);
-            setImageViewRes(mGameManager.getDesk().cellToPosition(addedRandomFigure.cell), FigureFactory.getFigureRes(addedRandomFigure));
+            setImageViewRes(mGameManager.getDesk().cellToPosition(addedRandomFigure.cell),
+                    FigureFactory.getFigureRes(addedRandomFigure));
         }
 
             int currentFigureColor = recentFigure.color;
@@ -465,7 +473,8 @@ public class GameDeskFragment extends Fragment {
                     }
                 }
             }
-            setBackgroundColorOnPosition(mGameManager.getGamePlay().getRecentPosition(), currFigureColor);
+            setBackgroundColorOnPosition(mGameManager.getGamePlay().getRecentPosition(),
+                    currFigureColor);
         }
 
         @ColorInt
@@ -479,14 +488,17 @@ public class GameDeskFragment extends Fragment {
         }
 
         private void setBackgroundColorOnPosition(int position, int color){
-            mRecyclerGridDesk.getLayoutManager().findViewByPosition(position).setBackgroundColor(color);
+            Objects.requireNonNull(Objects.requireNonNull(mRecyclerGridDesk.getLayoutManager())
+                    .findViewByPosition(position))
+                    .setBackgroundColor(color);
         }
 
         private int getCellsColor(boolean isFillColor){
             int color;
 
             if (isFillColor) {
-                color = ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.currentFigureFill);
+                color = ContextCompat.getColor(Objects.requireNonNull(getContext()),
+                        R.color.currentFigureFill);
                 mGameManager.getGamePlay().setIsFilled(true);
             }   else {
                 color = Color.TRANSPARENT;
@@ -495,35 +507,61 @@ public class GameDeskFragment extends Fragment {
             return color;
         }
 
-        @SuppressLint("HandlerLeak")
         private void showRecentRandomFiguresWithDelay(){
-            final List<Figure> RECENT_RAND_FIGURES = mGameManager.getGamePlay().getRecentRandomFigures();
-            final long DELAY = 100;
+            final List<Figure> RECENT_RAND_FIGURES
+                    = mGameManager.getGamePlay().getRecentRandomFigures();
 
-            mHandler = new Handler() {
-                int index = RECENT_RAND_FIGURES.size() - 1;
-
-                public void handleMessage(Message msg) {
-                    super.handleMessage(msg);
-
-                    if (index > -1) {
-                        mSoundPoolWrapper.playSound(SoundPoolWrapper.APPEAR_FIGURE);
-                        Figure figure = RECENT_RAND_FIGURES.get(index);
-                        int position = mGameManager.getDesk().cellToPosition(figure.cell);
-                        mAdapter.notifyItemChanged(position);
-                    }
-                    --index;
-                    this.sendEmptyMessageDelayed(0, DELAY);
-                }
-            };
-            mHandler.sendEmptyMessage(0);
+            AppearFigureHandler handler = new AppearFigureHandler(getContext(), mSoundPoolWrapper,
+                    RECENT_RAND_FIGURES, mGameManager, mAdapter);
+            handler.sendEmptyMessage(0);
 
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     updateRecyclerGridDesk();
                 }
-            }, DELAY*(RECENT_RAND_FIGURES.size()));
+            }, APPEAR_NEW_FIGURE_DELAY*(RECENT_RAND_FIGURES.size()));
+        }
+    }
+
+    private static class AppearFigureHandler extends Handler{
+        private WeakReference<Context> mContextWeakRef;
+        private WeakReference<SoundPoolWrapper> mSoundPoolWrapperWeakRef;
+        private WeakReference<List<Figure>> mRecentFiguresWeakRef;
+        private WeakReference<GameManager> mGameManagerWeakRef;
+        private WeakReference<RecyclerGridAdapter> mAdapterWeakRef;
+        private int index;
+
+        AppearFigureHandler(Context context, SoundPoolWrapper soundPoolWrapper, List<Figure> recentFigures,
+                            GameManager gameManager, RecyclerGridAdapter mAdapter){
+            mContextWeakRef = new WeakReference<>(context);
+            mSoundPoolWrapperWeakRef = new WeakReference<>(soundPoolWrapper);
+            mRecentFiguresWeakRef = new WeakReference<>(recentFigures);
+            mGameManagerWeakRef = new WeakReference<>(gameManager);
+            mAdapterWeakRef = new WeakReference<>(mAdapter);
+            index = recentFigures.size() - 1;
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            if (mContextWeakRef != null && mSoundPoolWrapperWeakRef != null
+                    && mRecentFiguresWeakRef != null && mGameManagerWeakRef != null
+                    && mAdapterWeakRef != null) {
+                super.handleMessage(msg);
+
+                List<Figure> recentFigures = mRecentFiguresWeakRef.get();
+                SoundPoolWrapper soundPoolWrapper = mSoundPoolWrapperWeakRef.get();
+
+                if (index > -1) {
+                    soundPoolWrapper.playSound(mContextWeakRef.get(),
+                            SoundPoolWrapper.APPEAR_FIGURE);
+                    Figure figure = recentFigures.get(index);
+                    int position = mGameManagerWeakRef.get().getDesk().cellToPosition(figure.cell);
+                    mAdapterWeakRef.get().notifyItemChanged(position);
+                }
+                --index;
+                this.sendEmptyMessageDelayed(0, APPEAR_NEW_FIGURE_DELAY);
+            }
         }
     }
 

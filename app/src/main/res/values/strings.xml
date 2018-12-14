@@ -25,8 +25,8 @@
     <string name="combo">COMBO! +5</string>
     <string name="bonus">BONUS! +10</string>
     <string name="figure_image">figure image</string>
-    <string name="test_device_id">77E6E08ABF5409D1A37C98C74EE45A35</string>
-    <string name="privacy_policy">&#160;The game app privacy policy:
+    <string name="test_device_id" translatable="false">77E6E08ABF5409D1A37C98C74EE45A35</string>
+    <string name="privacy_policy" translatable="false">&#160;The game app privacy policy:
         <a href="https://bit.ly/2OJhS4y">
             https://bit.ly/2OJhS4y</a>
     </string>

@@ -28,7 +28,7 @@ public class AvailableSteps {
         return mAvailableToUniteCells;
     }
 
-    public int isPositionOnStep(int position){ // is Figure removed to given position
+    int isPositionOnStep(int position){ // is Figure removed to given position
         Cell chosenCell = mDesk.positionToCell(position);
 
         for (Cell cell: mAvailableToUniteCells){

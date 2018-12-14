@@ -60,7 +60,7 @@ public class GamePlay {
         return mRecentRandomFigures;
     }
 
-    public Desk loadDesk(Figure[] figures){
+    Desk loadDesk(Figure[] figures){
         mDesk = new Desk(this, mLevel.getDeskSize());
 
         for (Figure figure : figures) {
@@ -69,7 +69,7 @@ public class GamePlay {
         return mDesk;
     }
 
-    public Desk createNewDesk() {
+    Desk createNewDesk() {
         mDesk = new Desk(this, mLevel.getDeskSize());
         addRandomFigure(3);
         return mDesk;
@@ -200,7 +200,7 @@ public class GamePlay {
                 && figure1.getClass() == figure2.getClass();
     }
 
-    public int isStepAvailable(Figure figure, Cell toWhere){
+    int isStepAvailable(Figure figure, Cell toWhere){
         int isStepAvailable = -1;
 
         int x0 = figure.cell.getX();

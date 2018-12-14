@@ -20,7 +20,7 @@ public class Level {
         return mLevelNumb;
     }
 
-    public void setLevelNumb(int levelNumb) {
+    void setLevelNumb(int levelNumb) {
         mLevelNumb = levelNumb;
     }
 
@@ -28,7 +28,7 @@ public class Level {
         return mLevelRounds;
     }
 
-    public void setLevelRounds(int levelRounds){
+    void setLevelRounds(int levelRounds){
         mLevelRounds = levelRounds;
     }
 
@@ -36,39 +36,39 @@ public class Level {
         return mDeskSize;
     }
 
-    public void setDeskSize(int[] deskSize){
+    void setDeskSize(int[] deskSize){
         mDeskSize = deskSize;
     }
 
-    public int getAddForStep() {
+    int getAddForStep() {
         return mAddForStep;
     }
 
-    public void setAddForStep(int addForStep){
+    void setAddForStep(int addForStep){
         mAddForStep = addForStep;
     }
 
-    public int getAddForTurn() {
+    int getAddForTurn() {
         return mAddForTurn;
     }
 
-    public void setAddForTurn(int addForTurn){
+    void setAddForTurn(int addForTurn){
         mAddForTurn = addForTurn;
     }
 
-    public int getAddForUnit() {
+    int getAddForUnit() {
         return mAddForUnit;
     }
 
-    public void setAddForUnit(int addForUnit){
+    void setAddForUnit(int addForUnit){
         mAddForUnit = addForUnit;
     }
 
-    public FigureClassAndColorPair[] getFigureClassesAndColorPairs() {
+    FigureClassAndColorPair[] getFigureClassesAndColorPairs() {
         return mFigureClassAndColorPairs;
     }
 
-    public void setFigureClassAndColorPairs(FigureClassAndColorPair[] pairs){
+    void setFigureClassAndColorPairs(FigureClassAndColorPair[] pairs){
         mFigureClassAndColorPairs = pairs;
     }
 
@@ -76,7 +76,7 @@ public class Level {
         return mLevelName;
     }
 
-    public void setLevelName(String levelName){
+    void setLevelName(String levelName){
         mLevelName = levelName;
     }
 
@@ -84,11 +84,11 @@ public class Level {
         return mGamerCount;
     }
 
-    public void setGamerCount(int gamerCount) {
+    void setGamerCount(int gamerCount) {
         mGamerCount = gamerCount;
     }
 
-    public void increaseGamerCount(int howMuch){
+    void increaseGamerCount(int howMuch){
         int sum = mGamerCount + howMuch;
         int levelRounds = LevelsValues.LEVELS_ROUNDS[mLevelNumb];
 
@@ -99,7 +99,7 @@ public class Level {
         }
     }
 
-    public boolean isLevelComplete(){
+    boolean isLevelComplete(){
         return mGamerCount >= mLevelRounds;
     }
 }
