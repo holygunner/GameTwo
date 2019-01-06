@@ -1,61 +1,107 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_start"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.holygunner.game_two.StartGameActivity">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:background="@drawable/gradient_purple"
+              android:id="@+id/activity_start"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context="com.holygunner.halves_into_whole.StartGameActivity">
 
-    <RelativeLayout
+    <LinearLayout
+        android:paddingTop="16dp"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <Button
-            android:textSize="@dimen/buttonTextSize"
-            android:text="@string/resume_game"
-            android:layout_width="@dimen/start_activity_button_width"
-            android:layout_height="wrap_content"
-            android:id="@+id/start_game_button"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"/>
-    </RelativeLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="@dimen/start_buttons_padding"
+            android:padding="16dp"
+            android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1"
-        android:orientation="vertical">
+            <com.google.android.gms.ads.AdView
+                xmlns:ads="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/adView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|center"
+                ads:adSize="BANNER"
+                ads:adUnitId="@string/my_banner_add_unit_id">
+            </com.google.android.gms.ads.AdView>
 
-        <Button
-            android:textSize="@dimen/buttonTextSize"
-            android:text="@string/new_game"
-            android:layout_width="@dimen/start_activity_button_width"
-            android:layout_height="wrap_content"
-            android:id="@+id/new_game_button"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"/>
-    </RelativeLayout>
+        </FrameLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-        <Button
-            android:textSize="@dimen/buttonTextSize"
-            android:text="@string/exit"
-            android:layout_width="@dimen/start_activity_button_width"
-            android:layout_height="wrap_content"
-            android:id="@+id/exit_button"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"/>
-    </RelativeLayout>
-</LinearLayout>
+            <Button
+                style="@style/StartActivityButton"
+                android:text="@string/select_level"
+                android:id="@+id/choose_level_button"
+                android:layout_gravity="center"/>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <Button
+                style="@style/StartActivityButton"
+                android:id="@+id/game_button"
+                android:transitionName="activity_transition"
+                android:layout_gravity="center"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <Button
+                style="@style/StartActivityButton"
+                android:text="@string/sound_on"
+                android:id="@+id/sound_on_button"
+                android:layout_gravity="center"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <Button
+                style="@style/StartActivityButton"
+                android:text="@string/help"
+                android:id="@+id/about_button"
+                android:layout_gravity="center"/>
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="@dimen/start_buttons_padding"
+            android:orientation="vertical"
+            tools:ignore="UselessLeaf"/>
+    </LinearLayout>
+
+    <TextView
+        android:hint="@string/your_max_score"
+        android:visibility="invisible"
+        android:textSize="@dimen/start_button_text_size"
+        android:paddingBottom="48dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/maxScoreTextView"/>
+
+</RelativeLayout>

@@ -3,9 +3,59 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/purple</item>
+        <item name="colorPrimaryDark">#004f86</item>
+        <item name="colorAccent">#7F0000</item>
+    </style>
+
+    <style name="Theme.AppCompat.Light.NoActionBar.Custom" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+
+    <style name="StartActivityButton2">
+        <item name="android:background">@drawable/gradient_blue_left_up_corner_rounded_corners</item>
+        <item name="android:textColor">@color/grey_text_color</item>
+        <item name="android:alpha">@dimen/start_button_alpha</item>
+        <item name="android:layout_width">@dimen/start_activity_button_width</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/start_button_text_size</item>
+    </style>
+
+    <style name="StartActivityButton">
+        <item name="android:background">@drawable/gradient_purple_right_rounded_corners</item>
+        <item name="android:textColor">@color/grey_text_color</item>
+        <item name="android:alpha">@dimen/start_button_alpha</item>
+        <item name="android:layout_width">@dimen/start_activity_button_width</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/start_button_text_size</item>
+    </style>
+
+    <style name="AboutGameTextView">
+        <item name="android:textSize">20sp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="SelectLevelDialogStyle" parent="@style/Theme.AppCompat.Dialog">
+        <item name="android:textColor">@color/grey_text_color</item>
+    </style>
+
+    <style
+        name="dialog">
+        <!-- title encapsulating main part (background) of custom alertdialog -->
+        <item name="android:windowBackground">@color/colorPrimaryDark</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionBar">true</item>
+        <item name="windowNoTitle">false</item>
+        <item name="android:buttonBarStyle">@style/Widget.AppCompat.ActionButton</item>
     </style>
 
 </resources>

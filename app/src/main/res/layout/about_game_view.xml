@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+<LinearLayout
+              android:id="@+id/about_game_layout"
+              android:orientation="vertical"
+              android:paddingTop="16dp"
+              android:paddingLeft="16dp"
+              android:paddingRight="16dp"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content">
+
+    <TextView
+        android:text="@string/how_to_play"
+        android:textColor="@color/grey_text_color"
+        android:textStyle="bold"
+        style="@style/AboutGameTextView"
+        android:paddingBottom="16dp"/>
+
+    <TextView
+        style="@style/AboutGameTextView"
+        android:paddingBottom="16dp"
+        android:text="@string/unite_wholes_into_complete_figures"/>
+    <TextView
+        style="@style/AboutGameTextView"
+        android:paddingBottom="16dp"
+        android:text="@string/but_be_careful"/>
+    <TextView
+        style="@style/AboutGameTextView"
+        android:paddingBottom="16dp"
+        android:text="@string/complete_levels_and_don_t_loose"/>
+    <TextView
+        style="@style/AboutGameTextView"
+        android:id="@+id/privacy_policy"
+        android:autoLink="web"
+        android:textStyle="italic"
+        android:text="@string/privacy_policy"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        />
+
+</LinearLayout>
+</ScrollView>

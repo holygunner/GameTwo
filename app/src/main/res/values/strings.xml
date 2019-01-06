@@ -1,7 +1,51 @@
 <resources>
-    <string name="app_name">GameTwo</string>
+    <string name="app_name">Halves Into Whole</string>
     <string name="new_game">New Game</string>
     <string name="resume_game">Resume Game</string>
-    <string name="exit">Exit</string>
+    <string name="select_level">Select level</string>
+    <string name="help">Help</string>
     <string name="turn">TURN</string>
+    <string name="your_max_score">Your max score:</string>
+    <string name="game_over">GAME OVER!</string>
+    <string name="infinity_symbol" translatable="false">∞</string>
+    <string name="select_your_level">Select your level:</string>
+    <string name="unite_wholes_into_complete_figures">&#160;Unite halves into complete figures of the same type and color.
+        You are able to remove or spin them clockwise once per step.
+        Also there are available combos with the units one after another.</string>
+    <string name="but_be_careful">&#160;But be careful,
+        the more halves can appear with each of your step or turn depending on the level, unless the game will end.</string>
+    <string name="complete_levels_and_don_t_loose">&#160;Complete levels, reach a high score and don\'t loose. Good luck :-)</string>
+    <string name="how_to_play">How to play:</string>
+    <string name="my_banner_add_unit_id" translatable="false">ca-app-pub-5986847491806907/6585732416</string>
+    <string name="test_banner_add_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="count_delimiter" translatable="false">&#160;:&#160;</string>
+    <string name="sound_on">Sound On</string>
+    <string name="sound_off">Sound Off</string>
+    <string name="got_it">Got it!</string>
+    <string name="combo">COMBO! +5</string>
+    <string name="bonus">BONUS! +10</string>
+    <string name="figure_image">figure image</string>
+    <string name="test_device_id" translatable="false">77E6E08ABF5409D1A37C98C74EE45A35</string>
+    <string name="privacy_policy" translatable="false">&#160;The game app privacy policy:
+        <a href="https://bit.ly/2OJhS4y">
+            https://bit.ly/2OJhS4y</a>
+    </string>
+    <string-array name="levels_names">
+        <item>Level 1</item>
+        <item>Level 2</item>
+        <item>Level 3</item>
+        <item>Level 4</item>
+        <item>Level 5</item>
+        <item>Level 6</item>
+        <item>Endless Mode</item>
+    </string-array>
+    <string-array name="levels_names_with_descriptions">
+        <item>Level 1: 3x3, +1 figure per step</item>
+        <item>Level 2: 3x3, +2 figures</item>
+        <item>Level 3: 3x3, +2 figures</item>
+        <item>Level 4: 3x4, +3 figures</item>
+        <item>Level 5: 4x4, +3 figures</item>
+        <item>Level 6: 4x5, +4 figures</item>
+        <item>Endless Mode: 5x5, +4 figures</item>
+    </string-array>
 </resources>

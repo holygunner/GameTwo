@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">Halves Into Whole</string>
+    <string name="new_game">Новая игра</string>
+    <string name="resume_game">Продолжить игру</string>
+    <string name="select_level">Выбрать уровень</string>
+    <string name="help">Правила</string>
+    <string name="turn">ПОВЕРНУТЬ</string>
+    <string name="your_max_score">Ваш максимальный счет:</string>
+    <string name="game_over">ИГРА ОКОНЧЕНА!</string>
+    <string name="infinity_symbol" translatable="false">∞</string>
+    <string name="select_your_level">Выберите уровень:</string>
+    <string name="unite_wholes_into_complete_figures">&#160;Объединяйте половинки в целые фигуры одного типа и цвета.
+        Вы можете перемещать их или поворачивать по часовой стрелке один раз за шаг.
+        Также доступны комбо с последовательных объединений фигур.</string>
+    <string name="but_be_careful">&#160;Но будьте аккуратны,
+        с каждым вашим шагом или поворотом может появиться больше половинок в зависимости от уровня,
+        до тех пор, пока игра не закончится.</string>
+    <string name="complete_levels_and_don_t_loose">&#160;Проходите уровни, зарабатывайте максимальные баллы и не проигрывайте!
+        Удачи ;)</string>
+    <string name="how_to_play">Как играть:</string>
+    <string name="my_banner_add_unit_id" translatable="false">ca-app-pub-5986847491806907/6585732416</string>
+    <string name="test_banner_add_unit_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="count_delimiter" translatable="false">&#160;:&#160;</string>
+    <string name="sound_on">Звук Вкл</string>
+    <string name="sound_off">Звук Выкл</string>
+    <string name="got_it">Понятно!</string>
+    <string name="combo">КОМБО! +5</string>
+    <string name="bonus">БОНУС! +10</string>
+    <string name="figure_image">figure image</string>
+    <string-array name="levels_names">
+        <item>Уровень 1</item>
+        <item>Уровень 2</item>
+        <item>Уровень 3</item>
+        <item>Уровень 4</item>
+        <item>Уровень 5</item>
+        <item>Уровень 6</item>
+        <item>Бесконечный режим</item>
+    </string-array>
+    <string-array name="levels_names_with_descriptions">
+        <item>Уровень 1: 3x3, +1 фигура за шаг</item>
+        <item>Уровень 2: 3x3, +2 фигуры</item>
+        <item>Уровень 3: 3x3, +2 фигуры</item>
+        <item>Уровень 4: 3x4, +3 фигуры</item>
+        <item>Уровень 5: 4x4, +3 фигуры</item>
+        <item>Уровень 6: 4x5, +4 фигуры</item>
+        <item>Бесконечный режим: 5x5, +4 фигуры</item>
+    </string-array>
+</resources>

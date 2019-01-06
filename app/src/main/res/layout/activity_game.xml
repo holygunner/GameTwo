@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:paddingTop="32dp"
+             android:background="@drawable/gradient_blue_down"
+             android:orientation="vertical"
+             android:layout_width="fill_parent"
+             android:layout_height="fill_parent">
+
+    <RelativeLayout
+        android:id="@+id/parentLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:paddingTop="16dp"
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/recycler_grid_game_desk">
+
+        <TextView
+            android:id="@+id/levelNameTextView"
+            android:textColor="@color/grey_text_color"
+            android:textSize="16sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"/>
+
+        <TextView
+            android:id="@+id/gamerCountTextView"
+            android:textSize="32sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center_vertical"/>
+    </FrameLayout>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_grid_game_desk"
+        android:overScrollMode="never"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true">
+    </android.support.v7.widget.RecyclerView>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/frameLayout"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/recycler_grid_game_desk">
+
+        <Button
+            android:id="@+id/turnFigureButton"
+            android:background="@drawable/clockwise_pointer_pictogram"
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"/>
+
+    </FrameLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/gameOverLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical|center_horizontal"
+        android:animateLayoutChanges="true">
+
+        <TextView
+            android:textColor="@color/grey_text_color"
+            android:shadowColor="@color/text_shadow"
+            android:textAlignment="center"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:visibility="gone"
+            android:text="@string/game_over"
+            android:textStyle="bold"
+            android:textSize="48sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/warningTextView"/>
+
+    </LinearLayout>
+
+</RelativeLayout>
